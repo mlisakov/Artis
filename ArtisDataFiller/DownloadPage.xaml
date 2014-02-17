@@ -5,16 +5,7 @@
 	
 	<Grid.Resources>
 		
-		<Style x:Key="HeaderTextBlockStyle" TargetType="{x:Type TextBlock}">
-			<Setter Property="Foreground" Value="White"/>
-			<Setter Property="FontSize" Value="24"/>
-		</Style>
-				
-		<Style x:Key="SimpleTextStyle" TargetType="{x:Type TextBlock}">
-			<Setter Property="Foreground" Value="White"/>
-			<Setter Property="FontFamily" Value="Segoe UI Light"/>
-			<Setter Property="FontSize" Value="14"/>
-		</Style>
+
 		
 		<Storyboard x:Key="OnDownloadClick">
 			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ContentGrid">
@@ -203,38 +194,12 @@
 							VerticalAlignment="Center"
 							Margin="20,0,0,0" 
 							SelectedDate="{Binding ToDate}"/>
-
-				<TextBlock Text="Внимание!" 
-						   FontSize="16" 
-						   Grid.Row="2" 
-						   Grid.Column="2" 
-						   VerticalAlignment="Top" 
-						   Margin="0,20,0,0">
-					<TextBlock.Style>
-						<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource SimpleTextStyle}">
-							<Style.Triggers>
-								<DataTrigger Binding="{Binding ErrorMessage}" Value="{x:Null}">
-									<Setter Property="Visibility" Value="Collapsed"/>
-								</DataTrigger>
-							</Style.Triggers>
-						</Style>
-					</TextBlock.Style>
-				</TextBlock>
-				
-				<TextBlock Text="{Binding ErrorMessage}" 
-						   Style="{DynamicResource SimpleTextStyle}" 
-						   FontSize="13.333" 
-						   Grid.Row="2" 
-						   Grid.Column="2"
-						   Margin="20,40,0,0" 
-						   TextWrapping="Wrap"/>
 			</Grid>
 
 			<Grid x:Name="LoadingGrid"  
 				  Grid.Row="1" 
 				  Background="Black" 
-				  RenderTransformOrigin="0.5,0.5" 
-				  Opacity="0">
+				  RenderTransformOrigin="0.5,0.5" Opacity="0">
 				<Grid.RenderTransform>
 					<TransformGroup>
 						<ScaleTransform/>
@@ -254,6 +219,36 @@
 					<ColumnDefinition Width="Auto"/>			
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>	
+
+				<TextBlock Grid.Column="1" 
+						   Grid.ColumnSpan="2" 
+						   VerticalAlignment="Top"
+						   Text="Внимание!" 
+						   Foreground="LightCoral" 
+						   FontSize="16" 
+						   Margin="20,10,0,0">
+					<TextBlock.Style>
+						<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource SimpleTextStyle}">
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding ErrorMessage}" Value="{x:Null}">
+									<Setter Property="Visibility" Value="Collapsed"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</TextBlock.Style>
+				</TextBlock>
+				
+				<TextBlock Grid.Column="1" 
+						   Grid.ColumnSpan="2" 
+						   VerticalAlignment="Top" 
+						   Text="{Binding ErrorMessage}" 
+						   Style="{DynamicResource SimpleTextStyle}" 
+						   Foreground="LightCoral" 
+						   FontSize="16" 
+						   TextTrimming="WordEllipsis" 
+						   TextWrapping="Wrap" 
+						   Margin="40,35,0,0" 
+						   Height="60"/>
 		
 				<TextBlock Grid.ColumnSpan="2"
 						   Grid.Column="1" 
@@ -276,20 +271,21 @@
 					</TextBlock.Style>
 				</TextBlock>	
 				
-				<TextBlock Text="мероприятие:" 
+				<TextBlock Text="данные:" 
 						   Style="{DynamicResource SimpleTextStyle}" 						   
 						   Grid.Column="1" 
 						   Grid.Row="3" 
-						   Margin="2" 
+						   Margin="0,30,0,0" 
 						   VerticalAlignment="Top" 
 						   FontSize="13.333" 
-						   Padding="0,20,0,0" />
+						   Padding="0,0,0,0" />
+
 
 				<TextBlock Text="{Binding CurrentLoadingAction}" 
 						   Style="{DynamicResource SimpleTextStyle}" 
 						   Grid.Column="2" 
 						   Grid.Row="3"
-						   Margin="2,20,2,2"
+						   Margin="5,30,0,0"
 						   VerticalAlignment="Top" 
 						   FontSize="13.333" />
 				

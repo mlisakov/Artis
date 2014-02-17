@@ -8,7 +8,7 @@ using Artis.Consts;
 
 namespace Artis.ArtisDataFiller.ViewModels
 {
-    public class DonwloadViewModel: INotifyPropertyChanged, IDisposable
+    public class DonwloadViewModel: ViewModel
     {
         private readonly object _actionLoadedLockObject;
         private readonly object _actionNotLoadedLockObject;
@@ -162,8 +162,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         }
 
         private void _dataFiller_WorkDoneEvent(UrlActionLoadingSource source)
-        {
-            CurrentLoadingAction =source+"Тадам!!! все загружено!";
+        {            
             IsLoadingFinished = true;
         }
         #endregion
@@ -172,7 +171,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             lock (_logLockObject)
             {
                 LogItems.Add(action.Name);
-                OnPropertyChanged();
+                OnPropertyChanged("LogItems");
             }
         }
 
@@ -181,7 +180,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             lock (_actionNotLoadedLockObject)
             {
                 NotLoadedItems.Add(action);
-                OnPropertyChanged();
+                OnPropertyChanged("NotLoadedItems");
             }
         }
         private void AddLoadedAction(ActionWeb action)
@@ -189,7 +188,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             lock (_actionLoadedLockObject)
             {
                 LoadedItems.Add(action);
-                OnPropertyChanged();
+                OnPropertyChanged("LoadedItems");
             }
         }
 
@@ -227,19 +226,10 @@ namespace Artis.ArtisDataFiller.ViewModels
         {
             //скрываем кнопку "Отчеты"
             IsLoadingFinished = false;
+            CurrentLoadingAction = ErrorMessage = null;
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-
-        public void Dispose()
+        public new void Dispose()
         {
             //todo Макс, освободи ресурсы
             _dataFiller.WorkDoneEvent -= _dataFiller_WorkDoneEvent;
