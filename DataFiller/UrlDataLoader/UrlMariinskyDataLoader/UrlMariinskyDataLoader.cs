@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml.Linq;
 using Artis.Consts;
 using Artis.Logger;
 using HtmlAgilityPack;
@@ -88,6 +89,13 @@ namespace Artis.DataLoader
             return doc;
         }
 
+        private async Task<XDocument> DownloadXmlFromWebSite(string url)
+        {
+            string result = await DownloadHtml(url);
+            return XDocument.Parse(result);
+        }
+
+
         private string CretaeUriToDownload(int year, int month,int day=0)
         {
             string sourceUlr =
@@ -114,6 +122,7 @@ namespace Artis.DataLoader
                 }
             }
         }
+
 
         private async Task DownloadAreasInfo()
         {
@@ -214,8 +223,7 @@ namespace Artis.DataLoader
                 ActionWeb actionWeb=new ActionWeb();
 
                 HtmlNode placeNode = htmlNode.SelectSingleNode("td[@class='where_ico']");
-                string place = HttpUtility.HtmlDecode(placeNode.InnerText.Normalize());
-                List<string> actionImage;
+                string place = HttpUtility.HtmlDecode(placeNode.InnerText.Normalize()).Trim();
                 switch (place)
                 {
                     case "Мариинский театр":
@@ -223,7 +231,7 @@ namespace Artis.DataLoader
                         actionWeb.AreaDescription = _mainArea.Description;
                         actionWeb.AreaAddress = "Санкт-Петербург,Театральная площадь, д. 1";
                         break;
-                    case "Мариинский-2 (Новая сцена)":
+                    case "Мариинский-2 (Новая сцена)":
                         actionWeb.AreaImage = _secondArea.Images;
                         actionWeb.AreaDescription = _secondArea.Description;
                         actionWeb.AreaAddress = "Санкт-Петербург,ул. Декабристов, д. 34";
@@ -233,7 +241,13 @@ namespace Artis.DataLoader
                         actionWeb.AreaDescription = _concertHall.Description;
                         actionWeb.AreaAddress = "Санкт-Петербург,ул. Декабристов, д. 37";
                         break;
+                    default:
+                        actionWeb.AreaImage = _mainArea.Images;
+                        actionWeb.AreaDescription = _mainArea.Description;
+                        actionWeb.AreaAddress = "Санкт-Петербург,Театральная площадь, д. 1";
+                        break;
                 }
+
                 actionWeb.AreaName = place;
                 actionWeb.AreaMetro = "Садовая";
                 actionWeb.AreaArea = "Центральный";
@@ -244,6 +258,37 @@ namespace Artis.DataLoader
                 HtmlNode actionNode = htmlNode.SelectSingleNode("td[@class='main']/p[@class='title']/a");
                 actionWeb.Name = HttpUtility.HtmlDecode(actionNode.InnerText.Normalize());
                 string actionUrl = actionNode.Attributes["href"].Value;
+                HtmlNode actionDescriptionNode = htmlNode.SelectSingleNode("td[@class='main']/p[@class='descr']");
+                if (actionDescriptionNode != null)
+                {
+                    string shortDescription = HttpUtility.HtmlDecode(actionDescriptionNode.InnerText.Normalize()).Trim();
+                    if(shortDescription.IndexOf("балет",StringComparison.CurrentCultureIgnoreCase)>=0)
+                    {
+                        actionWeb.Genre = "Балет";
+                    }
+                    else if (shortDescription.IndexOf("спектакль", StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    {
+                        actionWeb.Genre = "Спектакль";
+                    }
+                    else if (shortDescription.IndexOf("концерт", StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    {
+                        actionWeb.Genre = "Концерт";
+                    }
+                    else if (shortDescription.IndexOf("опера", StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    {
+                        actionWeb.Genre = "Опера";
+                    }
+                    else if (shortDescription.IndexOf("поэма ", StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    {
+                        actionWeb.Genre = "Поэма ";
+                    }
+
+                }
+                else
+                {
+                    actionWeb.Genre = "Отсутствует";
+                }
+
 
                 actionWeb.Date = date.ToShortDateString();
                 await UploadActionInfo(actionWeb, rootUrl + actionUrl);
@@ -263,7 +308,7 @@ namespace Artis.DataLoader
         private async Task UploadActionInfo(ActionWeb actionWeb, string actionUrl)
         {
             string description = string.Empty;
-           
+
             HtmlDocument actionInfo = await DownloadDataFromWebSite(actionUrl);
             HtmlNode rootNode = actionInfo.DocumentNode;
             HtmlNodeCollection shortInfoNodes = rootNode.SelectNodes("//div[@class='spec_info_short_spect']");
@@ -296,11 +341,11 @@ namespace Artis.DataLoader
             {
                 foreach (HtmlNode descriptionNode in descriptionNodeCollection)
                 {
-                    string text=HttpUtility.HtmlDecode(descriptionNode.InnerText.Normalize());
+                    string text = HttpUtility.HtmlDecode(descriptionNode.InnerText.Normalize());
                     if (!string.IsNullOrEmpty(description) && !string.IsNullOrEmpty(text))
                         description += Environment.NewLine;
                     if (!string.IsNullOrEmpty(text))
-                        description +=text;
+                        description += text;
                 }
             }
             actionWeb.Description = description;
@@ -323,7 +368,97 @@ namespace Artis.DataLoader
                 }
             }
 
-            //todo fill action image
+            List<string> actionImages = new List<string>();
+            HtmlNodeCollection actionImageNodeCollection =
+                rootNode.SelectNodes(
+                    "//table[@id='spectacle_photo_gallery']/tr/td/a/img");
+            if (actionImageNodeCollection != null)
+            {
+                foreach (HtmlNode imageNode in actionImageNodeCollection)
+                {
+                    using (WebClient client = new WebClient())
+                    {
+                        byte[] image = client.DownloadData(rootUrl + imageNode.Attributes["src"].Value);
+                        string base64String = Convert.ToBase64String(image, 0, image.Length);
+                        actionImages.Add(base64String);
+                    }
+                }
+                actionWeb.Image = actionImages;
+            }
+
+            HtmlNodeCollection actionDescNodes = rootNode.SelectNodes("//div[@class='spec_description']/p");
+            if (actionDescNodes != null)
+            {
+                foreach (HtmlNode node in actionDescNodes)
+                {
+                    string text = HttpUtility.HtmlDecode(node.InnerText.Normalize()).Trim();
+                    if (text.IndexOf("Продолжительность спектакля", StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    {
+                        int Hours=0;
+                        int Minute=0;
+                        string[] splitedString = text.Split(' ');
+                        foreach (string item in splitedString)
+                        {
+                            int intItem;
+                            if (int.TryParse(item.Trim(), out intItem))
+                            {
+                                if (Hours == 0)
+                                    Hours = intItem;
+                                else
+                                    Minute = intItem;
+                            }
+                        }
+                        if (Hours != 0 && Minute != 0)
+                            actionWeb.Duration = Hours + ":" + Minute;
+                        else if (Hours != 0)
+                            actionWeb.Duration = Hours + ":00";
+                    }
+                }
+            }
+
+            HtmlNode buyTicketNodes = rootNode.SelectSingleNode("//td[@class='ticket']/a");
+            if (buyTicketNodes != null)
+                await UploadPriceInfo(actionWeb, buyTicketNodes.Attributes["href"].Value);
+
+        }
+
+        private async Task UploadPriceInfo(ActionWeb actionWeb, string actionUrl)
+        {
+            try
+            {
+                XDocument actionInfo = await DownloadXmlFromWebSite(actionUrl);
+                XElement node = actionInfo.Root.Element("content").Element("spec_free_place_pict");
+                IEnumerable<XElement> tickets = node.Elements("ticket").ToList();
+
+                int min = tickets.Select(str =>
+                {
+                    int value;
+                    if (int.TryParse(str.Element("tprice1").Value, out value))
+                        return value;
+                    return int.MaxValue;
+                }).Min();
+
+                int max = tickets.Select(str =>
+                {
+                    int value;
+                    if (int.TryParse(str.Element("tprice2").Value, out value))
+                        return value;
+                    return int.MinValue;
+                }).Max();
+
+
+                if (min != 0 && max != 0)
+                    actionWeb.PriceRange = "от " + min + " до " + max;
+                else if (min != 0)
+                    actionWeb.PriceRange = min.ToString();
+                else if (max != 0)
+                    actionWeb.PriceRange = max.ToString();
+            }
+            catch (Exception ex)
+            {
+                Log.WriteLog(_logPath, ex);
+            }
+
         }
 
         private void InvokeWorkDoneEvent()

@@ -10,18 +10,18 @@ namespace Artis.DataLoader.Test
     [TestFixture]
     public class Test
     {
-        private DataLoader _dataLoader;
+        //private DataLoader _dataLoader;
 
-        [TestFixtureSetUp]
-        public void TestFixtureSetUp()
-        {
-            _dataLoader=new DataLoader();
-        }
+        //[TestFixtureSetUp]
+        //public void TestFixtureSetUp()
+        //{
+        //    _dataLoader=new DataLoader();
+        //}
 
-        [Test]
-        public void CanDownloadActions()
-        {
-            //я пока не понимаю как это тестирвоать
-        }
+        //[Test]
+        //public void CanDownloadActions()
+        //{
+        //    //я пока не понимаю как это тестирвоать
+        //}
     }
 }
