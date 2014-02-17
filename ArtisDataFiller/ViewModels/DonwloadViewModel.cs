@@ -162,8 +162,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         }
 
         private void _dataFiller_WorkDoneEvent(UrlActionLoadingSource source)
-        {
-            CurrentLoadingAction =source+"Тадам!!! все загружено!";
+        {            
             IsLoadingFinished = true;
         }
         #endregion
@@ -172,7 +171,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             lock (_logLockObject)
             {
                 LogItems.Add(action.Name);
-                OnPropertyChanged();
+                OnPropertyChanged("LogItems");
             }
         }
 
@@ -181,7 +180,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             lock (_actionNotLoadedLockObject)
             {
                 NotLoadedItems.Add(action);
-                OnPropertyChanged();
+                OnPropertyChanged("NotLoadedItems");
             }
         }
         private void AddLoadedAction(ActionWeb action)
@@ -189,7 +188,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             lock (_actionLoadedLockObject)
             {
                 LoadedItems.Add(action);
-                OnPropertyChanged();
+                OnPropertyChanged("LoadedItems");
             }
         }
 
@@ -227,6 +226,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         {
             //скрываем кнопку "Отчеты"
             IsLoadingFinished = false;
+            CurrentLoadingAction = ErrorMessage = string.Empty;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
