@@ -163,7 +163,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void _dataFiller_WorkDoneEvent(UrlActionLoadingSource source)
         {
-            CurrentLoadingAction =source+"Тадам! все загружено!";
+            CurrentLoadingAction =source+"Тадам!! все загружено!";
             IsLoadingFinished = true;
         }
         #endregion
