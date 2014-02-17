@@ -1,15 +1,9 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows.Controls;
-
-namespace Artis.ArtisDataFiller.ViewModels
+﻿namespace Artis.ArtisDataFiller.ViewModels
 {
-    public class MainViewModel: INotifyPropertyChanged
+    public class MainViewModel: ContentViewModel
     {
         private bool _isDownloadingPageOpened;
         private bool _isEditPageOpened;
-        private object _content;
         private bool _isHomePageOpened;        
 
         public MainViewModel()
@@ -92,44 +86,13 @@ namespace Artis.ArtisDataFiller.ViewModels
 // ReSharper restore ExplicitCallerInfoArgument
                     
                     DisposeViewContent();
+
+
+                    var page = new EditPage();
+
+                    ViewContent = page;
                 }
             }
-        }
-
-        /// <summary>
-        /// Контент основной области
-        /// </summary>
-        public object ViewContent
-        {
-            get { return _content; }
-            set
-            {
-                _content = value;
-                OnPropertyChanged();
-            }
-        }
-
-        /// <summary>
-        /// Освобождение ресурсов у основной области
-        /// </summary>
-        private void DisposeViewContent()
-        {
-            var grid = ViewContent as Grid;
-            if (grid != null)
-            {
-                var viewModel = grid.DataContext as IDisposable;
-                if (viewModel != null)
-                    viewModel.Dispose();
-            }
-            ViewContent = null;
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

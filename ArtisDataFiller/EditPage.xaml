@@ -1,0 +1,19 @@
+﻿<Grid x:Class="Artis.ArtisDataFiller.EditPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Background="#FF001B23"  MinWidth="1024" MinHeight="768">
+	<Grid.ColumnDefinitions>
+		<ColumnDefinition Width="80"/>
+		<ColumnDefinition Width="*"/>
+	</Grid.ColumnDefinitions>
+
+	<Grid Background="#FF006191">
+		<StackPanel VerticalAlignment="Top" Margin="0,100,0,0">
+				<ToggleButton x:Name="Areas" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsAreasPageOpened}" ToolTip="Площадки" Background="#FF006191">
+					<Image Source="Images/areas.png" Stretch="Fill" />
+				</ToggleButton>
+		</StackPanel>
+	</Grid>
+
+	<ContentControl Grid.Column="1" 
+					Content="{Binding ViewContent}" />
+</Grid>

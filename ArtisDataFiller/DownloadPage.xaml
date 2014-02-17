@@ -5,16 +5,7 @@
 	
 	<Grid.Resources>
 		
-		<Style x:Key="HeaderTextBlockStyle" TargetType="{x:Type TextBlock}">
-			<Setter Property="Foreground" Value="White"/>
-			<Setter Property="FontSize" Value="24"/>
-		</Style>
-				
-		<Style x:Key="SimpleTextStyle" TargetType="{x:Type TextBlock}">
-			<Setter Property="Foreground" Value="White"/>
-			<Setter Property="FontFamily" Value="Segoe UI Light"/>
-			<Setter Property="FontSize" Value="14"/>
-		</Style>
+
 		
 		<Storyboard x:Key="OnDownloadClick">
 			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="ContentGrid">

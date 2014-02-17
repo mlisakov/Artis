@@ -6,36 +6,6 @@
 		Width="1280"  
 		WindowStartupLocation="CenterScreen"
 		x:Name="NewMainWindow" >
-	<Window.Resources>
-		
-		<Style x:Key="ToggleButtonStyle" TargetType="{x:Type ToggleButton}">
-			<Setter Property="Width" Value="75"/>
-			<Setter Property="Height" Value="75"/>
-			<Setter Property="Template" >
-				<Setter.Value>
-					<ControlTemplate TargetType="{x:Type ToggleButton}">
-						<Grid x:Name="grid" Background="#FF3293C3">
-							<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
-											  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
-						</Grid>
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsChecked" Value="True">
-								<Setter Property="Background" TargetName="grid" Value="#FF1475A5"/>
-							</Trigger>
-							<MultiTrigger>
-								<MultiTrigger.Conditions>
-									<Condition Property="IsChecked" Value="False"/>
-									<Condition Property="IsMouseOver" Value="True"/>
-								</MultiTrigger.Conditions>
-								<Setter Property="Background" TargetName="grid" Value="#FF50B1E1"/>
-							</MultiTrigger>
-						</ControlTemplate.Triggers>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
-
-	</Window.Resources>
 	
 	<Grid Background="#FF001B23">
 		<Grid.ColumnDefinitions>
