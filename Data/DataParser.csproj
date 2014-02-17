@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4BC0AB1E-0B81-4FBE-83E0-8FFAFA4A5EF5}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Artis.Data</RootNamespace>
+    <AssemblyName>Artis.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Projects\Optima\Projects\Services\Web\InfoTechIntegrationService\Library\NHibernate.dll</HintPath>
+    </Reference>
+    <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>NHibernate\Library\nunit.framework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataParser.cs" />
+    <Compile Include="Delegate\DataParserDelegates.cs" />
+    <Compile Include="Exception\DBAccessFailedException.cs" />
+    <Compile Include="NHibernate\Domain.cs" />
+    <Compile Include="NHibernate\Objects\Action.cs" />
+    <Compile Include="NHibernate\Objects\Actor.cs" />
+    <Compile Include="NHibernate\Objects\Area.cs" />
+    <Compile Include="NHibernate\Objects\Data.cs" />
+    <Compile Include="NHibernate\Objects\Genre.cs" />
+    <Compile Include="NHibernate\Objects\Metro.cs" />
+    <Compile Include="NHibernate\Objects\Producer.cs" />
+    <Compile Include="NHibernate\Objects\State.cs" />
+    <Compile Include="NHibernate\QueriesExtentions.cs" />
+    <Compile Include="NHibernate\Repository\ActionRepository.cs" />
+    <Compile Include="NHibernate\Repository\ActorRepository.cs" />
+    <Compile Include="NHibernate\Repository\AreaRepository.cs" />
+    <Compile Include="NHibernate\Repository\BaseRepository.cs" />
+    <Compile Include="NHibernate\Repository\DataRepository.cs" />
+    <Compile Include="NHibernate\Repository\GenreRepository.cs" />
+    <Compile Include="NHibernate\Repository\IRepository.cs" />
+    <Compile Include="NHibernate\Repository\MetroRepository.cs" />
+    <Compile Include="NHibernate\Repository\ProducerRepository.cs" />
+    <Compile Include="NHibernate\Repository\StateRepository.cs" />
+    <Compile Include="NHibernate\Test.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="NHibernate\Library\Castle.DynamicProxy.dll" />
+    <Content Include="NHibernate\Library\Iesi.Collections.dll" />
+    <Content Include="NHibernate\Library\NHibernate.dll" />
+    <Content Include="NHibernate\Library\nunit.framework.dll" />
+    <EmbeddedResource Include="NHibernate\Mapping\hibernate.cfg.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NHibernate\Mapping\Mapping.hbm.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Consts\Consts.csproj">
+      <Project>{8d331482-2207-4c27-92ba-f5676bf2a80a}</Project>
+      <Name>Consts</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Logger\Logger.csproj">
+      <Project>{3ae6d2b3-ffff-43b3-b225-062214ee5fad}</Project>
+      <Name>Logger</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

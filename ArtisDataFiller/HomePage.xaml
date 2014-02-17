@@ -1,0 +1,43 @@
+﻿<Grid x:Class="Artis.ArtisDataFiller.HomePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  >
+	
+	<Grid VerticalAlignment="Center" 
+		  HorizontalAlignment="Center"
+		  Height="200">
+		
+		<Grid.Resources>
+			
+			<Style x:Key="HeaderTextBlockStyle" TargetType="{x:Type TextBlock}">
+				<Setter Property="Foreground" Value="White"/>
+				<Setter Property="FontSize" Value="24"/>
+			</Style>
+			
+			<Style x:Key="SimpleTextStyle" TargetType="{x:Type TextBlock}">
+				<Setter Property="Foreground" Value="White"/>
+				<Setter Property="FontFamily" Value="Segoe UI Light"/>
+				<Setter Property="FontSize" Value="18.667"/>
+			</Style>
+		</Grid.Resources>
+		
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+
+		<TextBlock Text="ARTIS Administrative tool" 
+				   Style="{DynamicResource HeaderTextBlockStyle}" />
+
+		<TextBlock Text="Приступая к работе…" 
+				   Grid.Row="1" 
+				   Style="{DynamicResource SimpleTextStyle}"/>
+
+		<TextBlock Grid.Row="2"
+				   Text="В главном меню, находящемся в левой части экрана, вы можете перейти либо к форме загрузке данных в базу, либо к просмотру и редактированию данных в базе. " 
+				   Style="{DynamicResource SimpleTextStyle}"
+				   TextWrapping="Wrap" 
+				   Width="700" 
+				   Margin="20,0,0,0"/>
+	</Grid>
+</Grid>
