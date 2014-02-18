@@ -21,7 +21,7 @@ namespace Artis.DataLoader
         /// </summary>
         private const string _logPath = "DataFiller.log";
 
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string _mariinskyMainUrl = "http://www.mariinsky.ru/about/history_theatre/mariinsky_theatre/";
         private const string _mariinskySecondHallUrl = "http://www.mariinsky.ru/about/history_theatre/mariinsky_2/";
