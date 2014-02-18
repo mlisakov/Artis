@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using Artis.Consts;
 using Artis.Logger;
 using HtmlAgilityPack;
+using NLog;
 
 namespace Artis.DataLoader
 {
@@ -19,6 +20,8 @@ namespace Artis.DataLoader
         /// Путь к файлу логирования
         /// </summary>
         private const string _logPath = "DataFiller.log";
+
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string _mariinskyMainUrl = "http://www.mariinsky.ru/about/history_theatre/mariinsky_theatre/";
         private const string _mariinskySecondHallUrl = "http://www.mariinsky.ru/about/history_theatre/mariinsky_2/";
