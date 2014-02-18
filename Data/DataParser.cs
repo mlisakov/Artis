@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Artis.Consts;
 using Artis.Logger;
+using NLog;
 
 namespace Artis.Data
 {
@@ -17,6 +18,8 @@ namespace Artis.Data
         /// Имя файла логирования
         /// </summary>
         private const string _logFilePath = "NHibernateError.log";
+
+        private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
         private AreaRepository _areaRepository;
         private ActionRepository _actionRepository;
@@ -119,12 +122,13 @@ namespace Artis.Data
             }
             catch (DBAccessFailedException dbAccessExp)
             {
+                _logger.Fatal("Не удалось подключение к базе данных.Проверьте параметры подключения.Работа приложения остановлена!");
                 InvokeFatalErrorEvent(dbAccessExp.Message);
             }
             catch (Exception ex)
             {
                 InvokeActionNotLoadedEvent(actionWeb);
-                Log.WriteLog("NHibernateError.log", ex);
+                _logger.ErrorException("Ошибка записи мероприятия " + actionWeb.Name,ex);
             }
         }
 
@@ -143,12 +147,17 @@ namespace Artis.Data
                     }
                     catch (Exception ex)
                     {
-                        Log.WriteLog(_logFilePath, ex);
+                        _logger.ErrorException("Ошибка записи метро " + Name, ex);
                     }
                 }
                 else
+                {
+                    _logger.Info("Метро " +Name+" уже есть");
                     return metro;
+                }
+                    
             }
+            _logger.Info("Пустое метро!");
             return null;
         }
 
@@ -164,9 +173,10 @@ namespace Artis.Data
                 }
                 catch (Exception ex)
                 {
-                    Log.WriteLog(_logFilePath, ex);
+                    _logger.ErrorException("Ошибка записи изображения ", ex);
                 }
             }
+            _logger.Info("Пустое изображение!");
             return null;
         }
 
@@ -185,12 +195,16 @@ namespace Artis.Data
                     }
                     catch (Exception ex)
                     {
-                        Log.WriteLog("NHibernateError.log", ex);
+                        _logger.ErrorException("Ошибка записи режиссера " + Name, ex);
                     }
                 }
                 else
+                {
+                    _logger.Info("Режиссер " + Name + " уже есть");
                     return producer;
+                }
             }
+            _logger.Info("Пустой режиссер!");
             return null;
         }
 
@@ -209,12 +223,16 @@ namespace Artis.Data
                     }
                     catch (Exception ex)
                     {
-                        Log.WriteLog("NHibernateError.log", ex);
+                        _logger.ErrorException("Ошибка записи актера " + Name, ex);
                     }
                 }
                 else
+                {
+                    _logger.Info("Актер " + Name + " уже есть");
                     return actor;
+                }
             }
+            _logger.Info("Пустой актер!");
             return null;
         }
 
@@ -233,12 +251,16 @@ namespace Artis.Data
                     }
                     catch (Exception ex)
                     {
-                        Log.WriteLog("NHibernateError.log", ex);
+                        _logger.ErrorException("Ошибка записи жанра " + Name, ex);
                     }
                 }
                 else
+                {
+                    _logger.Info("Жанр " + Name + " уже есть");
                     return genre;
+                }
             }
+            _logger.Info("Пустой жанр!");
             return null;
         }
 
@@ -269,15 +291,20 @@ namespace Artis.Data
                     try
                     {
                         _areaRepository.Add(area);
+                        return area;
                     }
                     catch (Exception ex)
                     {
-                        Log.WriteLog(_logFilePath, ex);
+                        _logger.ErrorException("Ошибка записи площадки " + Name, ex);
                     }
                 }
                 else
+                {
+                    _logger.Info("Площадка " + Name + " уже есть");
                     return area;
+                }
             }
+            _logger.Info("Пустая площадка!");
             return null;
         }
 
@@ -289,6 +316,23 @@ namespace Artis.Data
                  action.DateStart != DateTime.Parse(Date) &&
                  action.Time != Time))
             {
+                if (area == null || string.IsNullOrEmpty(Date) || string.IsNullOrEmpty(Name) ||
+                    string.IsNullOrEmpty(Time))
+                {
+                    string text=string.Empty;
+                    if (area == null)
+                        text = "Для мероприятия не задана площадка";
+                    if (string.IsNullOrEmpty(Date))
+                        text = "Для мероприятия не задана дата начала";
+                    if (string.IsNullOrEmpty(Time))
+                        text = "Для мероприятия не задано время начала";
+                    if (string.IsNullOrEmpty(Name))
+                        text = "Для мероприятия не задано имя";
+
+                    _logger.Error("Ошибка записи мероприятия:"+text);
+                    return null;
+                }
+
                 action = new Action()
                 {
                     Area = area,
@@ -324,7 +368,7 @@ namespace Artis.Data
                 }
                 catch (Exception ex)
                 {
-                    Log.WriteLog("NHibernateError.log", ex);
+                    _logger.ErrorException("Ошибка записи мероприятия " + Name, ex);
                 }
 
             }

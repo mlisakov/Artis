@@ -37,6 +37,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Projects\Optima\Projects\Services\Web\InfoTechIntegrationService\Library\NHibernate.dll</HintPath>
     </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="nunit.framework, Version=2.6.3.13283, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>NHibernate\Library\nunit.framework.dll</HintPath>
@@ -78,7 +81,7 @@
     <Content Include="NHibernate\Library\NHibernate.dll" />
     <Content Include="NHibernate\Library\nunit.framework.dll" />
     <EmbeddedResource Include="NHibernate\Mapping\hibernate.cfg.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="NHibernate\Mapping\Mapping.hbm.xml">
