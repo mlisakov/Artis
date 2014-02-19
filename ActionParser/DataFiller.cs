@@ -140,7 +140,7 @@ namespace Artis.ActionParser
         }
         private void InvokeActionNotLoaded(ActionWeb action)
         {
-            ActionLoaded handler = ActionLoadedEvent;
+            ActionLoaded handler = ActionNotLoadedEvent;
             if (handler != null)
                 handler(action);
         }

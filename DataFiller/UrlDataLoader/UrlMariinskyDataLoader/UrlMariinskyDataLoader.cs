@@ -249,39 +249,65 @@ namespace Artis.DataLoader
 
 
                 HtmlNode placeNode = htmlNode.SelectSingleNode("td[@class='where_ico']");
-                string place = HttpUtility.HtmlDecode(placeNode.InnerText.Normalize()).Trim();
-                switch (place)
+                if (placeNode != null)
                 {
-                    case "Мариинский театр":
-                        actionWeb.AreaImage = _mainArea.Images;
-                        actionWeb.AreaDescription = _mainArea.Description;
-                        actionWeb.AreaAddress = "Санкт-Петербург,Театральная площадь, д. 1";
-                        break;
-                    case "Мариинский-2 (Новая сцена)":
-                        actionWeb.AreaImage = _secondArea.Images;
-                        actionWeb.AreaDescription = _secondArea.Description;
-                        actionWeb.AreaAddress = "Санкт-Петербург,ул. Декабристов, д. 34";
-                        break;
-                    case "Концертный зал":
-                        actionWeb.AreaImage = _concertHall.Images;
-                        actionWeb.AreaDescription = _concertHall.Description;
-                        actionWeb.AreaAddress = "Санкт-Петербург,ул. Декабристов, д. 37";
-                        break;
-                    default:
-                        actionWeb.AreaImage = _mainArea.Images;
-                        actionWeb.AreaDescription = _mainArea.Description;
-                        actionWeb.AreaAddress = "Санкт-Петербург,Театральная площадь, д. 1";
-                        break;
+                    string place = HttpUtility.HtmlDecode(placeNode.InnerText.Normalize()).Trim();
+                    switch (place)
+                    {
+                        case "Мариинский театр":
+                            actionWeb.AreaImage = _mainArea.Images;
+                            actionWeb.AreaDescription = _mainArea.Description;
+                            actionWeb.AreaAddress = "Санкт-Петербург,Театральная площадь, д. 1";
+                            break;
+                        case "Мариинский-2 (Новая сцена)":
+                            actionWeb.AreaImage = _secondArea.Images;
+                            actionWeb.AreaDescription = _secondArea.Description;
+                            actionWeb.AreaAddress = "Санкт-Петербург,ул. Декабристов, д. 34";
+                            break;
+                        case "Концертный зал":
+                            actionWeb.AreaImage = _concertHall.Images;
+                            actionWeb.AreaDescription = _concertHall.Description;
+                            actionWeb.AreaAddress = "Санкт-Петербург,ул. Декабристов, д. 37";
+                            break;
+                        default:
+                            actionWeb.AreaImage = _mainArea.Images;
+                            actionWeb.AreaDescription = _mainArea.Description;
+                            actionWeb.AreaAddress = "Санкт-Петербург,Театральная площадь, д. 1";
+                            break;
+                    }
+                    actionWeb.AreaName = place;
+                }
+                else
+                {
+                    _logger.Warn("Не удалось найти площадку для мероприятия. Будет проставлена площадка по-умолчанию-Мариинский театр");
+                    actionWeb.AreaImage = _mainArea.Images;
+                    actionWeb.AreaDescription = _mainArea.Description;
+                    actionWeb.AreaAddress = "Санкт-Петербург,Театральная площадь, д. 1";
+                    actionWeb.AreaName = "Мариинский театр";
                 }
 
-                actionWeb.AreaName = place;
+                
                 actionWeb.AreaMetro = "Садовая";
                 actionWeb.AreaArea = "Центральный";
 
                 HtmlNode timeNode = htmlNode.SelectSingleNode("td[@class='time']");
-                actionWeb.Time = HttpUtility.HtmlDecode(timeNode.InnerText.Normalize());
+                if (timeNode != null)
+                {
+                    actionWeb.Time = HttpUtility.HtmlDecode(timeNode.InnerText.Normalize());
+                }
+                else
+                {
+                    _logger.Warn("Не удалось найти время проведения мероприятия. Будет проставлено время по-умолчанию - 00:00");
+                    actionWeb.Time = "00:00";
+
+                }
 
                 HtmlNode actionNode = htmlNode.SelectSingleNode("td[@class='main']/p[@class='title']/a");
+                if (actionNode==null)
+                {
+                    _logger.Error("Не удалось найти наименование мероприятия.");
+                    return new KeyValuePair<bool, ActionWeb>(false, actionWeb);
+                }
                 actionWeb.Name = HttpUtility.HtmlDecode(actionNode.InnerText.Normalize());
                 string actionUrl = actionNode.Attributes["href"].Value;
                 HtmlNode actionDescriptionNode = htmlNode.SelectSingleNode("td[@class='main']/p[@class='descr']");
@@ -312,6 +338,7 @@ namespace Artis.DataLoader
                 }
                 else
                 {
+                    _logger.Warn("Не удалось найти описание мероприятия.Проставлено значение по умолчанию-Отсутствует");
                     actionWeb.Genre = "Отсутствует";
                 }
 
@@ -409,6 +436,10 @@ namespace Artis.DataLoader
                     }
                 }
                 actionWeb.Image = actionImages;
+            }
+            else
+            {
+                _logger.Warn("Не удалось загрузить изображения для мероприятия");
             }
 
             HtmlNodeCollection actionDescNodes = rootNode.SelectNodes("//div[@class='spec_description']/p");
