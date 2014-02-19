@@ -67,8 +67,10 @@
     <SignManifests>true</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Expression.Interactions" />
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
+    <Reference Include="System.Windows.Interactivity" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml">
@@ -88,6 +90,7 @@
       <DependentUpon>AreasPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\WatermarkedTextBox.cs" />
+    <Compile Include="ViewModels\AreasViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Page Include="AreasPage.xaml">
@@ -178,6 +181,10 @@
       <Project>{6C8311FE-56B7-4C4E-AC85-1F5A7B065391}</Project>
       <Name>DataLoader</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Data\DataParser.csproj">
+      <Project>{4BC0AB1E-0B81-4FBE-83E0-8FFAFA4A5EF5}</Project>
+      <Name>DataParser</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Logger\Logger.csproj">
       <Project>{3ae6d2b3-ffff-43b3-b225-062214ee5fad}</Project>
       <Name>Logger</Name>
@@ -205,6 +212,11 @@
     <Resource Include="Images\home.png" />
     <Resource Include="Images\edit.png" />
     <Resource Include="Images\download.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\editData.png" />
+    <Resource Include="Images\new.png" />
+    <Resource Include="Images\remove.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -16,8 +16,7 @@ namespace Artis.ArtisDataFiller.Controls
         }
 
         public WatermarkedTextBox()
-        {
-//            DefaultStyleKey = typeof (WatermarkedTextBox);
+        {            
         }
     }
 }

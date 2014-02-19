@@ -34,13 +34,13 @@
 			<Setter Property="Foreground" Value="White"/>
 			<Setter Property="FontSize" Value="24"/>
 		</Style>
-				
-		<Style x:Key="SimpleTextStyle" TargetType="{x:Type TextBlock}">
-			<Setter Property="Foreground" Value="White"/>
-			<Setter Property="FontFamily" Value="Segoe UI Light"/>
-			<Setter Property="FontSize" Value="14"/>
-		</Style>
-	
+
+	<Style x:Key="SimpleTextStyle" TargetType="{x:Type TextBlock}">
+		<Setter Property="Foreground" Value="White"/>
+		<Setter Property="FontFamily" Value="Segoe UI Light"/>
+		<Setter Property="FontSize" Value="14"/>
+	</Style>
+
 	<ControlTemplate x:Key="SimpleButtonTemplate" TargetType="{x:Type Button}">
 		<Grid x:Name="grid" Background="#FF3293C3" TextBlock.FontFamily="Segoe UI Light" TextBlock.Foreground="White">
 			<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="10" />
@@ -58,6 +58,27 @@
 					<Condition Property="IsPressed" Value="False"/>
 				</MultiTrigger.Conditions>
 				<Setter Property="Background" TargetName="grid" Value="#FF50B1E1"/>
+			</MultiTrigger>
+		</ControlTemplate.Triggers>
+	</ControlTemplate>
+
+	<ControlTemplate x:Key="BadSimpleButtonTemplate" TargetType="{x:Type Button}">
+		<Grid x:Name="grid" Background="LightCoral" TextBlock.FontFamily="Segoe UI Light" TextBlock.Foreground="White">
+			<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="10" />
+		</Grid>
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter Property="Background" TargetName="grid" Value="#FF797D80"/>
+			</Trigger>
+			<Trigger Property="IsPressed" Value="True">
+				<Setter Property="Background" TargetName="grid" Value="#FFD26262"/>
+			</Trigger>
+			<MultiTrigger>
+				<MultiTrigger.Conditions>
+					<Condition Property="IsMouseOver" Value="True"/>
+					<Condition Property="IsPressed" Value="False"/>
+				</MultiTrigger.Conditions>
+				<Setter Property="Background" TargetName="grid" Value="#FFFF8F8F"/>
 			</MultiTrigger>
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
