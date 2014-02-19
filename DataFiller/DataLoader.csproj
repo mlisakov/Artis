@@ -60,6 +60,7 @@
     <Compile Include="UrlDataLoader\UrlBileterDataLoader.cs" />
     <Compile Include="UrlDataLoader\UrlMariinskyDataLoader\Custom\MariinskyAreaInfo.cs" />
     <Compile Include="UrlDataLoader\UrlMariinskyDataLoader\UrlMariinskyDataLoader.cs" />
+    <Compile Include="UrlDataLoader\UrlMikhailovskyDataLoader.cs" />
     <Compile Include="UrlDataLoader\UrlOldBileterDataLoader.cs" />
   </ItemGroup>
   <ItemGroup>

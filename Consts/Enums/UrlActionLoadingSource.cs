@@ -7,6 +7,7 @@
     {
         Bileter=0,
         Mariinsky=1,
-        OldBileter=2
+        OldBileter=2,
+        Mikhailovsky=3
     }
 }

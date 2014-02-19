@@ -19,7 +19,7 @@ namespace Artis.DataLoader
         /// <summary>
         /// Путь к файлу логирования
         /// </summary>
-        private const string _logPath = "DataFiller.log";
+        //private const string _logPath = "DataFiller.log";
 
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -237,7 +237,7 @@ namespace Artis.DataLoader
             catch (Exception ex)
             {
                 _logger.ErrorException("Ошибка распознания данных для мероприятия. Загрузка данных будет продолжена...", ex);
-                Log.WriteLog(_logPath, ex);
+                //Log.WriteLog(_logPath, ex);
             }
         }
 

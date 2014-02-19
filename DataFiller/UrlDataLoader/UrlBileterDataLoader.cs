@@ -9,6 +9,7 @@ using System.Web;
 using Artis.Consts;
 using Artis.Logger;
 using HtmlAgilityPack;
+using NLog;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;
 
 namespace Artis.DataLoader
@@ -19,8 +20,8 @@ namespace Artis.DataLoader
         /// <summary>
         /// Путь к файлу логирования
         /// </summary>
-        private const string _logPath = "DataFiller.log";
-
+        //private const string _logPath = "DataFiller.log";
+        private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
         CancellationTokenSource _cancelToken;
 
         /// <summary>
@@ -51,16 +52,17 @@ namespace Artis.DataLoader
         /// <returns></returns>
         public async Task LoadData(DateTime start, DateTime finish)
         {
-            HtmlDocument doc = await DownloadDataFromWebSite(start, finish);
+            KeyValuePair<string,HtmlDocument> doc = await DownloadDataFromWebSite(start, finish);
 
-            if (doc.DocumentNode.ChildNodes.Count == 0)
+            if (doc.Value.DocumentNode.ChildNodes.Count == 0)
             {
+                _logger.Fatal("Ошибка загрузки данных с URL=" + doc.Key);
                 throw new UrlDataLoaderException("Не удалось загрузить данный!", "Загрузка данных");
             }
 
-            await ParseHtmlDoc(doc);
+            await ParseHtmlDoc(doc.Value);
 
-            var pageCount = GetPageCount(doc);
+            var pageCount = GetPageCount(doc.Value);
 
             for (var i = 2; i <= pageCount; i++)
             {
@@ -97,7 +99,7 @@ namespace Artis.DataLoader
                 handler(UrlActionLoadingSource.Bileter);
         }
 
-        private async Task<HtmlDocument> DownloadDataFromWebSite(DateTime start, DateTime finish, int page = 1)
+        private async Task<KeyValuePair<string,HtmlDocument>> DownloadDataFromWebSite(DateTime start, DateTime finish, int page = 1)
         {
             // Периодически проверяем, не запрошена ли отмена операции
             _cancelToken.Token.ThrowIfCancellationRequested();
@@ -106,7 +108,7 @@ namespace Artis.DataLoader
             string result = await DownloadHtml(url);
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(result);
-            return doc;
+            return new KeyValuePair<string, HtmlDocument>(url,doc);
         }
 
         private async Task<HtmlDocument> DownloadDataFromWebSite(string url)
@@ -184,7 +186,7 @@ namespace Artis.DataLoader
                         isSuccess = false;
                     else
                     {
-                        Log.WriteLog(_logPath, "Node " + htmlNode.InnerHtml + " parse failed!");
+                        _logger.Error("Не удалось распознать мероприятие");
                     }
                 }
                 if (isSuccess)
@@ -192,7 +194,7 @@ namespace Artis.DataLoader
             }
             catch (Exception ex)
             {
-                Log.WriteLog(_logPath, ex);
+                _logger.ErrorException("Ошибка распознания данных для мероприятия. Загрузка данных будет продолжена...", ex);
             }
             return false;
         }
@@ -259,7 +261,8 @@ namespace Artis.DataLoader
             catch (Exception ex)
             {
                 InvokeUrlDataLoaderExceptionThrownEvent("Ошибка распознования HTML-документа для мероприятия");
-                Log.WriteLog(_logPath, ex);
+                _logger.ErrorException(
+                    "Ошибка распознования HTML-документа для мероприятия. Загрузка данных будет продолжена...", ex);
                 return false;
             }
         }
@@ -386,7 +389,7 @@ namespace Artis.DataLoader
             catch (Exception ex)
             {
                 InvokeUrlDataLoaderExceptionThrownEvent("Ошибка загрузки изображений для мероприятия");
-                Log.WriteLog(_logPath, ex);
+                _logger.ErrorException("Ошибка загрузки изображения...",ex);
                 return new List<string>();
             }
 
