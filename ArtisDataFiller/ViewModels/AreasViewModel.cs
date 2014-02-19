@@ -16,6 +16,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         private string _editName;
         private ObservableCollection<BitmapImage> _images;
         private BitmapImage _selectedImage;
+        private bool _isEdit;
 
         /// <summary>
         /// Команда редактирования площадки
@@ -41,6 +42,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// Команда возврата с карточки площадки на просмотр всех площадок
         /// </summary>
         public ArtisCommand BackCommand { private set; get; }
+
+        /// <summary>
+        /// Команда добавления новой площадки
+        /// </summary>
+        public ArtisCommand NewAreaCommand { private set; get; }
 
         /// <summary>
         /// Поле-фильтр по наименованию
@@ -103,7 +109,15 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <remarks>Данный флаг необходим для ГУИ, чтобы различать - когда давать редактировать наименование площадки,
         /// а когда нет</remarks>
         /// </summary>
-        public bool IsEdit { get; set; }
+        public bool IsEdit
+        {
+            get { return _isEdit; }
+            set
+            {
+                _isEdit = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// Список картинок для редактируемой/создаваемой площадки
@@ -138,6 +152,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             RemoveImagesCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteRemoveImagesCommand);
             SaveCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteSaveCommand);
             BackCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteBackCommand);                        
+            NewAreaCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteNewAreaCommand);                        
 
             FilterName = "some string";
             Areas = new ObservableCollection<Area>();
@@ -171,6 +186,11 @@ namespace Artis.ArtisDataFiller.ViewModels
             return true;
         }
 
+        private void ExecuteNewAreaCommand(object parameter)
+        {
+            IsEdit = false; // устанавливаем флаг
+        }
+
         private void ExecuteBackCommand(object parameter)
         {
             //todo возврат на просмотр всех площадок
@@ -193,6 +213,9 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteEditCommand(object parameter)
         {
+            IsEdit = true; // устанавливаем флаг
+            EditName = string.Empty;
+
             //todo WPF не может отображать base64 пикчи.
             //todo тебе нужно асинхронно конвертить их и отправлять в массив.
             //todo пример реализации ниже

@@ -80,6 +80,9 @@
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="BackButton">
 			<BeginStoryboard Storyboard="{StaticResource BackButtonClick}"/>
 		</EventTrigger>
+		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="button">
+			<BeginStoryboard Storyboard="{StaticResource OnClick1}"/>
+		</EventTrigger>
 	</Grid.Triggers>
 	
 	
@@ -144,9 +147,10 @@
 					Height="500" 
 					VerticalAlignment="Top">
 			
-			<Button Content="Добавить…" 					
+			<Button x:Name="button" Content="Добавить…" 					
 					Margin="0" 
-					Template="{DynamicResource SimpleButtonTemplate}" 					
+					Template="{DynamicResource SimpleButtonTemplate}" 
+					Command="{Binding NewAreaCommand}"				
 					Width="110" 
 					VerticalAlignment="Top"/>
 
