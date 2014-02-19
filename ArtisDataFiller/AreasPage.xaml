@@ -78,10 +78,13 @@
 			<BeginStoryboard Storyboard="{StaticResource OnClick1}"/>
 		</EventTrigger>
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="BackButton">
-			<BeginStoryboard Storyboard="{StaticResource BackButtonClick}"/>
+			<BeginStoryboard x:Name="BackButtonClick_BeginStoryboard" Storyboard="{StaticResource BackButtonClick}"/>
 		</EventTrigger>
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="button">
 			<BeginStoryboard Storyboard="{StaticResource OnClick1}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="SaveButton">
+			<BeginStoryboard x:Name="BackButtonClick_BeginStoryboard1" Storyboard="{StaticResource BackButtonClick}"/>
 		</EventTrigger>
 	</Grid.Triggers>
 	
