@@ -10,6 +10,7 @@ using System.Xml.Linq;
 using Artis.Consts;
 using Artis.Logger;
 using HtmlAgilityPack;
+using NLog;
 
 namespace Artis.DataLoader
 {
@@ -19,6 +20,8 @@ namespace Artis.DataLoader
         /// Путь к файлу логирования
         /// </summary>
         private const string _logPath = "DataFiller.log";
+
+        private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string _mariinskyMainUrl = "http://www.mariinsky.ru/about/history_theatre/mariinsky_theatre/";
         private const string _mariinskySecondHallUrl = "http://www.mariinsky.ru/about/history_theatre/mariinsky_2/";
@@ -50,13 +53,15 @@ namespace Artis.DataLoader
             {
                 // Периодически проверяем, не запрошена ли отмена операции
                 _cancelToken.Token.ThrowIfCancellationRequested();
-                HtmlDocument doc = await DownloadDataFromWebSite(currentDate);
-                if (doc.DocumentNode.ChildNodes.Count == 0)
+                
+                KeyValuePair<string,HtmlDocument> doc = await DownloadDataFromWebSite(currentDate);
+                if (doc.Value.DocumentNode.ChildNodes.Count == 0)
                 {
+                    _logger.Fatal("Ошибка загрузки данных с URL=" + doc.Key);
                     throw new UrlDataLoaderException("Не удалось загрузить данный!", "Загрузка данных");
                 }
-
-                await ParseHtmlDoc(doc, currentDate);
+                _logger.Debug("Парсинг данных с URL=" + doc.Key);
+                await ParseHtmlDoc(doc.Value, currentDate);
                 currentDate=currentDate.AddDays(1);
             }
 
@@ -69,7 +74,7 @@ namespace Artis.DataLoader
         }
 
 
-        private async Task<HtmlDocument> DownloadDataFromWebSite(DateTime date)
+        private async Task<KeyValuePair<string,HtmlDocument>> DownloadDataFromWebSite(DateTime date)
         {
             // Периодически проверяем, не запрошена ли отмена операции
             _cancelToken.Token.ThrowIfCancellationRequested();
@@ -78,7 +83,7 @@ namespace Artis.DataLoader
             string result = await DownloadHtml(url);
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(result);
-            return doc;
+            return new KeyValuePair<string, HtmlDocument>(url,doc);
         }
 
         private async Task<HtmlDocument> DownloadDataFromWebSite(string url)
@@ -118,6 +123,7 @@ namespace Artis.DataLoader
                 }
                 catch (Exception ex)
                 {
+                    _logger.ErrorException("Ошибка загрузки данных с URL=" + query+"Загрузка данных будет продолжена.",ex);
                     throw new UrlDataLoaderException(query, "Ошибка загрузки" + Environment.NewLine + ex.Message);
                 }
             }
@@ -144,10 +150,10 @@ namespace Artis.DataLoader
             string result = await DownloadHtml(areaUrl);
             HtmlDocument doc = new HtmlDocument();
             doc.LoadHtml(result);
-            return await ParseAreaInfo(doc);
+            return await ParseAreaInfo(doc, areaUrl);
         }
 
-        private async Task<MariinskyAreaInfo> ParseAreaInfo(HtmlDocument doc)
+        private async Task<MariinskyAreaInfo> ParseAreaInfo(HtmlDocument doc,string areaUrl)
         {
             try
             {
@@ -182,45 +188,65 @@ namespace Artis.DataLoader
             }
             catch (Exception ex)
             {
-                Log.WriteLog(_logPath, ex);
+                _logger.ErrorException(
+                    "Ошибка распознания данных для площадки(" + areaUrl +
+                    "). Загрузка данных будет продолжена, однако для мероприятия, проводимые на данной площадке не будут сохранены!",
+                    ex);
             }
             return null;
         }
 
-        private async Task<bool> ParseHtmlDoc(HtmlDocument doc,DateTime date)
+        private async Task ParseHtmlDoc(HtmlDocument doc,DateTime date)
         {
             try
             {
                 HtmlNodeCollection dateNode =
                     doc.DocumentNode.SelectNodes("//table[@id='afisha']/tr/td/table[@class='this_day w_100']/tr");
-                bool isSuccess = true;
+
                 foreach (HtmlNode htmlNode in dateNode)
                 {
                     // Периодически проверяем, не запрошена ли отмена операции
                     _cancelToken.Token.ThrowIfCancellationRequested();
-                    bool success = await createNode(htmlNode, date);
-
-                    if (!success)
-                        isSuccess = false;
+                    KeyValuePair<bool,ActionWeb> result = await createNode(htmlNode, date);
+                    if (result.Key)
+                    {
+                        if (!string.IsNullOrEmpty(result.Value.AreaName)
+                            && !string.IsNullOrEmpty(result.Value.Date)
+                            && !string.IsNullOrEmpty(result.Value.Name)
+                            && !string.IsNullOrEmpty(result.Value.Time))
+                            InvokeActionLoadedEvent(UrlActionLoadingSource.Mariinsky, result.Value);
+                        else
+                        {
+                            if (string.IsNullOrEmpty(result.Value.AreaName))
+                                _logger.Error("Не удалось распознать площадку для мероприятия");
+                            if (string.IsNullOrEmpty(result.Value.Name))
+                                _logger.Error("Не удалось распознать имя мероприятия");
+                            if (string.IsNullOrEmpty(result.Value.Date))
+                                _logger.Error("Не удалось распознать дату проведения мероприятия");
+                            if (string.IsNullOrEmpty(result.Value.Time))
+                                _logger.Error("Не удалось распознать время проведения мероприятия");
+                        }
+                    }
                     else
                     {
-                        Log.WriteLog(_logPath, "Node " + htmlNode.InnerHtml + " parse failed!");
+                        _logger.Error("Не удалось распознать мероприятия со страницы для даты " +
+                                      date.ToShortDateString());
                     }
                 }
-                if (isSuccess)
-                    return true;
             }
             catch (Exception ex)
             {
+                _logger.ErrorException("Ошибка распознания данных для мероприятия. Загрузка данных будет продолжена...", ex);
                 Log.WriteLog(_logPath, ex);
             }
-            return false;
         }
-        private async Task<bool> createNode(HtmlNode htmlNode,DateTime date)
+
+        private async Task<KeyValuePair<bool,ActionWeb>>  createNode(HtmlNode htmlNode, DateTime date)
         {
+            ActionWeb actionWeb = new ActionWeb();
             try
             {
-                ActionWeb actionWeb=new ActionWeb();
+
 
                 HtmlNode placeNode = htmlNode.SelectSingleNode("td[@class='where_ico']");
                 string place = HttpUtility.HtmlDecode(placeNode.InnerText.Normalize()).Trim();
@@ -262,7 +288,7 @@ namespace Artis.DataLoader
                 if (actionDescriptionNode != null)
                 {
                     string shortDescription = HttpUtility.HtmlDecode(actionDescriptionNode.InnerText.Normalize()).Trim();
-                    if(shortDescription.IndexOf("балет",StringComparison.CurrentCultureIgnoreCase)>=0)
+                    if (shortDescription.IndexOf("балет", StringComparison.CurrentCultureIgnoreCase) >= 0)
                     {
                         actionWeb.Genre = "Балет";
                     }
@@ -292,16 +318,15 @@ namespace Artis.DataLoader
 
                 actionWeb.Date = date.ToShortDateString();
                 await UploadActionInfo(actionWeb, rootUrl + actionUrl);
-
-                InvokeActionLoadedEvent(UrlActionLoadingSource.Mariinsky, actionWeb);
-
-                return true;
+                return new KeyValuePair<bool, ActionWeb>(true, actionWeb);
             }
             catch (Exception ex)
             {
                 InvokeUrlDataLoaderExceptionThrownEvent("Ошибка распознования HTML-документа для мероприятия");
-                Log.WriteLog(_logPath, ex);
-                return false;
+                _logger.ErrorException(
+                    "Ошибка распознования HTML-документа для мероприятия. Загрузка данных будет продолжена...", ex);
+                return new KeyValuePair<bool, ActionWeb>(false, actionWeb);
+                ;
             }
         }
 
@@ -456,7 +481,7 @@ namespace Artis.DataLoader
             }
             catch (Exception ex)
             {
-                Log.WriteLog(_logPath, ex);
+                _logger.ErrorException("Ошибка загрузки минимальной и максимальной стоимости билетов для мероприятия",ex);
             }
 
         }
