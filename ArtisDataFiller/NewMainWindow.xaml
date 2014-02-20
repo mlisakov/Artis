@@ -2,8 +2,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		x:Class="Artis.ArtisDataFiller.MainWindow"
         Title="Artis Administrative Tool" 
-		Height="720"
-		Width="1280"  
+		Height="810"
+		Width="1300"  
 		WindowStartupLocation="CenterScreen"
 		x:Name="NewMainWindow" >
 	

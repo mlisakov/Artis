@@ -8,7 +8,7 @@
 	  MinHeight="680">
 	<Grid.Resources>
 		<Style x:Key="selectedItemButton" TargetType="{x:Type Button}">
-			<Setter Property="IsEnabled" Value="True"/>			
+			<Setter Property="IsEnabled" Value="True"/>
 			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
 			<Style.Triggers>
 				<DataTrigger Binding="{Binding SelectedItem}" Value="{x:Null}">
@@ -16,7 +16,7 @@
 				</DataTrigger>
 			</Style.Triggers>
 		</Style>
-		
+
 		<Storyboard x:Key="OnClick1">
 			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="SeachGrid">
 				<EasingColorKeyFrame KeyTime="0" Value="#4C000000"/>
@@ -43,7 +43,7 @@
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
 			</DoubleAnimationUsingKeyFrames>
 		</Storyboard>
-		
+
 		<Storyboard x:Key="BackButtonClick">
 			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="SeachGrid">
 				<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
@@ -70,9 +70,9 @@
 				<EasingColorKeyFrame KeyTime="0:0:0.6" Value="#00000000"/>
 			</ColorAnimationUsingKeyFrames>
 		</Storyboard>
-		
+
 	</Grid.Resources>
-	
+
 	<Grid.Triggers>
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="EditAreaButton">
 			<BeginStoryboard Storyboard="{StaticResource OnClick1}"/>
@@ -87,8 +87,8 @@
 			<BeginStoryboard x:Name="BackButtonClick_BeginStoryboard1" Storyboard="{StaticResource BackButtonClick}"/>
 		</EventTrigger>
 	</Grid.Triggers>
-	
-	
+
+
 	<Grid.RowDefinitions>
 		<RowDefinition Height="Auto"/>
 		<RowDefinition Height="*"/>
@@ -113,43 +113,40 @@
 				<TranslateTransform/>
 			</TransformGroup>
 		</Grid.RenderTransform>
-		
+
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition MinWidth="738" Width="*"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		
-		<Grid.RowDefinitions>		
-			<RowDefinition Height="Auto"/>
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="34"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-	
-		<controls:WatermarkedTextBox HorizontalAlignment="Left" 
+
+		<controls:WatermarkedTextBox 
 									 TextWrapping="Wrap" 
 									 VerticalAlignment="Center"
 									 Watermark="Наименование" 
-									 Margin="40,11.245,0,11.244"
-									 Width="500"
+									 Margin="40,0,0,0"
 									 Text="{Binding FilterName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-		
+
 		<ListBox x:Name="ListBox" 
 				 Height="500" 
 				 Grid.Row="1" 
 				 VerticalAlignment="Top" 
 				 Margin="40,0,0,0" 
-				 HorizontalAlignment="Left" 
-				 Width="500" 
 				 ItemsSource="{Binding Areas}"
 				 SelectedItem="{Binding SelectedItem}"
 				 DisplayMemberPath="Name" />
-	
+
 		<StackPanel Margin="10,0,0,20" 
 					Grid.Row="1" 
 					Grid.Column="1" 
 					HorizontalAlignment="Left"
 					Height="500" 
 					VerticalAlignment="Top">
-			
+
 			<Button x:Name="button" Content="Добавить…" 					
 					Margin="0" 
 					Template="{DynamicResource SimpleButtonTemplate}" 
@@ -170,7 +167,7 @@
 					Width="110" 
 					VerticalAlignment="Top" 
 					Style="{DynamicResource selectedItemButton}"/>
-		</StackPanel>		
+		</StackPanel>
 	</Grid>
 
 	<Grid x:Name="EditGrid" 
@@ -186,19 +183,19 @@
 				<TranslateTransform X="1000"/>
 			</TransformGroup>
 		</Grid.RenderTransform>
-		
+
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="*"/>			
+			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		
+
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="850"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
-		
+
 		<controls:WatermarkedTextBox HorizontalAlignment="Left" 
 									 TextWrapping="Wrap" 
 									 VerticalAlignment="Center"
@@ -242,12 +239,12 @@
 				<Style x:Key="ListBoxItemStyle1" TargetType="{x:Type ListBoxItem}">
 					<Setter Property="Background" Value="Transparent"/>
 					<Setter Property="Width" Value="150"/>
-					<Setter Property="Height" Value="150"/>								 		
+					<Setter Property="Height" Value="150"/>
 				</Style>
 			</ListBox.Resources>
 		</ListBox>
 
-								 
+
 		<Button x:Name="AddNewImageButton" 
 				Content="Добавить…" 
 				Grid.Row="2" 
@@ -277,7 +274,7 @@
 					</Style.Triggers>
 				</Style>
 			</Button.Style>
-		</Button>	
+		</Button>
 
 		<Button x:Name="SaveButton" 
 				Content="Сохранить" 

@@ -96,14 +96,23 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ActionsPage.xaml.cs">
+      <DependentUpon>ActionsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AreasPage.xaml.cs">
       <DependentUpon>AreasPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\WatermarkedComboBox.cs" />
     <Compile Include="Controls\WatermarkedTextBox.cs" />
     <Compile Include="NLog-NHibernate.cs" />
+    <Compile Include="ViewModels\ActionsViewModel.cs" />
     <Compile Include="ViewModels\AreasViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
+    <Page Include="ActionsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="AreasPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -229,6 +238,9 @@
     <Resource Include="Images\editData.png" />
     <Resource Include="Images\new.png" />
     <Resource Include="Images\remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\actions.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

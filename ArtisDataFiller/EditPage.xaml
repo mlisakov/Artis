@@ -8,9 +8,12 @@
 
 	<Grid Background="#FF006191">
 		<StackPanel VerticalAlignment="Top" Margin="0,100,0,0">
-				<ToggleButton x:Name="Areas" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsAreasPageOpened}" ToolTip="Площадки" Background="#FF006191">
-					<Image Source="Images/areas.png" Stretch="Fill" />
-				</ToggleButton>
+			<ToggleButton x:Name="Areas" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsAreasPageOpened}" ToolTip="Площадки" Background="#FF006191">
+				<Image Source="Images/areas.png" Stretch="Fill" />
+			</ToggleButton>
+			<ToggleButton x:Name="Actions" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsActionPageOpened}" ToolTip="Мероприятия" Background="#FF006191">
+				<Image Source="Images/actions.png" Stretch="Fill" />
+			</ToggleButton>
 		</StackPanel>
 	</Grid>
 
