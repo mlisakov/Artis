@@ -54,9 +54,9 @@
       <Project>{6C8311FE-56B7-4C4E-AC85-1F5A7B065391}</Project>
       <Name>DataLoader</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Data\DataParser.csproj">
+    <ProjectReference Include="..\Data\DBConnector.csproj">
       <Project>{4bc0ab1e-0b81-4fbe-83e0-8ffafa4a5ef5}</Project>
-      <Name>DataParser</Name>
+      <Name>DBConnector</Name>
     </ProjectReference>
     <ProjectReference Include="..\Logger\Logger.csproj">
       <Project>{3ae6d2b3-ffff-43b3-b225-062214ee5fad}</Project>
