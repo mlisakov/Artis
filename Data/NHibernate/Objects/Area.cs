@@ -15,6 +15,8 @@ namespace Artis.Data
         private string _schema;
         
         private Metro _metro;
+        private AreaType _areaType;
+
         private ICollection<Data> _data;
 
         /// <summary>
@@ -69,6 +71,15 @@ namespace Artis.Data
         {
             get { return _description; }
             set { _description = value; }
+        }
+
+        /// <summary>
+        /// Тип площадки
+        /// </summary>
+        public virtual AreaType AreaType
+        {
+            get { return _areaType; }
+            set { _areaType = value; }
         }
 
         /// <summary>

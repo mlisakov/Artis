@@ -46,20 +46,28 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataParser.cs" />
+    <Compile Include="DataRequestFactory.cs" />
     <Compile Include="Delegate\DataParserDelegates.cs" />
     <Compile Include="Exception\DBAccessFailedException.cs" />
     <Compile Include="NHibernate\Domain.cs" />
+    <Compile Include="NHibernate\Extentions\AreaComparer.cs" />
     <Compile Include="NHibernate\Objects\Action.cs" />
     <Compile Include="NHibernate\Objects\Actor.cs" />
     <Compile Include="NHibernate\Objects\Area.cs" />
+    <Compile Include="NHibernate\Objects\AreaType.cs" />
     <Compile Include="NHibernate\Objects\Data.cs" />
     <Compile Include="NHibernate\Objects\Genre.cs" />
     <Compile Include="NHibernate\Objects\Metro.cs" />
     <Compile Include="NHibernate\Objects\Producer.cs" />
+    <Compile Include="NHibernate\Objects\Short\MiddleAction.cs" />
+    <Compile Include="NHibernate\Objects\Short\MiddleArea.cs" />
+    <Compile Include="NHibernate\Objects\Short\ShortAction.cs" />
+    <Compile Include="NHibernate\Objects\Short\ShortArea.cs" />
     <Compile Include="NHibernate\Objects\State.cs" />
     <Compile Include="NHibernate\QueriesExtentions.cs" />
     <Compile Include="NHibernate\Repository\ActionRepository.cs" />
