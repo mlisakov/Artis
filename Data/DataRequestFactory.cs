@@ -61,9 +61,25 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
+                IList<MiddleAction> middleAction=new List<MiddleAction>();
+                IList<long> actionID = session.QueryOver<ActionDate>()
+                    .Where(i => i.Date >= startDate && i.Date <= finishDate).Select(i => i.Action.ID).List<long>();
+
+
                 IList<Action> act=session.QueryOver<Action>()
-                        .Where(i => i.DateStart>= startDate && i.DateStart<=finishDate).List<Action>();
-                IList<MiddleAction> middleAction = act.Select(i => new MiddleAction(i)).ToList();
+                        .Where(i => i.ID.IsIn(actionID.ToList())).List<Action>();
+
+                foreach (Action action in act)
+                {
+                    foreach (ActionDate actionDate in action.ActionDate)
+                    {
+                        if (actionDate.Date >= startDate && actionDate.Date <= finishDate)
+                        {
+                            middleAction.Add(new MiddleAction(action,actionDate.Date,actionDate.Time,actionDate.PriceRange));
+                        }
+                    }
+                }
+               //IList<MiddleAction> middleAction = act.Select(i => new MiddleAction(i)).ToList();
                 return new JavaScriptSerializer().Serialize(middleAction);
 
             }
@@ -73,15 +89,37 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
+                IList<ShortAction> shortAction=new List<ShortAction>();
+                IList<long> actionID = session.QueryOver<ActionDate>()
+                    .Where(i => i.Date >= startDate && i.Date <= finishDate).Select(i => i.Action.ID).List<long>();
+
+
                 IList<Action> act = session.QueryOver<Action>()
-                    .Where(
-                        i =>
-                            i.DateStart >= startDate && i.DateStart <= finishDate)
-                    .WhereStringIsNotNullOrEmpty(i => i.Name)
-                    .WhereStringIsNotNullOrEmpty(i => i.Description)
-                    .Take(count)
-                    .List<Action>();
-                IList<ShortAction> shortAction = act.Select(i => new ShortAction(i)).ToList();
+                        .Where(i => i.ID.IsIn(actionID.ToList())).List<Action>();
+                foreach (Action action in act)
+                {
+                    foreach (ActionDate actionDate in action.ActionDate)
+                    {
+                        if (actionDate.Date >= startDate && actionDate.Date <= finishDate)
+                        {
+                            if (shortAction.Count > count)
+                                break;
+                            shortAction.Add(new ShortAction(action, actionDate.Date, actionDate.Time, actionDate.PriceRange));
+                        }
+                    }
+                    if (shortAction.Count > count)
+                        break;
+                }
+
+                //IList<Action> act = session.QueryOver<Action>()
+                //    .Where(
+                //        i =>
+                //            i.DateStart >= startDate && i.DateStart <= finishDate)
+                //    .WhereStringIsNotNullOrEmpty(i => i.Name)
+                //    .WhereStringIsNotNullOrEmpty(i => i.Description)
+                //    .Take(count)
+                //    .List<Action>();
+                //IList<ShortAction> shortAction = act.Select(i => new ShortAction(i)).ToList();
                 return new JavaScriptSerializer().Serialize(shortAction);
 
             }
@@ -93,12 +131,13 @@ namespace Artis.Data
         /// <returns>Десериализованная в json информация о мероприятии</returns>
         public static string GetAction(long ID)
         {
-            using (ISession session = Domain.Session)
-            {
-                Action act=session.Query<Action>().First(i => i.ID == ID);
-                MiddleAction middleAct=new MiddleAction(act);
-                return new JavaScriptSerializer().Serialize(middleAct);
-            }
+            //using (ISession session = Domain.Session)
+            //{
+            //    Action act=session.Query<Action>().First(i => i.ID == ID);
+            //    MiddleAction middleAct=new MiddleAction(act);
+            //    return new JavaScriptSerializer().Serialize(middleAct);
+            //}
+            return "";
         }
 
         /// <summary>
@@ -160,60 +199,56 @@ namespace Artis.Data
         public static string GetActions(string ActionName, long idGenre, long idArea, DateTime dateStart, DateTime dateFinish, int PageSize, int Page)
         {
             using (ISession session = Domain.Session)
-            {
+                //{
 
-                ICriteria criteria = session.CreateCriteria(typeof(Action));
+                //    ICriteria criteria = session.CreateCriteria(typeof(Action));
 
-                if (!string.IsNullOrEmpty(ActionName))
-                    criteria.Add(Restrictions.Like("Name", "%"+ActionName+"%").IgnoreCase());
-                if (idGenre != 0)
-                    criteria.Add(Restrictions.Where<Action>(i => i.Genre.ID == idGenre));
-                if (idArea != 0)
-                    criteria.Add(Restrictions.Where<Action>(i => i.Area.ID == idArea));
-                if (dateStart != DateTime.MinValue && dateFinish!=DateTime.MinValue)
-                    criteria.Add(Restrictions.Where<Action>(i => i.DateStart >= dateStart && i.DateStart <= dateFinish));
+                //    if (!string.IsNullOrEmpty(ActionName))
+                //        criteria.Add(Restrictions.Like("Name", "%"+ActionName+"%").IgnoreCase());
+                //    if (idGenre != 0)
+                //        criteria.Add(Restrictions.Where<Action>(i => i.Genre.ID == idGenre));
+                //    if (idArea != 0)
+                //        criteria.Add(Restrictions.Where<Action>(i => i.Area.ID == idArea));
+                //    if (dateStart != DateTime.MinValue && dateFinish!=DateTime.MinValue)
+                //        criteria.Add(Restrictions.Where<Action>(i => i.DateStart >= dateStart && i.DateStart <= dateFinish));
 
-                IList<Action> allActions = criteria.List<Action>();
-                List<ShortAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new ShortAction(i)).ToList();
-                int count = allActions.Count() / PageSize;
-                if ((allActions.Count() % PageSize) != 0)
-                    count++;
-                KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
-                return new JavaScriptSerializer().Serialize(itemsKVP);
+                //    IList<Action> allActions = criteria.List<Action>();
+                //    List<ShortAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new ShortAction(i)).ToList();
+                //    int count = allActions.Count() / PageSize;
+                //    if ((allActions.Count() % PageSize) != 0)
+                //        count++;
+                //    KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
+                //    return new JavaScriptSerializer().Serialize(itemsKVP);
 
-            }
+                //}
+                return null;
         }
 
         public static string GetActions(string ActionName,long idArea, int PageSize, int Page)
         {
-            using (ISession session = Domain.Session)
-            {
+            //using (ISession session = Domain.Session)
+            //{
 
-                ICriteria criteria = session.CreateCriteria(typeof(Action));
+            //    ICriteria criteria = session.CreateCriteria(typeof(Action));
 
-                if (!string.IsNullOrEmpty(ActionName))
-                    criteria.Add(Restrictions.Like("Name", "%" + ActionName + "%").IgnoreCase());
-                if (idArea != 0)
-                    criteria.Add(Restrictions.Where<Action>(i => i.Area.ID == idArea));
-                //else
-                //{
-                //    criteria.CreateAlias("Area", "area");
-                //    criteria.CreateAlias("area.AreaType", "areatype");
-                //    criteria.Add(Restrictions.In("areatype.ID", TourAreaTypes));
-                //}
+            //    if (!string.IsNullOrEmpty(ActionName))
+            //        criteria.Add(Restrictions.Like("Name", "%" + ActionName + "%").IgnoreCase());
+            //    if (idArea != 0)
+            //        criteria.Add(Restrictions.Where<Action>(i => i.Area.ID == idArea));
 
-                criteria.CreateAlias("Genre", "genre");
-                criteria.Add(Restrictions.Like("genre.Name", "%" + "Экскурсия" + "%").IgnoreCase());
+            //    criteria.CreateAlias("Genre", "genre");
+            //    criteria.Add(Restrictions.Like("genre.Name", "%" + "Экскурсия" + "%").IgnoreCase());
 
-                IList<Action> allActions = criteria.List<Action>();
-                List<ShortAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new ShortAction(i)).ToList();
-                int count = allActions.Count() / PageSize;
-                if ((allActions.Count() % PageSize) != 0)
-                    count++;
-                KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
-                return new JavaScriptSerializer().Serialize(itemsKVP);
+            //    IList<Action> allActions = criteria.List<Action>();
+            //    List<ShortAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new ShortAction(i)).ToList();
+            //    int count = allActions.Count() / PageSize;
+            //    if ((allActions.Count() % PageSize) != 0)
+            //        count++;
+            //    KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
+            //    return new JavaScriptSerializer().Serialize(itemsKVP);
 
-            }
+            //}
+            return "";
         }
 
         /// <summary>

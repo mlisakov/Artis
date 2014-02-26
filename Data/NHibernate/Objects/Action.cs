@@ -10,15 +10,13 @@ namespace Artis.Data
     {
         private long _id;
         private string _name;
-        private DateTime _dateStart;
-        private string _time;
         private string _description;
-        private string _priceRange;
 
-        private Area _area;
         private Genre _genre;
         private State _state;
 
+        private ICollection<Area> _area;
+        private ICollection<ActionDate> _date;
         private ICollection<Data> _data;
         private ICollection<Actor> _actors;
         private ICollection<Producer> _producers;
@@ -40,48 +38,12 @@ namespace Artis.Data
         }
 
         /// <summary>
-        /// Дата проведения мероприятия
-        /// </summary>
-        public virtual DateTime DateStart
-        {
-            get { return _dateStart; }
-            set { _dateStart = value; }
-        }
-
-        /// <summary>
-        /// Время проведения мероприятия
-        /// </summary>
-        public virtual string Time
-        {
-            get { return _time; }
-            set { _time = value; }
-        }
-
-        /// <summary>
         /// Описание мероприятия
         /// </summary>
         public virtual string Description
         {
             get { return _description; }
             set { _description = value; }
-        }
-
-        /// <summary>
-        /// Ценовой диапазон билетов на мероприятие
-        /// </summary>
-        public virtual string PriceRange
-        {
-            get { return _priceRange; }
-            set { _priceRange = value; }
-        }
-
-        /// <summary>
-        /// Площадка
-        /// </summary>
-        public virtual Area Area
-        {
-            get { return _area; }
-            set { _area = value; }
         }
 
         /// <summary>
@@ -102,6 +64,23 @@ namespace Artis.Data
             set { _state = value; }
         }
 
+        /// <summary>
+        /// Площадки
+        /// </summary>
+        public virtual ICollection<Area> Area
+        {
+            get { return _area; }
+            set { _area = value; }
+        }
+
+        /// <summary>
+        /// Список актеров мероприятия
+        /// </summary>
+        public virtual ICollection<ActionDate> ActionDate
+        {
+            get { return _date; }
+            set { _date = value; }
+        }
         /// <summary>
         /// Список изображений мероприятия
         /// </summary>

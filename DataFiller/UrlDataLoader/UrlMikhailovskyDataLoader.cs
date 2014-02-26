@@ -72,12 +72,16 @@ namespace Artis.DataLoader
             try
             {
                 HtmlNodeCollection itemNodeCollection =
-                    doc.DocumentNode.SelectNodes("//div[@class='item']");
+                    doc.DocumentNode.SelectNodes("//div[@class='afisha-list']/div[@class='item']");
 
                 foreach (HtmlNode htmlNode in itemNodeCollection)
                 {
                     HtmlNode actionDateNode = htmlNode.SelectSingleNode("div[@class='date']/div[@class='day f-ap']");
-                    if(actionDateNode==null) continue;
+                    if (actionDateNode == null)
+                    {
+                        _logger.Error("Mikhailovsky. Не удалось получить дату проведения мероприятия " + Environment.NewLine + htmlNode.InnerHtml);
+                        continue;
+                    }
 
                     DateTime actionDate=new DateTime(year,month,int.Parse(actionDateNode.InnerText));
                     if (actionDate > finishDate)
@@ -107,14 +111,14 @@ namespace Artis.DataLoader
                     }
                     else
                     {
-                        _logger.Error("Не удалось распознать мероприятия со страницы " +
+                        _logger.Error("Mikhailovsky.Не удалось распознать мероприятия со страницы " +
                                       url);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Ошибка распознания данных для мероприятия. Загрузка данных будет продолжена...", ex);
+                _logger.ErrorException("Mikhailovsky.Ошибка распознания данных для мероприятия. Загрузка данных будет продолжена...", ex);
             }
             return false;
         }
@@ -143,11 +147,13 @@ namespace Artis.DataLoader
                     }
                     else
                     {
+                        _logger.Error("Mikhailovsky.Не удалось получить название мероприятия."+Environment.NewLine+htmlNode);
                         return new KeyValuePair<bool, ActionWeb>(false, actionWeb);
                     }
                 }
                 else
                 {
+                    _logger.Error("Mikhailovsky.Не удалось получить название мероприятия." + Environment.NewLine + htmlNode);
                     return new KeyValuePair<bool, ActionWeb>(false, actionWeb);
                 }
 
@@ -155,10 +161,12 @@ namespace Artis.DataLoader
 
                 HtmlNode actionTimeNode = htmlNode.SelectSingleNode("div[@class='date']/div[@class='time f-ap']/span");
                 if (actionTimeNode != null)
-                { actionWeb.Time = HttpUtility.HtmlDecode(actionTimeNode.InnerText.Normalize()).Trim(); }
+                {
+                    actionWeb.Time = HttpUtility.HtmlDecode(actionTimeNode.InnerText.Normalize()).Trim();
+                }
                 else
                 {
-                    string warnText = "Не удалось получить время проведения для мероприятия"+actionName+" в Михайловском театре";
+                    string warnText = "Mikhailovsky.Не удалось получить время проведения для мероприятия" + actionName + " в Михайловском театре";
                     _logger.Warn(warnText);
                     actionWeb.Time = "00:00";
                 }
@@ -169,9 +177,9 @@ namespace Artis.DataLoader
             }
             catch (Exception ex)
             {
-                InvokeUrlDataLoaderExceptionThrownEvent("Ошибка распознования HTML-документа для мероприятия");
+                InvokeUrlDataLoaderExceptionThrownEvent("Mikhailovsky.Ошибка распознования HTML-документа для мероприятия");
                 _logger.ErrorException(
-                    "Ошибка распознования HTML-документа для мероприятия. Загрузка данных будет продолжена...", ex);
+                    "Mikhailovsky.Ошибка распознования HTML-документа для мероприятия. Загрузка данных будет продолжена...", ex);
                 return new KeyValuePair<bool, ActionWeb>(false, actionWeb);
             }
         }
@@ -185,11 +193,98 @@ namespace Artis.DataLoader
             {
                 string actionDesc = HttpUtility.HtmlDecode(infoNode.InnerText.Normalize()).Trim();
                 if (!string.IsNullOrEmpty(actionDesc))
-                    actionWeb.Description = actionDesc;
+                    actionWeb.Description += actionDesc;
             }
             else
             {
-                _logger.Warn("Михайловский театр. Не удалось получить описание для " + actionWeb.Name);
+                _logger.Warn("Mikhailovsky.Михайловский театр. Не удалось получить описание для " + actionWeb.Name);
+            }
+            HtmlNode contentNode = rootNode.SelectSingleNode("//div[@id='s-content']");
+            if (contentNode != null)
+            {
+                string actionDesc = HttpUtility.HtmlDecode(contentNode.InnerText.Normalize()).Trim();
+                if (!string.IsNullOrEmpty(actionDesc))
+                    actionWeb.Description += actionDesc;
+            }
+            else
+            {
+                _logger.Warn("Mikhailovsky.Михайловский театр. Не удалось получить содержание для " + actionWeb.Name);
+            }
+
+            HtmlNode legendNode = rootNode.SelectSingleNode("//div[@class='legend']");
+            if (legendNode != null)
+            {
+                HtmlNode durationNode = legendNode.SelectSingleNode("div[@class='time']");
+                if (durationNode != null)
+                {
+                    string text = HttpUtility.HtmlDecode(durationNode.InnerText.Normalize()).Trim();
+                    int Hours = 0;
+                    int Minute = 0;
+                    string[] splitedString = text.Split(' ');
+                    foreach (string item in splitedString)
+                    {
+                        int intItem;
+                        if (int.TryParse(item.Trim(), out intItem))
+                        {
+                            if (Hours == 0)
+                                Hours = intItem;
+                            else
+                                Minute = intItem;
+                        }
+                    }
+                    if (Hours != 0 && Minute != 0)
+                        actionWeb.Duration = Hours + ":" + Minute;
+                    else if (Hours != 0)
+                        actionWeb.Duration = Hours + ":00";
+                }
+                else
+                {
+                    _logger.Warn("Mikhailovsky.Михайловский театр. Не удалось получить продолжительность для " + actionWeb.Name);
+                }
+
+                HtmlNode ratingNode = legendNode.SelectSingleNode("div[@class='age']/span");
+                if (ratingNode != null)
+                {
+                    actionWeb.Rating = HttpUtility.HtmlDecode(ratingNode.InnerText.Normalize()).Trim();
+                }
+                else
+                {
+                    _logger.Warn("Mikhailovsky.Михайловский театр. Не удалось получить рейтинг для " + actionWeb.Name);
+                }
+            }
+
+            HtmlNodeCollection imgNode = rootNode.SelectNodes("//div[@class='square-gallery']/div[@id='s-spectacle']/ul/li/a");
+            if (imgNode != null)
+            {
+                List<string> actionImages =new List<string>();
+                foreach (HtmlNode aNode in imgNode)
+                {
+                    string url = aNode.Attributes["href"].Value;
+                    if (url.Contains("www.mikhailovsky.ru"))
+                        url = "http://" + url.Remove(0, 2);
+                    else
+                        url = "http://www.mikhailovsky.ru.images.1c-bitrix-cdn.ru" + url;
+                    using (WebClient client = new WebClient())
+                    {
+                        try
+                        {
+                            byte[] image = client.DownloadData(url);
+                            string base64String = Convert.ToBase64String(image, 0, image.Length);
+                            actionImages.Add(base64String);
+                        }
+                        catch (Exception ex)
+                        {
+                            _logger.ErrorException(
+                                "Mikhailovsky.Михайловский театр. Не удалось получить изображение для " + actionWeb.Name + Environment.NewLine + aNode.InnerHtml,
+                                ex);
+                        }
+
+                    }
+                }
+            }
+            else
+            {
+                _logger.Warn("Mikhailovsky.Михайловский театр. Не удалось получить изображения для " + actionWeb.Name);
             }
         }
 
@@ -227,7 +322,7 @@ namespace Artis.DataLoader
             }
             else
             {
-                _logger.Warn("Не удалось загрузить изображения для Михайловского театра");
+                _logger.Warn("Mikhailovsky.Не удалось загрузить изображения для Михайловского театра");
             }
 
             HtmlNode descNode = descDoc.DocumentNode.SelectSingleNode("//div[@id='content']/div[@class='i-wrapper']");
@@ -239,7 +334,7 @@ namespace Artis.DataLoader
             }
             else
             {
-                _logger.Warn("Не удалось загрузить описание для Михайловского театра");
+                _logger.Warn("Mikhailovsky.Не удалось загрузить описание для Михайловского театра");
             }
 
         }
@@ -289,7 +384,7 @@ namespace Artis.DataLoader
         private string CretaeUriToDownload(int month)
         {
             if (month > DateTime.Today.Month + 3 || month < DateTime.Today.Month)
-                _logger.Warn("Попытка загрузить информацию за " + month +
+                _logger.Warn("Mikhailovsky.Попытка загрузить информацию за " + month +
                              " месяц.Сайт Михайловского сайта позволяет грузить только за три месяца от текущего!");
             string baseUrl = "http://www.mikhailovsky.ru/afisha/performances/" + DateTime.Today.Year + "/" + month +
                              "/#list";

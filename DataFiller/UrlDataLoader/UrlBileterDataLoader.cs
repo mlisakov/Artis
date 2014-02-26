@@ -56,8 +56,8 @@ namespace Artis.DataLoader
 
             if (doc.Value.DocumentNode.ChildNodes.Count == 0)
             {
-                _logger.Fatal("Ошибка загрузки данных с URL=" + doc.Key);
-                throw new UrlDataLoaderException("Не удалось загрузить данный!", "Загрузка данных");
+                _logger.Fatal("Bileter.Ошибка загрузки данных с URL=" + doc.Key);
+                throw new UrlDataLoaderException("Bileter.Не удалось загрузить данный!", "Загрузка данных");
             }
 
             await ParseHtmlDoc(doc.Value);
@@ -67,7 +67,15 @@ namespace Artis.DataLoader
             for (var i = 2; i <= pageCount; i++)
             {
                 _cancelToken.Token.ThrowIfCancellationRequested();
-                await DownloadDataFromWebSite(start, finish, i);
+                 doc=await DownloadDataFromWebSite(start, finish, i);
+
+                if (doc.Value.DocumentNode.ChildNodes.Count == 0)
+                {
+                    _logger.Fatal("Bileter.Ошибка загрузки данных с URL=" + doc.Key);
+                    throw new UrlDataLoaderException("Bileter.Не удалось загрузить данный!", "Загрузка данных");
+                }
+
+                await ParseHtmlDoc(doc.Value);
             }
 
             InvokeWorkDoneEvent();
@@ -98,6 +106,7 @@ namespace Artis.DataLoader
             if (handler != null)
                 handler(UrlActionLoadingSource.Bileter);
         }
+
 
         private async Task<KeyValuePair<string,HtmlDocument>> DownloadDataFromWebSite(DateTime start, DateTime finish, int page = 1)
         {
@@ -143,7 +152,7 @@ namespace Artis.DataLoader
                 }
                 catch (Exception ex)
                 {
-                    throw new UrlDataLoaderException(query, "Ошибка загрузки" + Environment.NewLine + ex.Message);
+                    throw new UrlDataLoaderException(query, "Bileter.Ошибка загрузки" + Environment.NewLine + ex.Message);
                 }
             }
         }
@@ -169,7 +178,7 @@ namespace Artis.DataLoader
             return pageCount;
         }
 
-        private async Task<bool> ParseHtmlDoc(HtmlDocument doc)
+        private async Task ParseHtmlDoc(HtmlDocument doc)
         {
             try
             {
@@ -183,20 +192,16 @@ namespace Artis.DataLoader
                     bool success = await createNode(htmlNode);
 
                     if (!success)
-                        isSuccess = false;
-                    else
                     {
-                        _logger.Error("Не удалось распознать мероприятие");
+                        _logger.Error("Bileter.Не удалось распознать мероприятие" + Environment.NewLine + htmlNode.InnerHtml);
                     }
                 }
-                if (isSuccess)
-                    return true;
+
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Ошибка распознания данных для мероприятия. Загрузка данных будет продолжена...", ex);
+                _logger.ErrorException("Bileter.Ошибка распознания данных для мероприятия. Загрузка данных будет продолжена...", ex);
             }
-            return false;
         }
 
         private async Task<bool> createNode(HtmlNode htmlNode)
@@ -214,12 +219,18 @@ namespace Artis.DataLoader
                 string dateText = HttpUtility.HtmlDecode(htmlNode.ParentNode.ParentNode.ChildNodes[1].InnerText).Trim();
                 string date = dateText.Split(new char[] { ' ' })[0];
 
+                string rating=string.Empty;
                 HtmlNode ratingNode = htmlNode.SelectSingleNode("div/p[@class='afisha_kdmtp']");
-                string rating = ratingNode.InnerText;
+                if(ratingNode!=null)
+                 rating = ratingNode.InnerText;
 
                 HtmlNode infoNode = htmlNode.SelectSingleNode("div[@class='afisha_item_info']");
                 string time = infoNode.SelectSingleNode("p[@class='first']").ChildNodes[1].InnerText;
-                string price = infoNode.SelectSingleNode("p[@class='last']").ChildNodes[1].InnerText;
+
+                string price = string.Empty;
+                HtmlNode priceNode = infoNode.SelectSingleNode("p[@class='last']");
+                if (priceNode != null && priceNode.ChildNodes.Count > 1 && priceNode.ChildNodes[1] != null)
+                    price = priceNode.ChildNodes[1].InnerText;
 
 
                 string actionURL = "http://bileter.ru/" + actionURLPath;
@@ -260,9 +271,9 @@ namespace Artis.DataLoader
             }
             catch (Exception ex)
             {
-                InvokeUrlDataLoaderExceptionThrownEvent("Ошибка распознования HTML-документа для мероприятия");
+                InvokeUrlDataLoaderExceptionThrownEvent("Bileter.Ошибка распознования HTML-документа для мероприятия");
                 _logger.ErrorException(
-                    "Ошибка распознования HTML-документа для мероприятия. Загрузка данных будет продолжена...", ex);
+                    "Bileter.Ошибка распознования HTML-документа для мероприятия. Загрузка данных будет продолжена...", ex);
                 return false;
             }
         }
@@ -302,7 +313,9 @@ namespace Artis.DataLoader
                 actionWeb.Actors = actorsNode.ChildNodes[3].InnerText;
 
             //Area
-            HtmlNode areaNodeSchema = areaInfo.DocumentNode.SelectSingleNode("//article[@class='event']/h1[@class='afisha_event_h']/div[@class='platform_photo']/a");
+            HtmlNode areaNodeSchema =
+                areaInfo.DocumentNode.SelectSingleNode(
+                    "//article[@class='event']/h1[@class='afisha_event_h']/div[@class='platform_photo']/a");
             if (areaNodeSchema != null)
             {
                 string shemaUrl = areaNodeSchema.Attributes["href"].Value;
@@ -320,27 +333,48 @@ namespace Artis.DataLoader
                     actionWeb.AreaSchemaImage = base64String;
             }
 
-            HtmlNodeCollection areaDescription = areaInfo.DocumentNode.SelectNodes("//article[@class='event']/div[@class='fat_grey_bar']/p");
+            HtmlNodeCollection areaDescription =
+                areaInfo.DocumentNode.SelectNodes("//article[@class='event']/div[@class='fat_grey_bar']");
+
             if (areaDescription != null)
                 foreach (HtmlNode node in areaDescription)
                 {
-                    string Type = HttpUtility.HtmlDecode(node.ChildNodes[0].InnerText).Trim().Replace(":", "");
-                    string Text = HttpUtility.HtmlDecode(node.ChildNodes[1].InnerText).Trim().Replace(":", "");
-                    switch (Type)
+                    HtmlNodeCollection areaDescriptionParagraphCollection = node.SelectNodes("p");
+                    if (areaDescriptionParagraphCollection.Count == 3)
                     {
-                        case "Адрес":
-                            actionWeb.AreaAddress = Text;
-                            break;
-                        case "Станция метро":
-                            actionWeb.AreaMetro = Text;
-                            break;
-                        case "Район города":
-                            actionWeb.AreaArea = Text;
-                            break;
+                        foreach (HtmlNode paragraph in areaDescriptionParagraphCollection)
+                        {
+                            string Type = HttpUtility.HtmlDecode(paragraph.ChildNodes[0].InnerText)
+                                .Trim()
+                                .Replace(":", "");
+                            string Text = HttpUtility.HtmlDecode(paragraph.ChildNodes[1].InnerText)
+                                .Trim()
+                                .Replace(":", "");
+                            switch (Type)
+                            {
+                                case "Адрес":
+                                    actionWeb.AreaAddress = Text;
+                                    break;
+                                case "Станция метро":
+                                    actionWeb.AreaMetro = Text;
+                                    break;
+                                case "Район города":
+                                    actionWeb.AreaArea = Text;
+                                    break;
+
+
+                            }
+                        }
+
                     }
                 }
 
-            HtmlNode areaDesc = areaInfo.DocumentNode.SelectSingleNode("//article[@class='event']/div[@class='event_text']");
+            if (string.IsNullOrEmpty(actionWeb.AreaAddress))
+                _logger.Error("Bileter.Для площадки не удалось получить адрес" + Environment.NewLine +
+                              areaInfo.DocumentNode.InnerHtml);
+
+            HtmlNode areaDesc =
+                areaInfo.DocumentNode.SelectSingleNode("//article[@class='event']/div[@class='event_text']");
             if (areaDesc != null)
                 actionWeb.AreaDescription = HttpUtility.HtmlDecode(areaDesc.InnerText)
                     .Trim()
@@ -388,8 +422,8 @@ namespace Artis.DataLoader
             }
             catch (Exception ex)
             {
-                InvokeUrlDataLoaderExceptionThrownEvent("Ошибка загрузки изображений для мероприятия");
-                _logger.ErrorException("Ошибка загрузки изображения...",ex);
+                InvokeUrlDataLoaderExceptionThrownEvent("Bileter.Ошибка загрузки изображений для мероприятия");
+                _logger.ErrorException("Bileter.Ошибка загрузки изображения...", ex);
                 return new List<string>();
             }
 

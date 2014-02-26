@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Artis.Consts;
@@ -23,6 +24,7 @@ namespace Artis.Data
 
         private AreaRepository _areaRepository;
         private ActionRepository _actionRepository;
+        private ActionDateRepository _actionDateRepository;
         private ProducerRepository _producerRepository;
         private ActorRepository _actorRepository;
         private GenreRepository _genreRepository;
@@ -53,6 +55,7 @@ namespace Artis.Data
         {
             _areaRepository = new AreaRepository();
             _actionRepository = new ActionRepository();
+            _actionDateRepository = new ActionDateRepository();
             _producerRepository = new ProducerRepository();
             _actorRepository = new ActorRepository();
             _genreRepository = new GenreRepository();
@@ -128,7 +131,7 @@ namespace Artis.Data
             catch (Exception ex)
             {
                 InvokeActionNotLoadedEvent(actionWeb);
-                _logger.ErrorException("Ошибка записи мероприятия " + actionWeb.Name,ex);
+                _logger.ErrorException("Ошибка записи мероприятия " + actionWeb.Name, ex);
             }
         }
 
@@ -139,7 +142,7 @@ namespace Artis.Data
                 Metro metro = _metroRepository.GetByName(Name);
                 if (metro == null)
                 {
-                    metro = new Metro() {Name = Name};
+                    metro = new Metro() { Name = Name };
                     try
                     {
                         _metroRepository.Add(metro);
@@ -152,10 +155,10 @@ namespace Artis.Data
                 }
                 else
                 {
-                    _logger.Info("Метро " +Name+" уже есть");
+                    _logger.Info("Метро " + Name + " уже есть");
                     return metro;
                 }
-                    
+
             }
             _logger.Info("Пустое метро!");
             return null;
@@ -165,7 +168,7 @@ namespace Artis.Data
         {
             if (!string.IsNullOrEmpty(Data))
             {
-                Data data = new Data() {Base64StringData = Data};
+                Data data = new Data() { Base64StringData = Data };
                 try
                 {
                     _dataRepository.Add(data);
@@ -187,7 +190,7 @@ namespace Artis.Data
                 Producer producer = _producerRepository.GetByName(Name, "FIO");
                 if (producer == null)
                 {
-                    producer = new Producer() {FIO = Name};
+                    producer = new Producer() { FIO = Name };
                     try
                     {
                         _producerRepository.Add(producer);
@@ -215,7 +218,7 @@ namespace Artis.Data
                 Actor actor = _actorRepository.GetByName(Name, "FIO");
                 if (actor == null)
                 {
-                    actor = new Actor() {FIO = Name};
+                    actor = new Actor() { FIO = Name };
                     try
                     {
                         _actorRepository.Add(actor);
@@ -243,7 +246,7 @@ namespace Artis.Data
                 Genre genre = _genreRepository.GetByName(Name);
                 if (genre == null)
                 {
-                    genre = new Genre() {Name = Name};
+                    genre = new Genre() { Name = Name };
                     try
                     {
                         _genreRepository.Add(genre);
@@ -264,7 +267,26 @@ namespace Artis.Data
             return null;
         }
 
-        private Area CreateArea(string Name,string Address,string Description,string SchemaImage,IEnumerable<string> AreaImage, Metro metro)
+        private ActionDate CreateActionDate(Action action, DateTime date, string time, string priceRange, int minPrice = 0, int maxPrice = 0)
+        {
+            if (!string.IsNullOrEmpty(time) && date > DateTime.MinValue)
+            {
+                ActionDate data = new ActionDate() { Action = action, Date = date, Time = time, PriceRange = priceRange, MinPrice = minPrice, MaxPrice = maxPrice };
+                try
+                {
+                    _actionDateRepository.Add(data);
+                    return data;
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorException("Ошибка записи даты для мероприятия ", ex);
+                }
+            }
+            _logger.Info("Пустая дата для мероприятия!");
+            return null;
+        }
+
+        private Area CreateArea(string Name, string Address, string Description, string SchemaImage, IEnumerable<string> AreaImage, Metro metro)
         {
             if (!string.IsNullOrEmpty(Name))
             {
@@ -308,18 +330,15 @@ namespace Artis.Data
             return null;
         }
 
-        private Action CreateAction(string Name,string AreaName,string Date,string Time,string PriceRange,string Description,IEnumerable<string> Image,Area area,Genre Genre,List<Actor> Actors,List<Producer> Producers )
+        private Action CreateAction(string Name, string AreaName, string Date, string Time, string PriceRange, string Description, IEnumerable<string> Image, Area area, Genre Genre, List<Actor> Actors, List<Producer> Producers)
         {
             Action action = _actionRepository.GetByName(Name);
-            if (action == null ||
-                (action.Area.Name != AreaName &&
-                 action.DateStart != DateTime.Parse(Date) &&
-                 action.Time != Time))
+            if (action == null)
             {
                 if (area == null || string.IsNullOrEmpty(Date) || string.IsNullOrEmpty(Name) ||
                     string.IsNullOrEmpty(Time))
                 {
-                    string text=string.Empty;
+                    string text = string.Empty;
                     if (area == null)
                         text = "Для мероприятия не задана площадка";
                     if (string.IsNullOrEmpty(Date))
@@ -329,18 +348,19 @@ namespace Artis.Data
                     if (string.IsNullOrEmpty(Name))
                         text = "Для мероприятия не задано имя";
 
-                    _logger.Error("Ошибка записи мероприятия:"+text);
+                    _logger.Error("Ошибка записи мероприятия:" + text);
                     return null;
                 }
 
                 action = new Action()
                 {
-                    Area = area,
-                    DateStart = DateTime.Parse(Date),
                     Name = Name,
-                    Time = Time,
-                    PriceRange = PriceRange
                 };
+
+                if (action.Area==null)
+                    action.Area=new Collection<Area>();
+
+                action.Area.Add(area);
 
                 if (Image != null)
                 {
@@ -350,6 +370,8 @@ namespace Artis.Data
 
                 if (!string.IsNullOrEmpty(Description))
                     action.Description = Description;
+
+
 
                 if (Genre != null)
                     action.Genre = Genre;
@@ -364,11 +386,26 @@ namespace Artis.Data
                 try
                 {
                     _actionRepository.Add(action);
+
+                    ActionDate actionDate = CreateActionDate(action, DateTime.Parse(Date), Time, PriceRange);
+                    if (actionDate != null)
+                        action.ActionDate = new List<ActionDate>() { actionDate };
                     return action;
                 }
                 catch (Exception ex)
                 {
                     _logger.ErrorException("Ошибка записи мероприятия " + Name, ex);
+                }
+
+            }
+            else
+            {
+
+                if (!action.ActionDate.Any(i => i.Date == DateTime.Parse(Date) && i.Time.Equals(Time)))
+                {
+                    ActionDate actionDate = CreateActionDate(action, DateTime.Parse(Date), Time, PriceRange);
+                    action.ActionDate.Add(actionDate);
+                    return action;
                 }
 
             }

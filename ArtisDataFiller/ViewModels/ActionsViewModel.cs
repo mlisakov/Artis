@@ -295,10 +295,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             ActionsItemsSource = new ObservableCollection<Action>();
 
             CurrentAction = new Action();
-            CurrentAction.Name = "Naimenovanie";
-            CurrentAction.DateStart = DateTime.Now;
-            CurrentAction.Time = "11:50";
-            CurrentAction.PriceRange = "1000 - 2000";            
+            CurrentAction.Name = "Naimenovanie";         
 
             GenresItemsSource = new ObservableCollection<Genre>();
             StatesItemsSource = new ObservableCollection<State>();

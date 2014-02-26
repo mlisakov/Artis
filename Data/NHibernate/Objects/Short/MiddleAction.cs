@@ -40,7 +40,8 @@ namespace Artis.Data
             set { _producers = value; }
         }
 
-        public MiddleAction(Action action) : base(action)
+        public MiddleAction(Action action, DateTime date, string time, string priceRange)
+            : base(action, date, time, priceRange)
         {
             Description = action.Description;
 

@@ -24,7 +24,7 @@ namespace Artis.DataLoader
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
         private const string _mariinskyMainUrl = "http://www.mariinsky.ru/about/history_theatre/mariinsky_theatre/";
-        private const string _mariinskySecondHallUrl = "http://www.mariinsky.ru/about/history_theatre/mariinsky_2/";
+        private const string _mariinskySecondHallUrl = "http://www.mariinsky.ru/about/history_theatre/gallery_m2/";
         private const string _mariinskyConcertHallUrl = "http://www.mariinsky.ru/about/history_theatre/concert_hall/";
 
         private const string rootUrl = "http://www.mariinsky.ru";
@@ -57,8 +57,8 @@ namespace Artis.DataLoader
                 KeyValuePair<string,HtmlDocument> doc = await DownloadDataFromWebSite(currentDate);
                 if (doc.Value.DocumentNode.ChildNodes.Count == 0)
                 {
-                    _logger.Fatal("Ошибка загрузки данных с URL=" + doc.Key);
-                    throw new UrlDataLoaderException("Не удалось загрузить данный!", "Загрузка данных");
+                    _logger.Fatal("Mariinsky.Ошибка загрузки данных с URL=" + doc.Key);
+                    throw new UrlDataLoaderException("Mariinsky.Не удалось загрузить данный!", "Загрузка данных");
                 }
                 _logger.Debug("Парсинг данных с URL=" + doc.Key);
                 await ParseHtmlDoc(doc.Value, currentDate);
@@ -123,8 +123,8 @@ namespace Artis.DataLoader
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorException("Ошибка загрузки данных с URL=" + query+"Загрузка данных будет продолжена.",ex);
-                    throw new UrlDataLoaderException(query, "Ошибка загрузки" + Environment.NewLine + ex.Message);
+                    _logger.ErrorException("Mariinsky.Ошибка загрузки данных с URL=" + query + "Загрузка данных будет продолжена.", ex);
+                    throw new UrlDataLoaderException(query, "Mariinsky.Ошибка загрузки" + Environment.NewLine + ex.Message);
                 }
             }
         }
@@ -160,7 +160,7 @@ namespace Artis.DataLoader
                 string description = string.Empty;
                 List<string> images=new List<string>();
 
-                HtmlNodeCollection descriptionNodeCollection = doc.DocumentNode.SelectNodes("//td[@class='site_content']/table[@class='w_100 h_100']/tr/td[@id='content']/table/tr/td")[1].SelectNodes("p");
+                HtmlNodeCollection descriptionNodeCollection = doc.DocumentNode.SelectNodes("//div[@class='col-md-8']/p");
                 int i=0;
                 foreach (HtmlNode descriptioNode in descriptionNodeCollection)
                 {
@@ -172,7 +172,7 @@ namespace Artis.DataLoader
 
                 HtmlNodeCollection imageNodeCollection =
                     doc.DocumentNode.SelectNodes(
-                        "//table[@class='rounded_foto']/tbody/tr/td/div/a[@class='lightbox']");
+                        "//div[@class='img']/a[@class='lightbox']");
                 
                 foreach (HtmlNode imageNdoe in imageNodeCollection)
                 {
@@ -189,54 +189,61 @@ namespace Artis.DataLoader
             catch (Exception ex)
             {
                 _logger.ErrorException(
-                    "Ошибка распознания данных для площадки(" + areaUrl +
+                    "Mariinsky.Ошибка распознания данных для площадки(" + areaUrl +
                     "). Загрузка данных будет продолжена, однако для мероприятия, проводимые на данной площадке не будут сохранены!",
                     ex);
             }
             return null;
         }
 
-        private async Task ParseHtmlDoc(HtmlDocument doc,DateTime date)
+        private async Task ParseHtmlDoc(HtmlDocument doc, DateTime date)
         {
             try
             {
-                HtmlNodeCollection dateNode =
-                    doc.DocumentNode.SelectNodes("//table[@id='afisha']/tr/td/table[@class='this_day w_100']/tr");
 
-                foreach (HtmlNode htmlNode in dateNode)
-                {
-                    // Периодически проверяем, не запрошена ли отмена операции
-                    _cancelToken.Token.ThrowIfCancellationRequested();
-                    KeyValuePair<bool,ActionWeb> result = await createNode(htmlNode, date);
-                    if (result.Key)
+                HtmlNodeCollection Nodes =
+                    doc.DocumentNode.SelectNodes("//div[@class='col-md-10 spects']/div");
+                if (Nodes!=null)
+                    foreach (HtmlNode htmlNode in Nodes)
                     {
-                        if (!string.IsNullOrEmpty(result.Value.AreaName)
-                            && !string.IsNullOrEmpty(result.Value.Date)
-                            && !string.IsNullOrEmpty(result.Value.Name)
-                            && !string.IsNullOrEmpty(result.Value.Time))
-                            InvokeActionLoadedEvent(UrlActionLoadingSource.Mariinsky, result.Value);
+                        // Периодически проверяем, не запрошена ли отмена операции
+                        _cancelToken.Token.ThrowIfCancellationRequested();
+                        KeyValuePair<bool, ActionWeb> result = await createNode(htmlNode, date);
+                        if (result.Key)
+                        {
+                            if (!string.IsNullOrEmpty(result.Value.AreaName)
+                                && !string.IsNullOrEmpty(result.Value.Date)
+                                && !string.IsNullOrEmpty(result.Value.Name)
+                                && !string.IsNullOrEmpty(result.Value.Time))
+                                InvokeActionLoadedEvent(UrlActionLoadingSource.Mariinsky, result.Value);
+                            else
+                            {
+                                if (string.IsNullOrEmpty(result.Value.AreaName))
+                                    _logger.Error("Не удалось распознать площадку для мероприятия");
+                                if (string.IsNullOrEmpty(result.Value.Name))
+                                    _logger.Error("Не удалось распознать имя мероприятия");
+                                if (string.IsNullOrEmpty(result.Value.Date))
+                                    _logger.Error("Не удалось распознать дату проведения мероприятия");
+                                if (string.IsNullOrEmpty(result.Value.Time))
+                                    _logger.Error("Не удалось распознать время проведения мероприятия");
+                            }
+                        }
                         else
                         {
-                            if (string.IsNullOrEmpty(result.Value.AreaName))
-                                _logger.Error("Не удалось распознать площадку для мероприятия");
-                            if (string.IsNullOrEmpty(result.Value.Name))
-                                _logger.Error("Не удалось распознать имя мероприятия");
-                            if (string.IsNullOrEmpty(result.Value.Date))
-                                _logger.Error("Не удалось распознать дату проведения мероприятия");
-                            if (string.IsNullOrEmpty(result.Value.Time))
-                                _logger.Error("Не удалось распознать время проведения мероприятия");
+                            _logger.Error("Mariinsky.Не удалось распознать мероприятия со страницы для даты " +
+                                          date.ToShortDateString()+Environment.NewLine+htmlNode.InnerHtml);
                         }
                     }
-                    else
-                    {
-                        _logger.Error("Не удалось распознать мероприятия со страницы для даты " +
-                                      date.ToShortDateString());
-                    }
+                else
+                {
+                    _logger.Error("Mariinsky.Не удалось получить мероприятия для даты " + date.ToShortDateString() +
+                                  Environment.NewLine + doc.DocumentNode.InnerHtml);
                 }
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Ошибка распознания данных для мероприятия. Загрузка данных будет продолжена...", ex);
+                _logger.ErrorException(
+                    "Mariinsky.Ошибка распознания данных для мероприятия. Загрузка данных будет продолжена...", ex);
                 //Log.WriteLog(_logPath, ex);
             }
         }
@@ -248,7 +255,7 @@ namespace Artis.DataLoader
             {
 
 
-                HtmlNode placeNode = htmlNode.SelectSingleNode("td[@class='where_ico']");
+                HtmlNode placeNode = htmlNode.SelectSingleNode("div[@class='place']");
                 if (placeNode != null)
                 {
                     string place = HttpUtility.HtmlDecode(placeNode.InnerText.Normalize()).Trim();
@@ -279,7 +286,7 @@ namespace Artis.DataLoader
                 }
                 else
                 {
-                    _logger.Warn("Не удалось найти площадку для мероприятия. Будет проставлена площадка по-умолчанию-Мариинский театр");
+                    _logger.Warn("Mariinsky.Не удалось найти площадку для мероприятия. Будет проставлена площадка по-умолчанию-Мариинский театр");
                     actionWeb.AreaImage = _mainArea.Images;
                     actionWeb.AreaDescription = _mainArea.Description;
                     actionWeb.AreaAddress = "Санкт-Петербург,Театральная площадь, д. 1";
@@ -290,27 +297,28 @@ namespace Artis.DataLoader
                 actionWeb.AreaMetro = "Садовая";
                 actionWeb.AreaArea = "Центральный";
 
-                HtmlNode timeNode = htmlNode.SelectSingleNode("td[@class='time']");
+                HtmlNode timeNode = htmlNode.SelectSingleNode("div[@class='col-md-2']/div[@class='time']");
                 if (timeNode != null)
                 {
                     actionWeb.Time = HttpUtility.HtmlDecode(timeNode.InnerText.Normalize());
                 }
                 else
                 {
-                    _logger.Warn("Не удалось найти время проведения мероприятия. Будет проставлено время по-умолчанию - 00:00");
+                    _logger.Warn("Mariinsky.Не удалось найти время проведения мероприятия. Будет проставлено время по-умолчанию - 00:00");
                     actionWeb.Time = "00:00";
 
                 }
 
-                HtmlNode actionNode = htmlNode.SelectSingleNode("td[@class='main']/p[@class='title']/a");
+                HtmlNode actionNode = htmlNode.SelectSingleNode("div[@class='col-md-7 inf']/div[@class='spec_name']/a");
                 if (actionNode==null)
                 {
-                    _logger.Error("Не удалось найти наименование мероприятия.");
+                    _logger.Error("Mariinsky.Не удалось найти наименование мероприятия.");
                     return new KeyValuePair<bool, ActionWeb>(false, actionWeb);
                 }
                 actionWeb.Name = HttpUtility.HtmlDecode(actionNode.InnerText.Normalize());
                 string actionUrl = actionNode.Attributes["href"].Value;
-                HtmlNode actionDescriptionNode = htmlNode.SelectSingleNode("td[@class='main']/p[@class='descr']");
+
+                HtmlNode actionDescriptionNode = htmlNode.SelectSingleNode("div[@class='col-md-7 inf']/div[@class='descr']");
                 if (actionDescriptionNode != null)
                 {
                     string shortDescription = HttpUtility.HtmlDecode(actionDescriptionNode.InnerText.Normalize()).Trim();
@@ -338,7 +346,7 @@ namespace Artis.DataLoader
                 }
                 else
                 {
-                    _logger.Warn("Не удалось найти описание мероприятия.Проставлено значение по умолчанию-Отсутствует");
+                    _logger.Warn("Mariinsky.Не удалось найти описание мероприятия.Проставлено значение по умолчанию-Отсутствует");
                     actionWeb.Genre = "Отсутствует";
                 }
 
@@ -349,9 +357,9 @@ namespace Artis.DataLoader
             }
             catch (Exception ex)
             {
-                InvokeUrlDataLoaderExceptionThrownEvent("Ошибка распознования HTML-документа для мероприятия");
+                InvokeUrlDataLoaderExceptionThrownEvent("Mariinsky.Ошибка распознования HTML-документа для мероприятия");
                 _logger.ErrorException(
-                    "Ошибка распознования HTML-документа для мероприятия. Загрузка данных будет продолжена...", ex);
+                    "Mariinsky.Ошибка распознования HTML-документа для мероприятия. Загрузка данных будет продолжена...", ex);
                 return new KeyValuePair<bool, ActionWeb>(false, actionWeb);
                 ;
             }
@@ -363,7 +371,7 @@ namespace Artis.DataLoader
 
             HtmlDocument actionInfo = await DownloadDataFromWebSite(actionUrl);
             HtmlNode rootNode = actionInfo.DocumentNode;
-            HtmlNodeCollection shortInfoNodes = rootNode.SelectNodes("//div[@class='spec_info_short_spect']");
+            HtmlNodeCollection shortInfoNodes = rootNode.SelectNodes("//div[@class='story inf_block hided']/div/p");
             if (shortInfoNodes != null)
             {
                 int i = 0;
@@ -378,38 +386,49 @@ namespace Artis.DataLoader
                 }
             }
 
-            HtmlNodeCollection infoNodeCollection = rootNode.SelectNodes("//td[@class='spec_info_img']/div");
-            if (infoNodeCollection != null && infoNodeCollection.Count >= 3)
+            HtmlNodeCollection descrNodes = rootNode.SelectNodes("//div[@class='description']/p");
+            if (descrNodes != null)
             {
-                HtmlNode ageLimitNode = infoNodeCollection[2].SelectSingleNode("span");
-                if (ageLimitNode != null)
-                    actionWeb.Rating =
-                        HttpUtility.HtmlDecode(
-                            ageLimitNode.InnerText.Normalize().Replace("Возрастная категория", "").Trim());
-            }
-
-            HtmlNodeCollection descriptionNodeCollection = rootNode.SelectNodes("//div[@class='spec_description']");
-            if (descriptionNodeCollection != null)
-            {
-                foreach (HtmlNode descriptionNode in descriptionNodeCollection)
+                int i = 0;
+                foreach (HtmlNode descrNode in descrNodes)
                 {
-                    string text = HttpUtility.HtmlDecode(descriptionNode.InnerText.Normalize());
-                    if (!string.IsNullOrEmpty(description) && !string.IsNullOrEmpty(text))
+                    string text = HttpUtility.HtmlDecode(descrNode.InnerText.Normalize());
+                    if (string.IsNullOrEmpty(text)) continue;
+                    if (i != 0)
                         description += Environment.NewLine;
-                    if (!string.IsNullOrEmpty(text))
-                        description += text;
+                    description += text;
+                    i++;
                 }
             }
+
+            HtmlNode ageLimitNode = rootNode.SelectSingleNode("//span[@class='age_limit']");
+            if (ageLimitNode != null)
+            {
+                actionWeb.Rating =
+                    HttpUtility.HtmlDecode(
+                        ageLimitNode.InnerText.Normalize().Replace("Возрастная категория", "").Trim());
+            }
+
+            //HtmlNodeCollection descriptionNodeCollection = rootNode.SelectNodes("//div[@class='spec_description']");
+            //if (descriptionNodeCollection != null)
+            //{
+            //    foreach (HtmlNode descriptionNode in descriptionNodeCollection)
+            //    {
+            //        string text = HttpUtility.HtmlDecode(descriptionNode.InnerText.Normalize());
+            //        if (!string.IsNullOrEmpty(description) && !string.IsNullOrEmpty(text))
+            //            description += Environment.NewLine;
+            //        if (!string.IsNullOrEmpty(text))
+            //            description += text;
+            //    }
+            //}
             actionWeb.Description = description;
 
-            HtmlNodeCollection actorsInfoNodeCollection = rootNode.SelectNodes("//td[@class='tab_content']/div");
-            if (actorsInfoNodeCollection != null)
+            HtmlNodeCollection actorsInfoNodeCollection = rootNode.SelectNodes("//div[@class='sostav inf_block showed']/div");
+            if (actorsInfoNodeCollection != null && actorsInfoNodeCollection.Count == 2)
             {
-                HtmlNodeCollection actorsNodeCollection = actorsInfoNodeCollection.First().SelectNodes("div");
-                if (actorsNodeCollection != null && actorsNodeCollection.Count == 2)
-                {
-                    HtmlNodeCollection actorsCollection = actorsNodeCollection[1].SelectNodes("a");
-                    int i = 0;
+                HtmlNodeCollection actorsCollection = actorsInfoNodeCollection[1].SelectNodes("a");
+                int i = 0;
+                if (actorsCollection != null)
                     foreach (HtmlNode actorNode in actorsCollection)
                     {
                         if (i != 0)
@@ -417,20 +436,20 @@ namespace Artis.DataLoader
                         actionWeb.Actors += HttpUtility.HtmlDecode(actorNode.InnerText.Normalize());
                         i++;
                     }
-                }
+
             }
 
             List<string> actionImages = new List<string>();
             HtmlNodeCollection actionImageNodeCollection =
                 rootNode.SelectNodes(
-                    "//table[@id='spectacle_photo_gallery']/tr/td/a/img");
+                    "//div[@class='spec_gal_cont']/a");
             if (actionImageNodeCollection != null)
             {
                 foreach (HtmlNode imageNode in actionImageNodeCollection)
                 {
                     using (WebClient client = new WebClient())
                     {
-                        byte[] image = client.DownloadData(rootUrl + imageNode.Attributes["src"].Value);
+                        byte[] image = client.DownloadData(rootUrl + imageNode.Attributes["href"].Value);
                         string base64String = Convert.ToBase64String(image, 0, image.Length);
                         actionImages.Add(base64String);
                     }
@@ -439,10 +458,10 @@ namespace Artis.DataLoader
             }
             else
             {
-                _logger.Warn("Не удалось загрузить изображения для мероприятия");
+                _logger.Warn("Mariinsky.Не удалось загрузить изображения для мероприятия");
             }
 
-            HtmlNodeCollection actionDescNodes = rootNode.SelectNodes("//div[@class='spec_description']/p");
+            HtmlNodeCollection actionDescNodes = rootNode.SelectNodes("//div[@id='spec_info_container']/div[@class='row']/div[@class='col-md-12']/div/p");
             if (actionDescNodes != null)
             {
                 foreach (HtmlNode node in actionDescNodes)
@@ -472,7 +491,7 @@ namespace Artis.DataLoader
                 }
             }
 
-            HtmlNode buyTicketNodes = rootNode.SelectSingleNode("//td[@class='ticket']/a");
+            HtmlNode buyTicketNodes = rootNode.SelectSingleNode("//div[@id='ticket_cont']/a");
             if (buyTicketNodes != null)
                 await UploadPriceInfo(actionWeb, buyTicketNodes.Attributes["href"].Value);
 
@@ -512,7 +531,7 @@ namespace Artis.DataLoader
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Ошибка загрузки минимальной и максимальной стоимости билетов для мероприятия",ex);
+                _logger.ErrorException("Mariinsky.Ошибка загрузки минимальной и максимальной стоимости билетов для мероприятия", ex);
             }
 
         }

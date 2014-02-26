@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Artis.Data
 {
@@ -11,7 +12,7 @@ namespace Artis.Data
         private string _genreName;
         private string _priceRange;
 
-        private ShortArea _area;
+        private ICollection<ShortArea> _area;
 
         public long ID
         {
@@ -67,21 +68,23 @@ namespace Artis.Data
         /// <summary>
         /// Наименование площадки
         /// </summary>
-        public ShortArea Area
+        public ICollection<ShortArea> Area
         {
             get { return _area; }
             set { _area = value; }
         }
 
-        public ShortAction(Action action)
+        public ShortAction(Action action,DateTime date,string time,string priceRange)
         {
             Name = action.Name;
-            DateStart = action.DateStart;
-            Time = action.Time;
+            DateStart = date;
+            Time = time;
             ID = action.ID;
             GenreName = action.Genre.Name;
-            PriceRange = action.PriceRange;
-            Area = new ShortArea(action.Area);
+            PriceRange = priceRange;
+
+            foreach (Area area in action.Area)
+                Area.Add(new ShortArea(area));
         }
     }
 }

@@ -36,7 +36,7 @@ namespace Artis.ActionParser
         {
             _actionLoadersCompletedCount = 0;
             //_urlDataLoaders=new List<IUrlDataLoader>(){new UrlBileterDataLoader(),new UrlMariinskyDataLoader(),new UrlMikhailovskyDataLoader()};
-            _urlDataLoaders = new List<IUrlDataLoader>() {new UrlMikhailovskyDataLoader() };
+            _urlDataLoaders = new List<IUrlDataLoader>() { new UrlMikhailovskyDataLoader() };
             _dataParser=new DataParser();
             HandleEvents();
         }
