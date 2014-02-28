@@ -72,7 +72,8 @@ namespace Artis.Data
         {
             Name = action.Name;
             ID = action.ID;
-            GenreName = action.Genre.Name;
+            if (action.Genre != null)
+                GenreName = action.Genre.Name;
             Description = action.Description;
             Actor = new Collection<Actor>(action.Actor.ToList());
             Producer = new Collection<Producer>(action.Producer.ToList());

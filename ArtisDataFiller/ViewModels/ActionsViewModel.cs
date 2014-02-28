@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Threading.Tasks;
 using Artis.Consts;
 using Artis.Data;
 using Action = Artis.Data.Action;
@@ -13,8 +15,8 @@ namespace Artis.ArtisDataFiller.ViewModels
         private Area _filterArea;
         private DateTime? _fromDate;
         private DateTime? _toDate;
-        private ObservableCollection<Action> _actionsItemsSource;
-        private Action _selectedAction;
+        private ObservableCollection<ActionDate> _actionsItemsSource;
+        private ActionDate _selectedAction;
         private Action _currentAction;
         private ObservableCollection<Genre> _genresItemsSource;
         private ObservableCollection<State> _statesItemsSource;
@@ -154,7 +156,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Результаты поиска
         /// </summary>
-        public ObservableCollection<Action> ActionsItemsSource
+        public ObservableCollection<ActionDate> ActionsItemsSource
         {
             get { return _actionsItemsSource; }
             set
@@ -173,7 +175,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Выделенное мероприятие в результатах поиска
         /// </summary>
-        public Action SelectedAction
+        public ActionDate SelectedAction
         {
             get { return _selectedAction; }
             set
@@ -292,7 +294,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             FilterAreasItemsSource = new ObservableCollection<Area>();
 
             FromDate = ToDate = DateTime.Now;
-            ActionsItemsSource = new ObservableCollection<Action>();
+            ActionsItemsSource = new ObservableCollection<ActionDate>();
 
             CurrentAction = new Action();
             CurrentAction.Name = "Naimenovanie";         
@@ -388,9 +390,9 @@ namespace Artis.ArtisDataFiller.ViewModels
             return true;
         }
 
-        private void ExecuteSearchCommand(object parameters)
+        private async void ExecuteSearchCommand(object parameters)
         {
-            
+            ActionsItemsSource=new ObservableCollection<ActionDate>(await DataRequestFactory.GetActions(FromDate.Value.Date, ToDate.Value.Date));
         }
 
     }

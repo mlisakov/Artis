@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
 using NHibernate.SqlCommand;
+using Remotion.Linq.Collections;
 
 namespace Artis.Data
 {
@@ -37,6 +39,25 @@ namespace Artis.Data
 
             }
         }
+
+        /// <summary>
+        /// Получение мероприятий по дате проведения
+        /// </summary>
+        /// <param name="startDate">Начальная дата для фильра</param>
+        /// <param name="finishDate">Конечная дата для фильтра</param>
+        /// <returns></returns>
+        public static async Task<IList<ActionDate>> GetActions(DateTime startDate, DateTime finishDate)
+        {
+            using (ISession session = Domain.Session)
+            {
+                IQueryable<ActionDate> act =
+                    session.Query<ActionDate>()
+                        .Where(i => i.Date >= startDate && i.Date <= finishDate);
+                return act.ToList();
+
+            }
+        }
+
 
         public static string GetTopAction(DateTime startDate, DateTime finishDate,int count)
         {
@@ -276,9 +297,16 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
-                IList<Area> area = session.QueryOver<Area>()
-                        .Where(i => i.AreaType.ID.IsIn(TheatricalsAreaTypes)).List<Area>();
-                List<ShortArea> shortArea = area.Select(i => new ShortArea(i)).ToList();
+                //IList<Area> area = session.QueryOver<Area>()
+                //        .Where(i => i.AreaType.ID.IsIn(TheatricalsAreaTypes)).List<Area>();
+                //List<ShortArea> shortArea = area.Select(i => new ShortArea(i)).ToList();
+                ICriteria criteria = session.CreateCriteria<Area>("area");
+                criteria.CreateCriteria("area.AreaType", JoinType.LeftOuterJoin)
+                          .Add(Restrictions.In("ID", TheatricalsAreaTypes));
+
+                IList<Area> areas = criteria.List<Area>();
+                List<ShortArea> shortArea = areas.Select(i => new ShortArea(i)).ToList();
+
                 return new JavaScriptSerializer().Serialize(shortArea);
             }
         }
@@ -287,15 +315,14 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
-                IList<Area> area =
-                    session.QueryOver<Action>()
-                        .Where(Restrictions.Like("Name", "%Экскурсия%").IgnoreCase())
-                        .Select(j => j.Area).List<Area>().Distinct(new AreaComparer()).ToList();
+                ICriteria criteria = session.CreateCriteria<ActionDate>("actionDate");
 
-                //IList<Area> area = session.QueryOver<Area>()
-                //        .Where(i => i.AreaType.ID.IsIn(TourAreaTypes)).List<Area>();
+                criteria.CreateCriteria("actionDate.Action", "Action", JoinType.LeftOuterJoin)
+                            .Add(Restrictions.Like("Name", "%Экскурсия%").IgnoreCase());
 
-                List<ShortArea> shortArea = area.Select(i => new ShortArea(i)).ToList();
+                List<ShortArea> shortArea =
+                    criteria.List<ActionDate>().Select(j => j.Area).ToList().Distinct(new AreaComparer()).Select(i=>new ShortArea(i)).ToList();
+
                 return new JavaScriptSerializer().Serialize(shortArea);
             }
         }

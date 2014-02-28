@@ -26,7 +26,8 @@
         public MiddleArea(Area area) : base(area)
         {
             Description = area.Description;
-            Metro = area.Metro.Name;
+            if (area.Metro != null)
+                Metro = area.Metro.Name;
         }
     }
 }

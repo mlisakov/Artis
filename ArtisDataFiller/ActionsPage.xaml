@@ -165,7 +165,10 @@
 		<ListView Grid.ColumnSpan="5" Grid.Column="1" Grid.Row="3" VerticalAlignment="Top" MinHeight="500" Margin="0,10,0,0" ItemsSource="{Binding ActionsItemsSource}" SelectedItem="{Binding SelectedAction}">
 			<ListView.View>
 				<GridView>
-					<GridViewColumn/>
+                    <GridViewColumn Header="Наименование" DisplayMemberBinding="{Binding Path=Action.Name}"/>
+                    <GridViewColumn Header="Число" DisplayMemberBinding="{Binding Path=Date,StringFormat=dd.mm.yyyy}"/>
+                    <GridViewColumn Header="Время" DisplayMemberBinding="{Binding Path=Time}"/>
+                    <GridViewColumn Header="Место" DisplayMemberBinding="{Binding Path=Area.Name}"/>
 				</GridView>
 			</ListView.View>
 		</ListView>

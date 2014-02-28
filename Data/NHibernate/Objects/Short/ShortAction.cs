@@ -82,7 +82,8 @@ namespace Artis.Data
             DateStart = date;
             Time = time;
             ID = action.ID;
-            GenreName = action.Genre.Name;
+            if (action.Genre != null)
+                GenreName = action.Genre.Name;
             PriceRange = priceRange;
             Area=area.Name;
         }

@@ -52,6 +52,7 @@
     <property name="SchemaImage" length="10000" />
 
     <many-to-one name="Metro" class="Metro" column="idMetro" lazy="false"/>
+    <many-to-one name="AreaType" class="AreaType" column="idAreaType" lazy="false"/>
 
     <set name="Data" table="AreaData" lazy="false">
       <key column="idArea" />
@@ -69,8 +70,8 @@
     <property name="MaxPrice" />
     <property name="PriceRange" />
     
-    <many-to-one name="Action" class="Action" column="idAction"/>
-    <many-to-one name="Area" class="Area" column="idArea"/>
+    <many-to-one name="Action" class="Action" column="idAction" lazy="false"/>
+    <many-to-one name="Area" class="Area" column="idArea" lazy="false"/>
   </class>
 
   <class name="Genre" table="Genre">
@@ -111,6 +112,13 @@
   </class>
 
   <class name="Metro" table="Metro">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="Name" />
+  </class>
+
+  <class name="AreaType" table="AreaType">
     <id name="ID" column="id">
       <generator class="identity" />
     </id>
