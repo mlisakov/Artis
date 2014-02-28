@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
 using Artis.Consts;
-using Artis.Logger;
 using HtmlAgilityPack;
 using NLog;
 
@@ -236,7 +235,7 @@ namespace Artis.DataLoader
                     }
                 else
                 {
-                    _logger.Error("Mariinsky.Не удалось получить мероприятия для даты " + date.ToShortDateString() +
+                    _logger.Warn("Mariinsky.Не удалось получить мероприятия для даты " + date.ToShortDateString() +
                                   Environment.NewLine + doc.DocumentNode.InnerHtml);
                 }
             }

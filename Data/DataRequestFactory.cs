@@ -5,6 +5,7 @@ using System.Web.Script.Serialization;
 using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
+using NHibernate.SqlCommand;
 
 namespace Artis.Data
 {
@@ -16,40 +17,6 @@ namespace Artis.Data
 
         private static List<long> TheatricalsAreaTypes = new List<long>() {1,7};
         private static List<long> TourAreaTypes = new List<long>() {4};
-        //private static Action GetAction(long ID)
-        //{
-        //    using (ISession session = Domain.OpenSession())
-        //    {
-        //        return session.Query<Action>().First(i => i.ID == ID);
-        //    }
-        //}
-
-        //private static IList<Action> GetAction(List<Guid> filter)
-        //{
-        //    using (ISession session = Domain.OpenSession())
-        //    {
-        //        return
-        //            session.QueryOver<Action>()
-        //                .WhereRestrictionOn(i => i.ID)
-        //                .IsIn(filter)
-        //                .List<Action>();
-        //    }
-        //}
-
-        /// <summary>
-        /// Получение мероприятий на день
-        /// </summary>
-        /// <param name="startDate">Дата проведения мероприятий</param>
-        /// <returns></returns>
-        //public static IList<Action> GetAction(DateTime startDate)
-        //{
-        //    using (ISession session = Domain.Session)
-        //    {
-        //        return
-        //            session.QueryOver<Action>()
-        //                .Where(i => i.DateStart == startDate).List<Action>();
-        //    }
-        //}
 
         /// <summary>
         /// Получение мероприятий по дате проведения
@@ -61,26 +28,12 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
-                IList<MiddleAction> middleAction=new List<MiddleAction>();
-                IList<long> actionID = session.QueryOver<ActionDate>()
-                    .Where(i => i.Date >= startDate && i.Date <= finishDate).Select(i => i.Action.ID).List<long>();
+                List<ShortAction> middleActions =
+                    session.Query<ActionDate>()
+                        .Where(i => i.Date >= startDate && i.Date <= finishDate)
+                        .Select(i => new ShortAction(i.Action,i.Area, i.Date, i.Time, i.PriceRange)).ToList();
 
-
-                IList<Action> act=session.QueryOver<Action>()
-                        .Where(i => i.ID.IsIn(actionID.ToList())).List<Action>();
-
-                foreach (Action action in act)
-                {
-                    foreach (ActionDate actionDate in action.ActionDate)
-                    {
-                        if (actionDate.Date >= startDate && actionDate.Date <= finishDate)
-                        {
-                            middleAction.Add(new MiddleAction(action,actionDate.Date,actionDate.Time,actionDate.PriceRange));
-                        }
-                    }
-                }
-               //IList<MiddleAction> middleAction = act.Select(i => new MiddleAction(i)).ToList();
-                return new JavaScriptSerializer().Serialize(middleAction);
+                return new JavaScriptSerializer().Serialize(middleActions);
 
             }
         }
@@ -89,28 +42,6 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
-                IList<ShortAction> shortAction=new List<ShortAction>();
-                IList<long> actionID = session.QueryOver<ActionDate>()
-                    .Where(i => i.Date >= startDate && i.Date <= finishDate).Select(i => i.Action.ID).List<long>();
-
-
-                IList<Action> act = session.QueryOver<Action>()
-                        .Where(i => i.ID.IsIn(actionID.ToList())).List<Action>();
-                foreach (Action action in act)
-                {
-                    foreach (ActionDate actionDate in action.ActionDate)
-                    {
-                        if (actionDate.Date >= startDate && actionDate.Date <= finishDate)
-                        {
-                            if (shortAction.Count > count)
-                                break;
-                            shortAction.Add(new ShortAction(action, actionDate.Date, actionDate.Time, actionDate.PriceRange));
-                        }
-                    }
-                    if (shortAction.Count > count)
-                        break;
-                }
-
                 //IList<Action> act = session.QueryOver<Action>()
                 //    .Where(
                 //        i =>
@@ -120,7 +51,12 @@ namespace Artis.Data
                 //    .Take(count)
                 //    .List<Action>();
                 //IList<ShortAction> shortAction = act.Select(i => new ShortAction(i)).ToList();
-                return new JavaScriptSerializer().Serialize(shortAction);
+
+                List<ShortAction> shortActions =
+                   session.Query<ActionDate>()
+                       .Where(i => i.Date >= startDate && i.Date <= finishDate).Take(count)
+                       .Select(i => new ShortAction(i.Action, i.Area, i.Date, i.Time, i.PriceRange)).ToList();
+                return new JavaScriptSerializer().Serialize(shortActions);
 
             }
         }
@@ -131,13 +67,13 @@ namespace Artis.Data
         /// <returns>Десериализованная в json информация о мероприятии</returns>
         public static string GetAction(long ID)
         {
-            //using (ISession session = Domain.Session)
-            //{
-            //    Action act=session.Query<Action>().First(i => i.ID == ID);
-            //    MiddleAction middleAct=new MiddleAction(act);
-            //    return new JavaScriptSerializer().Serialize(middleAct);
-            //}
-            return "";
+            using (ISession session = Domain.Session)
+            {
+                Action act = session.Query<Action>().First(i => i.ID == ID);
+                MiddleAction middleAction = new MiddleAction(act);
+                return new JavaScriptSerializer().Serialize(middleAction);
+            }
+            return string.Empty;
         }
 
         /// <summary>
@@ -199,56 +135,85 @@ namespace Artis.Data
         public static string GetActions(string ActionName, long idGenre, long idArea, DateTime dateStart, DateTime dateFinish, int PageSize, int Page)
         {
             using (ISession session = Domain.Session)
-                //{
+            {
 
-                //    ICriteria criteria = session.CreateCriteria(typeof(Action));
+                ICriteria criteria = session.CreateCriteria<ActionDate>("actionDate");
+                ICriteria customCriteria = null;
+                if (!string.IsNullOrEmpty(ActionName))
+                    customCriteria =
+                        criteria.CreateCriteria("actionDate.Action", JoinType.LeftOuterJoin)
+                            .Add(Restrictions.Like("Name", "%" + ActionName + "%").IgnoreCase());
 
-                //    if (!string.IsNullOrEmpty(ActionName))
-                //        criteria.Add(Restrictions.Like("Name", "%"+ActionName+"%").IgnoreCase());
-                //    if (idGenre != 0)
-                //        criteria.Add(Restrictions.Where<Action>(i => i.Genre.ID == idGenre));
-                //    if (idArea != 0)
-                //        criteria.Add(Restrictions.Where<Action>(i => i.Area.ID == idArea));
-                //    if (dateStart != DateTime.MinValue && dateFinish!=DateTime.MinValue)
-                //        criteria.Add(Restrictions.Where<Action>(i => i.DateStart >= dateStart && i.DateStart <= dateFinish));
+                if (idGenre != 0)
+                {
+                    if (customCriteria != null)
+                        customCriteria.Add(Restrictions.Where<Action>(i => i.Genre.ID == idGenre));
+                    else
+                        criteria.CreateCriteria("actionDate.Action", JoinType.LeftOuterJoin)
+                            .Add(Restrictions.Where<Action>(i => i.Genre.ID == idGenre));
+                }
 
-                //    IList<Action> allActions = criteria.List<Action>();
-                //    List<ShortAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new ShortAction(i)).ToList();
-                //    int count = allActions.Count() / PageSize;
-                //    if ((allActions.Count() % PageSize) != 0)
-                //        count++;
-                //    KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
-                //    return new JavaScriptSerializer().Serialize(itemsKVP);
+                if (idArea != 0)
+                    criteria.Add(Restrictions.Where<ActionDate>(i => i.Area.ID == idArea));
 
-                //}
-                return null;
+                if (dateStart != DateTime.MinValue && dateFinish != DateTime.MinValue)
+                    criteria.Add(Restrictions.Where<ActionDate>(i => i.Date >= dateStart && i.Date <= dateFinish));
+
+                IList<ActionDate> allActions = criteria.List<ActionDate>();
+                List<ShortAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new ShortAction(i.Action,i.Area,i.Date,i.Time,i.PriceRange)).ToList();
+
+                int count = allActions.Count() / PageSize;
+                if ((allActions.Count() % PageSize) != 0)
+                    count++;
+
+                KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
+                return new JavaScriptSerializer().Serialize(itemsKVP);
+            }
         }
 
-        public static string GetActions(string ActionName,long idArea, int PageSize, int Page)
+        public static string GetTours(string ActionName,long idArea, int PageSize, int Page)
         {
-            //using (ISession session = Domain.Session)
-            //{
+            using (ISession session = Domain.Session)
+            {
 
-            //    ICriteria criteria = session.CreateCriteria(typeof(Action));
+                ICriteria criteria = session.CreateCriteria<ActionDate>("actionDate");
 
-            //    if (!string.IsNullOrEmpty(ActionName))
-            //        criteria.Add(Restrictions.Like("Name", "%" + ActionName + "%").IgnoreCase());
-            //    if (idArea != 0)
-            //        criteria.Add(Restrictions.Where<Action>(i => i.Area.ID == idArea));
+                if (idArea != 0)
+                    criteria.Add(Restrictions.Where<ActionDate>(i => i.Area.ID == idArea));
 
-            //    criteria.CreateAlias("Genre", "genre");
-            //    criteria.Add(Restrictions.Like("genre.Name", "%" + "Экскурсия" + "%").IgnoreCase());
+                ICriteria customCriteria = null;
+                if (!string.IsNullOrEmpty(ActionName))
+                {
+                    customCriteria =
+                        criteria.CreateCriteria("actionDate.Action", "Action", JoinType.LeftOuterJoin)
+                            .Add(Restrictions.Like("Name", "%" + ActionName + "%").IgnoreCase());
+                }
 
-            //    IList<Action> allActions = criteria.List<Action>();
-            //    List<ShortAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new ShortAction(i)).ToList();
-            //    int count = allActions.Count() / PageSize;
-            //    if ((allActions.Count() % PageSize) != 0)
-            //        count++;
-            //    KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
-            //    return new JavaScriptSerializer().Serialize(itemsKVP);
+                if (customCriteria != null)
+                {
+                    customCriteria.CreateCriteria("Action.Genre", JoinType.LeftOuterJoin)
+                        .Add(Restrictions.Like("Name", "%" + "Экскурсия" + "%").IgnoreCase());
+                }
+                else
+                {
+                    criteria.CreateAlias("actionDate.Action", "Action");
+                    criteria.CreateCriteria("Action.Genre", JoinType.LeftOuterJoin)
+                        .Add(Restrictions.Like("Name", "%" + "Экскурсия" + "%").IgnoreCase());
+                }
 
-            //}
-            return "";
+                IList<ActionDate> allActions = criteria.List<ActionDate>();
+                List<ShortAction> act =
+                    allActions.Skip((Page - 1)*PageSize)
+                        .Take(PageSize)
+                        .Select(i => new ShortAction(i.Action, i.Area, i.Date, i.Time, i.PriceRange))
+                        .ToList();
+                int count = allActions.Count() / PageSize;
+                if ((allActions.Count() % PageSize) != 0)
+                    count++;
+                KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
+                return new JavaScriptSerializer().Serialize(itemsKVP);
+
+            }
         }
 
         /// <summary>

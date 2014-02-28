@@ -267,11 +267,11 @@ namespace Artis.Data
             return null;
         }
 
-        private ActionDate CreateActionDate(Action action, DateTime date, string time, string priceRange, int minPrice = 0, int maxPrice = 0)
+        private ActionDate CreateActionDate(Action action,Area area, DateTime date, string time, string priceRange, int minPrice = 0, int maxPrice = 0)
         {
             if (!string.IsNullOrEmpty(time) && date > DateTime.MinValue)
             {
-                ActionDate data = new ActionDate() { Action = action, Date = date, Time = time, PriceRange = priceRange, MinPrice = minPrice, MaxPrice = maxPrice };
+                ActionDate data = new ActionDate() { Action = action, Area = area,Date = date, Time = time, PriceRange = priceRange, MinPrice = minPrice, MaxPrice = maxPrice };
                 try
                 {
                     _actionDateRepository.Add(data);
@@ -387,7 +387,7 @@ namespace Artis.Data
                 {
                     _actionRepository.Add(action);
 
-                    ActionDate actionDate = CreateActionDate(action, DateTime.Parse(Date), Time, PriceRange);
+                    ActionDate actionDate = CreateActionDate(action,area, DateTime.Parse(Date), Time, PriceRange);
                     if (actionDate != null)
                         action.ActionDate = new List<ActionDate>() { actionDate };
                     return action;
@@ -401,9 +401,9 @@ namespace Artis.Data
             else
             {
 
-                if (!action.ActionDate.Any(i => i.Date == DateTime.Parse(Date) && i.Time.Equals(Time)))
+                if (!action.ActionDate.Any(i => i.Date == DateTime.Parse(Date) && i.Time.Equals(Time) && i.Area.Name.Equals(AreaName)))
                 {
-                    ActionDate actionDate = CreateActionDate(action, DateTime.Parse(Date), Time, PriceRange);
+                    ActionDate actionDate = CreateActionDate(action,area, DateTime.Parse(Date), Time, PriceRange);
                     action.ActionDate.Add(actionDate);
                     return action;
                 }

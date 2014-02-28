@@ -65,6 +65,7 @@
     <Compile Include="NHibernate\Objects\Short\MiddleAction.cs" />
     <Compile Include="NHibernate\Objects\Short\MiddleArea.cs" />
     <Compile Include="NHibernate\Objects\Short\ShortAction.cs" />
+    <Compile Include="NHibernate\Objects\Short\ShortActionDate.cs" />
     <Compile Include="NHibernate\Objects\Short\ShortArea.cs" />
     <Compile Include="NHibernate\Objects\State.cs" />
     <Compile Include="NHibernate\QueriesExtentions.cs" />

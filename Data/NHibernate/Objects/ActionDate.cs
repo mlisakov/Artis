@@ -12,6 +12,7 @@ namespace Artis.Data
         private string _priceRange;
 
         private Action _action;
+        private Area _area;
 
         /// <summary>
         /// Идентификатор
@@ -73,6 +74,15 @@ namespace Artis.Data
         {
             get { return _action; }
             set { _action = value; }
+        }
+
+        /// <summary>
+        /// Площадка
+        /// </summary>
+        public virtual Area Area
+        {
+            get { return _area; }
+            set { _area = value; }
         }
     }
 }

@@ -5,14 +5,42 @@ using System.Linq;
 
 namespace Artis.Data
 {
-    public class MiddleAction:ShortAction
+    public class MiddleAction
     {
+        private long _id;
+        private string _name;
         private string _description;
+        private string _genreName;
         
         private ICollection<Actor> _actors;
         private ICollection<Producer> _producers;
 
+        /// <summary>
+        /// Идентификатор
+        /// </summary>
+        public long ID
+        {
+            get { return _id; }
+            protected set { _id = value; }
+        }
 
+        /// <summary>
+        /// Наименование
+        /// </summary>
+        public string Name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        /// <summary>
+        /// Наименование жанра
+        /// </summary>
+        public string GenreName
+        {
+            get { return _genreName; }
+            set { _genreName = value; }
+        } 
         /// <summary>
         /// Описание мероприятия
         /// </summary>
@@ -40,13 +68,15 @@ namespace Artis.Data
             set { _producers = value; }
         }
 
-        public MiddleAction(Action action, DateTime date, string time, string priceRange)
-            : base(action, date, time, priceRange)
+        public MiddleAction(Action action)
         {
+            Name = action.Name;
+            ID = action.ID;
+            GenreName = action.Genre.Name;
             Description = action.Description;
-
             Actor = new Collection<Actor>(action.Actor.ToList());
             Producer = new Collection<Producer>(action.Producer.ToList());
         }
+
     }
 }

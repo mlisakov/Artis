@@ -363,7 +363,7 @@ namespace SofitConnectorService.Service
                 if (pageSize == 0)
                     pageSize = 1;
 
-                string action = DataRequestFactory.GetActions(ActionName, idArea, pageSize, page);
+                string action = DataRequestFactory.GetTours(ActionName, idArea, pageSize, page);
                 return action;
             }
             catch (Exception ex)

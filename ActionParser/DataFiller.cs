@@ -35,8 +35,8 @@ namespace Artis.ActionParser
         public DataFiller()
         {
             _actionLoadersCompletedCount = 0;
-            //_urlDataLoaders=new List<IUrlDataLoader>(){new UrlBileterDataLoader(),new UrlMariinskyDataLoader(),new UrlMikhailovskyDataLoader()};
-            _urlDataLoaders = new List<IUrlDataLoader>() { new UrlMikhailovskyDataLoader() };
+            _urlDataLoaders=new List<IUrlDataLoader>(){new UrlBileterDataLoader(),new UrlMariinskyDataLoader(),new UrlMikhailovskyDataLoader()};
+            //_urlDataLoaders = new List<IUrlDataLoader>() { new UrlBileterDataLoader() };
             _dataParser=new DataParser();
             HandleEvents();
         }

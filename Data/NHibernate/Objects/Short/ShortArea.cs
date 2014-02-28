@@ -48,7 +48,8 @@
             ID = area.ID;
             Name = area.Name;
             Addres = area.Addres;
-            AreaType = area.AreaType.Name;
+            if (area.AreaType != null)
+                AreaType = area.AreaType.Name;
         }
     }
 }
