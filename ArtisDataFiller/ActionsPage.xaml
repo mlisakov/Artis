@@ -166,7 +166,7 @@
 			<ListView.View>
 				<GridView>
                     <GridViewColumn Header="Наименование" DisplayMemberBinding="{Binding Path=Action.Name}"/>
-                    <GridViewColumn Header="Число" DisplayMemberBinding="{Binding Path=Date,StringFormat=dd.mm.yyyy}"/>
+                    <GridViewColumn Header="Число" DisplayMemberBinding="{Binding Path=Date,StringFormat=dd.MM.yyyy}"/>
                     <GridViewColumn Header="Время" DisplayMemberBinding="{Binding Path=Time}"/>
                     <GridViewColumn Header="Место" DisplayMemberBinding="{Binding Path=Area.Name}"/>
 				</GridView>

@@ -112,7 +112,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         }
 
         /// <summary>
-        /// Выделенная площадка
+        /// Фильтрующая площадка
         /// <remarks>Учавствует в поиске мероприятий</remarks>
         /// </summary>
         public Area FilterArea  
@@ -290,16 +290,21 @@ namespace Artis.ArtisDataFiller.ViewModels
         {
             InitCommands();
 
-            FilterName = "Test filter name";
-            FilterAreasItemsSource = new ObservableCollection<Area>();
-
-            FromDate = ToDate = DateTime.Now;
-            ActionsItemsSource = new ObservableCollection<ActionDate>();
-
+            FromDate = ToDate = DateTime.Today;
             CurrentAction = new Action();
-            CurrentAction.Name = "Naimenovanie";         
 
-            GenresItemsSource = new ObservableCollection<Genre>();
+            InitDataSource();
+        }
+
+        /// <summary>
+        /// Инициализация источников данных
+        /// </summary>
+        private async void InitDataSource()
+        {
+            //FilterName = "Наименование мероприятия";
+            FilterAreasItemsSource = new ObservableCollection<Area>(await DataRequestFactory.GetAreas());
+            ActionsItemsSource = new ObservableCollection<ActionDate>();
+            GenresItemsSource = new ObservableCollection<Genre>(await DataRequestFactory.GetGenres());
             StatesItemsSource = new ObservableCollection<State>();
         }
 
@@ -336,6 +341,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteSaveCommand(object obj)
         {
+           
         }
 
         private void ExecuteRemoveImageCommand(object obj)
@@ -392,7 +398,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async void ExecuteSearchCommand(object parameters)
         {
-            ActionsItemsSource=new ObservableCollection<ActionDate>(await DataRequestFactory.GetActions(FromDate.Value.Date, ToDate.Value.Date));
+            ActionsItemsSource = new ObservableCollection<ActionDate>(await DataRequestFactory.GetActions(FilterName, FilterArea, FromDate, ToDate));
         }
 
     }

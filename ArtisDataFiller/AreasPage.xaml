@@ -2,16 +2,18 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
 	  xmlns:controls="clr-namespace:Artis.ArtisDataFiller.Controls"
 	  xmlns:system="clr-namespace:System;assembly=mscorlib"
+	  xmlns:artisDataFiller="clr-namespace:Artis.ArtisDataFiller"
 	  x:Class="Artis.ArtisDataFiller.AreasPage"
       Background="#FF001B23" 
 	  MinWidth="1024" 
 	  MinHeight="680">
 	<Grid.Resources>
+        <artisDataFiller:Base64StringToBitmapImageConverter x:Key="base64StringToBitmapImageConverter" />
 		<Style x:Key="selectedItemButton" TargetType="{x:Type Button}">
 			<Setter Property="IsEnabled" Value="True"/>
 			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
 			<Style.Triggers>
-				<DataTrigger Binding="{Binding SelectedItem}" Value="{x:Null}">
+				<DataTrigger Binding="{Binding CurrentArea}" Value="{x:Null}">
 					<Setter Property="IsEnabled" Value="False"/>
 				</DataTrigger>
 			</Style.Triggers>
@@ -80,7 +82,7 @@
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="BackButton">
 			<BeginStoryboard x:Name="BackButtonClick_BeginStoryboard" Storyboard="{StaticResource BackButtonClick}"/>
 		</EventTrigger>
-		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="button">
+		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="AddAreaButton">
 			<BeginStoryboard Storyboard="{StaticResource OnClick1}"/>
 		</EventTrigger>
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="SaveButton">
@@ -137,7 +139,7 @@
 				 VerticalAlignment="Top" 
 				 Margin="40,0,0,0" 
 				 ItemsSource="{Binding Areas}"
-				 SelectedItem="{Binding SelectedItem}"
+				 SelectedItem="{Binding CurrentArea}"
 				 DisplayMemberPath="Name" />
 
 		<StackPanel Margin="10,0,0,20" 
@@ -146,9 +148,17 @@
 					HorizontalAlignment="Left"
 					Height="500" 
 					VerticalAlignment="Top">
+            
+            <Button Content="Поиск" 
+                    Template="{DynamicResource SimpleButtonTemplate}" 
+                    Width="110" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Center"
+                    Command="{Binding SearchCommand}"/>
 
-			<Button x:Name="button" Content="Добавить…" 					
-					Margin="0" 
+			<Button x:Name="AddAreaButton" 
+                    Content="Добавить…" 					
+					Margin="0,10,0,0" 
 					Template="{DynamicResource SimpleButtonTemplate}" 
 					Command="{Binding NewAreaCommand}"				
 					Width="110" 
@@ -187,7 +197,10 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
@@ -202,7 +215,7 @@
 									 Watermark="Наименование новой площадки" 
 									 Margin="40,16.503,0,16.502" 
 									 Width="800"			
-									 Text="{Binding EditName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+									 Text="{Binding CurrentArea.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 			<controls:WatermarkedTextBox.Style>
 				<Style BasedOn="{StaticResource {x:Type controls:WatermarkedTextBox}}" TargetType="{x:Type controls:WatermarkedTextBox}">
 					<Setter Property="IsReadOnly" Value="False"/>
@@ -218,23 +231,49 @@
 			</controls:WatermarkedTextBox.Style>
 		</controls:WatermarkedTextBox>
 
-		<TextBlock  Grid.Row="1" 
+        <TextBlock  Grid.Row="1" 
+					Text="Адрес" 
+					Style="{DynamicResource SimpleTextStyle}" 
+					Margin="40,0,0,10"/>
+        
+        <controls:WatermarkedTextBox 
+            TextWrapping="Wrap" 
+            Watermark="Адрес" 
+            Grid.Row="2"
+            Margin="40,0,0,0"
+            Text="{Binding CurrentArea.Addres}"/>
+
+        <TextBlock  Grid.Row="3" 
+					Text="Описание" 
+					Style="{DynamicResource SimpleTextStyle}" 
+					Margin="40,0,0,10"/>
+
+        <controls:WatermarkedTextBox 
+            TextWrapping="Wrap" 
+            Watermark="Описание" 
+            Grid.Row="4"
+            Margin="40,0,0,0"
+            Text="{Binding CurrentArea.Description}"/>
+        
+        <TextBlock  Grid.Row="5" 
 					Text="Картинки" 
 					Style="{DynamicResource SimpleTextStyle}" 
 					Margin="40,0,0,10"/>
 
-		<ListBox Grid.Row="2" 
+		<ListBox Grid.Row="6" 
 				 MinWidth="800" 
 				 Margin="40,0,0,0" 
 				 VerticalAlignment="Top" 
 				 Height="500" 
 				 HorizontalAlignment="Left" 
-				 ItemsSource="{Binding Images}" 
+                 SelectedItem="{Binding SelectedImage}"
+                 ItemsSource="{Binding Images, Converter={StaticResource base64StringToBitmapImageConverter}}" 
 				 ItemTemplate="{DynamicResource DataTemplate1}" 
 				 ItemContainerStyle="{DynamicResource ListBoxItemStyle1}">
+            <!--ItemsSource="{Binding CurrentArea.Data, Converter={StaticResource base64StringToBitmapImageConverter}}"--> 
 			<ListBox.Resources>
 				<DataTemplate x:Key="DataTemplate1">
-					<Image Source="{Binding }"/>
+					<Image Source="{Binding Image}"/>
 				</DataTemplate>
 				<Style x:Key="ListBoxItemStyle1" TargetType="{x:Type ListBoxItem}">
 					<Setter Property="Background" Value="Transparent"/>
@@ -247,7 +286,7 @@
 
 		<Button x:Name="AddNewImageButton" 
 				Content="Добавить…" 
-				Grid.Row="2" 
+				Grid.Row="6" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
 				Margin="0" 
@@ -257,7 +296,7 @@
 
 		<Button x:Name="RemoveImageButton" 
 				Content="Удалить" 
-				Grid.Row="2" 
+				Grid.Row="6" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
 				Margin="0,40.96,0,0" 
@@ -278,7 +317,7 @@
 
 		<Button x:Name="SaveButton" 
 				Content="Сохранить" 
-				Grid.Row="2" 
+				Grid.Row="6" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
 				Command="{Binding SaveCommand}"
@@ -287,7 +326,7 @@
 
 		<Button x:Name="BackButton" 
 				Content="Назад" 
-				Grid.Row="2" 
+				Grid.Row="6" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
 				Command="{Binding BackCommand}"

@@ -104,6 +104,8 @@
     </Compile>
     <Compile Include="Controls\WatermarkedComboBox.cs" />
     <Compile Include="Controls\WatermarkedTextBox.cs" />
+    <Compile Include="Converters\Base64StringToBitmapImageConverter.cs" />
+    <Compile Include="Helpers\DataImage.cs" />
     <Compile Include="NLog-NHibernate.cs" />
     <Compile Include="ViewModels\ActionsViewModel.cs" />
     <Compile Include="ViewModels\AreasViewModel.cs" />

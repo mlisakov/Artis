@@ -7,6 +7,7 @@ using NHibernate;
 using NHibernate.Criterion;
 using NHibernate.Linq;
 using NHibernate.SqlCommand;
+using NLog;
 using Remotion.Linq.Collections;
 
 namespace Artis.Data
@@ -16,6 +17,10 @@ namespace Artis.Data
     /// </summary>
     public static class DataRequestFactory
     {
+        /// <summary>
+        /// Логгер
+        /// </summary>
+        private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
         private static List<long> TheatricalsAreaTypes = new List<long>() {1,7};
         private static List<long> TourAreaTypes = new List<long>() {4};
@@ -42,18 +47,40 @@ namespace Artis.Data
 
         /// <summary>
         /// Получение мероприятий по дате проведения
-        /// </summary>
+        /// </summary> 
+        /// <param name="actionName">Наименовение мероприятия</param>
+        /// <param name="area">Площадка, на которой проводится мероприятие</param>
         /// <param name="startDate">Начальная дата для фильра</param>
         /// <param name="finishDate">Конечная дата для фильтра</param>
+      
         /// <returns></returns>
-        public static async Task<IList<ActionDate>> GetActions(DateTime startDate, DateTime finishDate)
+        public static async Task<IList<ActionDate>> GetActions(string actionName,Area area,DateTime? startDate, DateTime? finishDate)
         {
             using (ISession session = Domain.Session)
             {
-                IQueryable<ActionDate> act =
-                    session.Query<ActionDate>()
-                        .Where(i => i.Date >= startDate && i.Date <= finishDate);
-                return act.ToList();
+                //IQueryable<ActionDate> act =
+                //    session.Query<ActionDate>()
+                //        .Where(i => i.Date >= startDate && i.Date <= finishDate);
+                //return act.ToList();
+                ICriteria criteria = session.CreateCriteria<ActionDate>("actionDate");
+                if (!string.IsNullOrEmpty(actionName))
+                {
+                    criteria.CreateAlias("actionDate.Action", "Action");
+                    criteria.Add(Restrictions.Like("Action.Name", "%" + actionName + "%").IgnoreCase());
+                }
+
+                if (area != null)
+                {
+                    criteria.CreateAlias("actionDate.Area", "Area");
+                    criteria.Add(Restrictions.Eq("Area.Name", area.Name).IgnoreCase());
+                }
+
+                if (startDate != null && finishDate!=null)
+                {
+                    criteria.Add(Restrictions.Where<ActionDate>(i => i.Date >= startDate.Value.Date && i.Date <= finishDate.Value.Date));
+                }
+
+                return  criteria.List<ActionDate>();
 
             }
         }
@@ -267,6 +294,25 @@ namespace Artis.Data
 
             }
         }
+
+        /// <summary>
+        /// Получение всех площадок
+        /// </summary>
+        /// <returns>Список площадок, отсортированный по имени</returns>
+        public static async Task<IList<Area>> GetAreas(string areaName = "")
+        {
+            using (ISession session = Domain.Session)
+            {
+                if (string.IsNullOrEmpty(areaName))
+                    return session.Query<Area>().Select(i => i).OrderBy(i => i.Name).ToList();
+
+                ICriteria criteria = session.CreateCriteria(typeof (Area));
+                criteria.Add(Restrictions.Like("Name", "%" + areaName + "%").IgnoreCase());
+                return criteria.List<Area>().OrderBy(i => i.Name).ToList();
+            }
+
+        }
+
         /// <summary>
         /// Получение списка жанров
         /// </summary>
@@ -277,6 +323,19 @@ namespace Artis.Data
             {
                 IEnumerable<Genre> genres = session.Query<Genre>();
                 return new JavaScriptSerializer().Serialize(genres);
+            }
+        }
+
+        /// <summary>
+        /// Получение списка жанров
+        /// </summary>
+        /// <returns>Список всех жанров</returns>
+        public static async Task<List<Genre>> GetGenres()
+        {
+            using (ISession session = Domain.Session)
+            {
+                IEnumerable<Genre> genres = session.Query<Genre>();
+                return genres.ToList();
             }
         }
 
@@ -325,6 +384,51 @@ namespace Artis.Data
 
                 return new JavaScriptSerializer().Serialize(shortArea);
             }
+        }
+
+        public static async Task<bool> Save(Area area, List<Data> addedImages, List<long> deletedImages)
+        {
+            try
+            {
+                if (deletedImages != null)
+                    foreach (long idImage in deletedImages)
+                    {
+                        Data item = area.Data.First(i => i.ID == idImage);
+                        area.Data.Remove(item);
+                    }
+
+                if (addedImages != null)
+                    foreach (Data data in addedImages)
+                    {
+                        DataRepository _dataRepository = new DataRepository();
+                        _dataRepository.Add(data);
+                        area.Data.Add(data);
+                    }
+
+                Save(area);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Ошибка записи изображения ", ex);
+                return false;
+            }
+            return true;
+        }
+
+        public static bool Save<T>(T item)
+        {
+            IRepository<T> rep = new BaseRepository<T>();
+            try
+            {
+                rep.Update(item);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("DataRequestFactory: Не удалось обновить сущность ",ex);
+                return false;
+            }
+
         }
     }
 }

@@ -1,22 +1,41 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
+using Microsoft.Win32;
+using NLog;
 
 namespace Artis.ArtisDataFiller.ViewModels
 {
     public sealed class AreasViewModel: ViewModel
     {
+        /// <summary>
+        /// Логгер
+        /// </summary>
+        private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
+
         private string _filterName;
-        private ObservableCollection<Area> _areas;
-        private Area _selectedItem;
-        private string _editName;
-        private ObservableCollection<BitmapImage> _images;
-        private BitmapImage _selectedImage;
+       
+        private Area _currentArea;
+        //private DataImage _currentAreaImage;        
+        private DataImage _selectedImage;
         private bool _isEdit;
+        //private string _editName; 
+
+        private ObservableCollection<Area> _areas;
+        private ObservableCollection<Data.Data> _images;
+        private List<long> _deletedImages;
+        private List<Data.Data> _addedImages;
+
+        /// <summary>
+        /// Команда поиска
+        /// </summary>
+        public ArtisCommand SearchCommand { get; private set; }
 
         /// <summary>
         /// Команда редактирования площадки
@@ -58,14 +77,13 @@ namespace Artis.ArtisDataFiller.ViewModels
             {
                 _filterName = value;
                 if (value == "1!")
-                    SelectedItem = null;
+                    CurrentArea = null;
                 OnPropertyChanged();
             }
         }
 
         /// <summary>
         /// Коллекция загруженных площадок
-        /// todo Макс, вставь нужный тип ObservableCollection здесь 
         /// </summary>
         public ObservableCollection<Area> Areas
         {
@@ -78,30 +96,41 @@ namespace Artis.ArtisDataFiller.ViewModels
         }
 
         /// <summary>
-        /// Выделенный элемент в списке
+        /// Текущая площадка(Выделенная в списке из существующих или новая)
         /// </summary>
-        public Area SelectedItem  
+        public Area CurrentArea  
         {
-            get { return _selectedItem; }
+            get { return _currentArea; }
             set
             {
-                _selectedItem = value; 
+                _currentArea = value; 
                 OnPropertyChanged();
             }
         }
 
+        //public DataImage CurrentAreaImage  
+        //{
+        //    get { return _currentAreaImage; }
+        //    set
+        //    {
+        //        _currentAreaImage = value; 
+        //        OnPropertyChanged();
+        //    }
+        //}
+        
+
         /// <summary>
         /// Поле - наименование редактируемой или создаваемой площадки
         /// </summary>
-        public string EditName
-        {
-            get { return _editName; }
-            set
-            {
-                _editName = value;
-                OnPropertyChanged();
-            }
-        }
+        //public string EditName
+        //{
+        //    get { return _editName; }
+        //    set
+        //    {
+        //        _editName = value;
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         /// <summary>
         /// true - если сейчас редактируется площадка.
@@ -122,12 +151,12 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Список картинок для редактируемой/создаваемой площадки
         /// </summary>
-        public ObservableCollection<BitmapImage> Images
+        public ObservableCollection<Data.Data> Images
         {
             get { return _images; }
             set
             {
-                _images = value;                
+                _images = value;
                 OnPropertyChanged();
             }
         }
@@ -135,7 +164,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Выделенная картинка
         /// </summary>
-        public BitmapImage SelectedImage    
+        public DataImage SelectedImage    
         {
             get { return _selectedImage; }
             set
@@ -147,38 +176,64 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         public AreasViewModel()
         {
+            InitCommands();
+            InitDataSource();
+            InitVariables();
+
+            #region
+
+            //FilterName = "some string";
+            //Areas = new ObservableCollection<Area>();
+            //Areas.Add(new Area{Name = "1"});
+            //Areas.Add(new Area
+            //{
+            //    Name = "2",
+            //    Data = new Collection<Data.Data>
+            //    {
+            //        new Data.Data {Base64StringData = "askldjflkajsdklfjaklsjdf"},
+            //        new Data.Data {Base64StringData = "askldjflkajsdklfjaklsjdf"},
+            //        new Data.Data {Base64StringData = "askldjflkajsdklfjaklsjdf"},
+            //        new Data.Data {Base64StringData = "askldjflkajsdklfjaklsjdf"},
+            //        new Data.Data {Base64StringData = "askldjflkajsdklfjaklsjdf"}
+            //    }
+            //});
+            //Areas.Add(new Area{Name = "3"});
+            //Areas.Add(new Area{Name = "4"});
+            //OnPropertyChanged("Areas");
+
+            //SelectedItem = Areas[1];
+
+            //EditName = "edit text";
+            //IsEdit = true;
+
+            #endregion
+        }
+
+        private void InitCommands()
+        {
+            SearchCommand = new ArtisCommand(CanExecuteSearchCommand, ExecuteSearchCommand);
             EditCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteEditCommand);
             AddImagesCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteAddImagesCommand);
             RemoveImagesCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteRemoveImagesCommand);
             SaveCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteSaveCommand);
-            BackCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteBackCommand);                        
-            NewAreaCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteNewAreaCommand);                        
+            BackCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteBackCommand);
+            NewAreaCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteNewAreaCommand);
+        }
 
-            FilterName = "some string";
-            Areas = new ObservableCollection<Area>();
-            Areas.Add(new Area{Name = "1"});
-            Areas.Add(new Area
-            {
-                Name = "2",
-                Data = new Collection<Data.Data>
-                {
-                    new Data.Data {Base64StringData = "askldjflkajsdklfjaklsjdf"},
-                    new Data.Data {Base64StringData = "askldjflkajsdklfjaklsjdf"},
-                    new Data.Data {Base64StringData = "askldjflkajsdklfjaklsjdf"},
-                    new Data.Data {Base64StringData = "askldjflkajsdklfjaklsjdf"},
-                    new Data.Data {Base64StringData = "askldjflkajsdklfjaklsjdf"}
-                }
-            });
-            Areas.Add(new Area{Name = "3"});
-            Areas.Add(new Area{Name = "4"});
-            OnPropertyChanged("Areas");
+        private async void InitDataSource()
+        {
+            Areas=new ObservableCollection<Area>(await DataRequestFactory.GetAreas());
+        }
 
-            SelectedItem = Areas[1];
+        private void InitVariables()
+        {
+            _deletedImages=new List<long>();
+            _addedImages=new List<Data.Data>();
+        }
 
-            EditName = "edit text";
-            IsEdit = true;
-
-            Images = new ObservableCollection<BitmapImage>();
+        private bool CanExecuteSearchCommand(object parameters)
+        {
+            return true;
         }
 
         private bool CanExecuteEditCommand(object parameter)
@@ -186,9 +241,16 @@ namespace Artis.ArtisDataFiller.ViewModels
             return true;
         }
 
+        private async void ExecuteSearchCommand(object parameters)
+        {
+            Areas = new ObservableCollection<Area>(await DataRequestFactory.GetAreas(FilterName));
+        }
+
         private void ExecuteNewAreaCommand(object parameter)
         {
             IsEdit = false; // устанавливаем флаг
+            //Создаем новую площадку
+            CurrentArea=new Area();
         }
 
         private void ExecuteBackCommand(object parameter)
@@ -198,70 +260,72 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteSaveCommand(object parameter)
         {
-            //todo сохранение площадки после редактирования/создания
+            SaveArea();
         }
 
         private void ExecuteAddImagesCommand(object parameter)
         {
             //todo открыть диалог, выбрать картинки, добавить их в Images
-        }
+            OpenFileDialog openDialog = new OpenFileDialog
+            {
+                Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+                Title = "Пожалуйста, выберите необхожимые изображения.",
+                Multiselect = true
+            };
+
+            if (openDialog.ShowDialog().Value)
+            {
+                Stream[] selectedFiles=openDialog.OpenFiles();
+                foreach (Stream file in selectedFiles)
+                {
+                    MemoryStream stream=new MemoryStream();
+                    file.CopyTo(stream);
+                    file.Close();
+                    byte[] imageArray = stream.ToArray();
+                    string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
+                    if (!string.IsNullOrEmpty(base64String))
+                    {
+                        Data.Data image = new Data.Data() {Base64StringData = base64String};
+
+                        _addedImages.Add(image);
+
+                        Images.Add(image);
+                        OnPropertyChanged("Images");
+                    }
+                }
+            }
+
+        } 
+        
 
         private void ExecuteRemoveImagesCommand(object parameter)
         {
-            //todo удалить SelectedImage
+            if (SelectedImage.ID != 0)
+            {
+                _deletedImages.Add(SelectedImage.ID);
+                Images.Remove(Images.First(i => i.ID == SelectedImage.ID));
+            }
+            else
+                Images.Remove(Images.First(i => i.Base64StringData.Equals(SelectedImage.Base64String)));
+
+            if (_addedImages.Any(i => i.Base64StringData.Equals(SelectedImage.Base64String)))
+            {
+                Data.Data image = _addedImages.First(i => i.ID == SelectedImage.ID);
+                _addedImages.Remove(image);
+            }
+
+            OnPropertyChanged("Images");
         }
 
         private void ExecuteEditCommand(object parameter)
         {
             IsEdit = true; // устанавливаем флаг
-            EditName = string.Empty;
-
-            //todo WPF не может отображать base64 пикчи.
-            //todo тебе нужно асинхронно конвертить их и отправлять в массив.
-            //todo пример реализации ниже
-
-            ConvertImages();
+            Images=new ObservableCollection<Data.Data>(CurrentArea.Data);
         }
 
-        /// <summary>
-        /// Асинхронная конвертация картинок из base64 в BitmapImage
-        /// </summary>
-        private async void ConvertImages()
+        private async Task<bool> SaveArea()
         {
-            if (SelectedItem != null && SelectedItem.Data != null)
-            {
-                foreach (Data.Data data in SelectedItem.Data)
-                {
-                    Data.Data data1 = data;
-                    var f = await Task<BitmapImage>.Factory.StartNew(() => GetImage(data1.Base64StringData));
-
-                    if (f != null)
-                    {
-                        Images.Add(f);
-                        OnPropertyChanged("Images");
-                    }
-                }
-            }
-        }
-
-        private BitmapImage GetImage(string data)
-        {
-            try
-            {
-                byte[] binaryData = Convert.FromBase64String(data);
-
-                var bi = new BitmapImage();
-                bi.BeginInit();
-                bi.StreamSource = new MemoryStream(binaryData);
-                bi.EndInit();
-
-                return bi;
-            }
-            catch (Exception)
-            {
-
-                return null;
-            }
+            return await DataRequestFactory.Save(CurrentArea, _addedImages, _deletedImages);
         }
     }
 }

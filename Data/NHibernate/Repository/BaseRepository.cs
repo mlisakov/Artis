@@ -4,7 +4,7 @@ using NHibernate.Criterion;
 
 namespace Artis.Data
 {
-    public abstract class BaseRepository<T> : IRepository<T>
+    public class BaseRepository<T> : IRepository<T>
     {
         public void Add(T item)
         {
