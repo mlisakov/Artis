@@ -271,7 +271,6 @@
                  ItemsSource="{Binding Images, Converter={StaticResource base64StringToBitmapImageConverter}}" 
 				 ItemTemplate="{DynamicResource DataTemplate1}" 
 				 ItemContainerStyle="{DynamicResource ListBoxItemStyle1}">
-            <!--ItemsSource="{Binding CurrentArea.Data, Converter={StaticResource base64StringToBitmapImageConverter}}"--> 
 			<ListBox.Resources>
 				<DataTemplate x:Key="DataTemplate1">
 					<Image Source="{Binding Image}"/>

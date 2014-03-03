@@ -58,7 +58,7 @@ namespace Artis.ArtisDataFiller
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("AreasViewModel: Ошибка конвертирования изображения из строки в BitmapImage", ex);
+                _logger.ErrorException("Ошибка конвертирования изображения из строки в BitmapImage", ex);
                 return null;
             }
         }

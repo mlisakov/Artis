@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,17 +12,24 @@ namespace Artis.ArtisDataFiller.ViewModels
     public sealed class ActionsViewModel : ViewModel
     {
         private string _filterName;
-        private ObservableCollection<Area> _filterAreasItemsSource;
+        private DataImage _selectedImage;
+        
         private Area _filterArea;
         private DateTime? _fromDate;
         private DateTime? _toDate;
-        private ObservableCollection<ActionDate> _actionsItemsSource;
-        private ActionDate _selectedAction;
-        private Action _currentAction;
-        private ObservableCollection<Genre> _genresItemsSource;
-        private ObservableCollection<State> _statesItemsSource;
+        private ActionDate _currentActionDate;
+        //private Action _currentAction;
         private Actor _selectedActor;
         private Producer _selectedProducer;
+
+        private ObservableCollection<Data.Data> _images;
+        private List<long> _deletedImages;
+        private List<Data.Data> _addedImages;
+
+        private ObservableCollection<Area> _filterAreasItemsSource;        
+        private ObservableCollection<Genre> _genresItemsSource;
+        private ObservableCollection<State> _statesItemsSource;
+        private ObservableCollection<ActionDate> _actionsItemsSource;
 
         /// <summary>
         /// Команда поиска
@@ -96,6 +104,33 @@ namespace Artis.ArtisDataFiller.ViewModels
                 OnPropertyChanged();
             }
         }
+
+        /// <summary>
+        /// Список картинок для редактируемой/создаваемой площадки
+        /// </summary>
+        public ObservableCollection<Data.Data> Images
+        {
+            get { return _images; }
+            set
+            {
+                _images = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Выделенная картинка
+        /// </summary>
+        public DataImage SelectedImage
+        {
+            get { return _selectedImage; }
+            set
+            {
+                _selectedImage = value;
+                OnPropertyChanged();
+            }
+        }
+
 
         /// <summary>
         /// Источник данных для комбо-бокса с площадками, учавствует в поиске
@@ -175,12 +210,12 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Выделенное мероприятие в результатах поиска
         /// </summary>
-        public ActionDate SelectedAction
+        public ActionDate CurrentActionDate
         {
-            get { return _selectedAction; }
+            get { return _currentActionDate; }
             set
             {
-                _selectedAction = value;
+                _currentActionDate = value;
                 OnPropertyChanged();
             }
         }
@@ -188,15 +223,15 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Текущий создаваемое/редактируемое мероприятие
         /// </summary>
-        public Action CurrentAction
-        {
-            get { return _currentAction; }
-            set
-            {
-                _currentAction = value; 
-                OnPropertyChanged();
-            }
-        }
+        //public Action CurrentAction
+        //{
+        //    get { return _currentAction; }
+        //    set
+        //    {
+        //        _currentAction = value; 
+        //        OnPropertyChanged();
+        //    }
+        //}
 
         /// <summary>
         /// Источник данных для списка с жанрами
@@ -227,20 +262,20 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Источник данных для актеров создаваемого/редактируемого мероприятия
         /// </summary>
-        public ObservableCollection<Actor> CurrentActionActors
-        {
-            get
-            {
-                if (CurrentAction != null && CurrentAction.Actor != null)
-                    return new ObservableCollection<Actor>(CurrentAction.Actor);
-                return new ObservableCollection<Actor>();
-            }
-            set
-            {
-                if (CurrentAction != null)
-                    CurrentAction.Actor = value;
-            }
-        }
+        //public ObservableCollection<Actor> CurrentActionActors
+        //{
+        //    get
+        //    {
+        //        if (CurrentActionDate != null && CurrentActionDate.Action.Actor != null)
+        //            return new ObservableCollection<Actor>(CurrentActionDate.Action.Actor);
+        //        return new ObservableCollection<Actor>();
+        //    }
+        //    set
+        //    {
+        //        if (CurrentActionDate != null)
+        //            CurrentActionDate.Action.Actor = value;
+        //    }
+        //}
 
         /// <summary>
         /// Выделенный актер в списке актеров создаваемого/редактируемого мероприятия
@@ -258,20 +293,20 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Источник данных для продюсеров создаваемого/редактируемого мероприятия
         /// </summary>
-        public ObservableCollection<Producer> CurrentActionProducers
-        {
-            get
-            {
-                if (CurrentAction != null && CurrentAction.Producer != null)
-                    return new ObservableCollection<Producer>(CurrentAction.Producer);
-                return new ObservableCollection<Producer>();
-            }
-            set
-            {
-                if (CurrentAction != null)
-                    CurrentAction.Producer = value;
-            }
-        }
+        //public ObservableCollection<Producer> CurrentActionProducers
+        //{
+        //    get
+        //    {
+        //        if (CurrentActionDate != null && CurrentActionDate.Action.Producer != null)
+        //            return new ObservableCollection<Producer>(CurrentActionDate.Action.Producer);
+        //        return new ObservableCollection<Producer>();
+        //    }
+        //    set
+        //    {
+        //        if (CurrentActionDate != null)
+        //            CurrentActionDate.Action.Producer = value;
+        //    }
+        //}
 
         /// <summary>
         /// Выделенный продюсер в списке продюсеров создаваемого/редактируемого мероприятия
@@ -291,7 +326,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             InitCommands();
 
             FromDate = ToDate = DateTime.Today;
-            CurrentAction = new Action();
+            //SelectedAction = new Action();
 
             InitDataSource();
         }
@@ -384,6 +419,9 @@ namespace Artis.ArtisDataFiller.ViewModels
         private void ExecuteEditActionCommand(object obj)
         {
             IsEdit = true; // не удалять
+            Images = new ObservableCollection<Data.Data>(CurrentActionDate.Action.Data);
+            _addedImages = new List<Data.Data>();
+            _deletedImages = new List<long>();
         }
 
         private bool CanExecuteSearchCommand(object parameters)
