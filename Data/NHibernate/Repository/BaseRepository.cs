@@ -26,7 +26,7 @@ namespace Artis.Data
             }
         }
 
-        public void Remove(T item)
+        public void Delete(T item)
         {
             using (ISession session = Domain.Session)
             using (ITransaction transaction = session.BeginTransaction())

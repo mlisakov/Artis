@@ -176,7 +176,8 @@
 					Margin="0,10,0,0" 					
 					Width="110" 
 					VerticalAlignment="Top" 
-					Style="{DynamicResource selectedItemButton}"/>
+					Style="{DynamicResource selectedItemButton}"
+                    Command="{Binding RemoveCommand}"/>
 		</StackPanel>
 	</Grid>
 

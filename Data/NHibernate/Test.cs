@@ -83,25 +83,25 @@ namespace Artis.Data
             //Assert.Null(deletedAction);
         }
 
-        [Test]
-        public void Can_CRUD_Area()
-        {
-            Area area = new Area() {Addres = "ул.Кирова, 34/3", Metro = new Metro(){Name = "Нарвская"}, Name = "ДК Кирова"};
-            AreaRepository repository = new AreaRepository();
-            repository.Add(area);
+        //[Test]
+        //public void Can_CRUD_Area()
+        //{
+        //    Area area = new Area() {Addres = "ул.Кирова, 34/3", Metro = new Metro(){Name = "Нарвская"}, Name = "ДК Кирова"};
+        //    AreaRepository repository = new AreaRepository();
+        //    repository.Add(area);
 
-            long id = area.ID;
+        //    long id = area.ID;
 
-            Area addedArea = repository.GetById(area.ID);
-            addedArea.Name = "Тест123";
-            repository.Update(addedArea);
-            Assert.AreNotEqual(addedArea.Name, "ДК Кирова");
+        //    Area addedArea = repository.GetById(area.ID);
+        //    addedArea.Name = "Тест123";
+        //    repository.Update(addedArea);
+        //    Assert.AreNotEqual(addedArea.Name, "ДК Кирова");
 
-            repository.Remove(addedArea);
+        //    repository.Remove(addedArea);
 
-            Area deletedArea = repository.GetById(id);
-            Assert.Null(deletedArea);
-        }
+        //    Area deletedArea = repository.GetById(id);
+        //    Assert.Null(deletedArea);
+        //}
 
     }
 }

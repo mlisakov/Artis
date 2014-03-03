@@ -6,7 +6,7 @@ namespace Artis.Data
     {
         void Add(T item);
         void Update(T item);
-        void Remove(T item);
+        void Delete(T item);
         T GetById(long itemGuid);
         T GetByName(string name,string field="Name");
     }

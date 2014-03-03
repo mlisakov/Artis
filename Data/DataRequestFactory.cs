@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
@@ -8,14 +9,13 @@ using NHibernate.Criterion;
 using NHibernate.Linq;
 using NHibernate.SqlCommand;
 using NLog;
-using Remotion.Linq.Collections;
 
 namespace Artis.Data
 {
     /// <summary>
     /// Класс для запроса данных с БД
     /// </summary>
-    public static class DataRequestFactory
+    public static partial class DataRequestFactory
     {
         /// <summary>
         /// Логгер
@@ -384,51 +384,6 @@ namespace Artis.Data
 
                 return new JavaScriptSerializer().Serialize(shortArea);
             }
-        }
-
-        public static async Task<bool> Save(Area area, List<Data> addedImages, List<long> deletedImages)
-        {
-            try
-            {
-                if (deletedImages != null)
-                    foreach (long idImage in deletedImages)
-                    {
-                        Data item = area.Data.First(i => i.ID == idImage);
-                        area.Data.Remove(item);
-                    }
-
-                if (addedImages != null)
-                    foreach (Data data in addedImages)
-                    {
-                        DataRepository _dataRepository = new DataRepository();
-                        _dataRepository.Add(data);
-                        area.Data.Add(data);
-                    }
-
-                Save(area);
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("Ошибка записи изображения ", ex);
-                return false;
-            }
-            return true;
-        }
-
-        public static bool Save<T>(T item)
-        {
-            IRepository<T> rep = new BaseRepository<T>();
-            try
-            {
-                rep.Update(item);
-                return true;
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("DataRequestFactory: Не удалось обновить сущность ",ex);
-                return false;
-            }
-
         }
     }
 }

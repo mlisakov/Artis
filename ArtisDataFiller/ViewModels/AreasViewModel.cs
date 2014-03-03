@@ -53,6 +53,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         public ArtisCommand RemoveImagesCommand { private set; get; }
 
         /// <summary>
+        /// Команда удаления площадки
+        /// </summary>
+        public ArtisCommand RemoveCommand { private set; get; }
+
+        /// <summary>
         /// Команда сохранения площадки после редактирования/создания
         /// </summary>
         public ArtisCommand SaveCommand { private set; get; }
@@ -216,6 +221,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             AddImagesCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteAddImagesCommand);
             RemoveImagesCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteRemoveImagesCommand);
             SaveCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteSaveCommand);
+            RemoveCommand = new ArtisCommand(CanExecuteRemoveCommand, ExecuteRemoveCommand);
             BackCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteBackCommand);
             NewAreaCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteNewAreaCommand);
         }
@@ -241,6 +247,13 @@ namespace Artis.ArtisDataFiller.ViewModels
             return true;
         }
 
+        private bool CanExecuteRemoveCommand(object parameter)
+        {
+            if (CurrentArea != null)
+                return true;
+            return false;
+        }
+
         private async void ExecuteSearchCommand(object parameters)
         {
             Areas = new ObservableCollection<Area>(await DataRequestFactory.GetAreas(FilterName));
@@ -251,21 +264,31 @@ namespace Artis.ArtisDataFiller.ViewModels
             IsEdit = false; // устанавливаем флаг
             //Создаем новую площадку
             CurrentArea=new Area();
+            Images = new ObservableCollection<Data.Data>();
         }
 
         private void ExecuteBackCommand(object parameter)
         {
-            //todo возврат на просмотр всех площадок
+            ClearVariables();
         }
 
         private void ExecuteSaveCommand(object parameter)
         {
-            SaveArea();
+            if (IsEdit)
+                SaveArea();
+            else
+                AddArea();
+
+            ClearVariables();
+        }
+
+        private void ExecuteRemoveCommand(object parameter)
+        {
+            RemoveArea();
         }
 
         private void ExecuteAddImagesCommand(object parameter)
         {
-            //todo открыть диалог, выбрать картинки, добавить их в Images
             OpenFileDialog openDialog = new OpenFileDialog
             {
                 Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
@@ -320,12 +343,47 @@ namespace Artis.ArtisDataFiller.ViewModels
         private void ExecuteEditCommand(object parameter)
         {
             IsEdit = true; // устанавливаем флаг
-            Images=new ObservableCollection<Data.Data>(CurrentArea.Data);
+            Images = new ObservableCollection<Data.Data>(CurrentArea.Data);
+            _addedImages = new List<Data.Data>();
+            _deletedImages = new List<long>();
+        }
+
+        private void ClearVariables()
+        {
+            CurrentArea = null;
+            SelectedImage = null;
+            Images = null;
+            _deletedImages = null;
+            _addedImages = null;
         }
 
         private async Task<bool> SaveArea()
         {
-            return await DataRequestFactory.Save(CurrentArea, _addedImages, _deletedImages);
+            return await AreaRepository.Save(CurrentArea, _addedImages, _deletedImages);
+        }
+
+        private async Task<bool> AddArea()
+        {
+            bool result = await AreaRepository.Add(CurrentArea, _addedImages);
+            if (result)
+            {
+                Areas.Add(CurrentArea);
+                OnPropertyChanged("Areas");
+            }
+            return result;
+
+        }
+
+        private async Task<bool> RemoveArea()
+        {
+            bool result = await AreaRepository.Remove(CurrentArea);
+            if (result)
+            {
+                Areas.Remove(CurrentArea);
+                OnPropertyChanged("Areas");
+            }
+            return result;
+
         }
     }
 }
