@@ -4,8 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
 using Microsoft.Win32;
@@ -227,10 +225,19 @@ namespace Artis.ArtisDataFiller.ViewModels
             NewAreaCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteNewAreaCommand);
         }
 
-        private async Task InitDataSource()
+        /// <summary>
+        /// Заполнение источников данных
+        /// </summary>
+        private async void InitDataSource()
         {
-            var result = await DataRequestFactory.GetAreas();
-            Areas = new ObservableCollection<Area>(result);
+            IList<Area> areas = await Task.Run(
+            () =>
+            {
+                Task<IList<Area>> t = DataRequestFactory.GetAreas();
+                t.Wait();
+               return t.Result;
+            });
+            Areas = new ObservableCollection<Area>(areas);
         }
 
         private void InitVariables()

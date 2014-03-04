@@ -376,7 +376,12 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteSaveCommand(object obj)
         {
-           
+            if (IsEdit)
+                SaveActionDate();
+            else
+                AddAreaDate();
+
+            ClearVariables();
         }
 
         private void ExecuteRemoveImageCommand(object obj)
@@ -437,6 +442,44 @@ namespace Artis.ArtisDataFiller.ViewModels
         private async void ExecuteSearchCommand(object parameters)
         {
             ActionsItemsSource = new ObservableCollection<ActionDate>(await DataRequestFactory.GetActions(FilterName, FilterArea, FromDate, ToDate));
+        }
+
+        private void ClearVariables()
+        {
+            CurrentActionDate = null;
+            SelectedImage = null;
+            Images = null;
+            _deletedImages = null;
+            _addedImages = null;
+        }
+
+        private async Task<bool> SaveActionDate()
+        {
+            return await ActionDateRepository.Save(CurrentActionDate, _addedImages, _deletedImages);
+        }
+
+        private async Task<bool> AddAreaDate()
+        {
+            //bool result = await ActionDateRepository.Add(CurrentArea, _addedImages);
+            //if (result)
+            //{
+            //    ActionsItemsSource.Add(CurrentArea);
+            //    OnPropertyChanged("Areas");
+            //}
+            //return result;
+            return true;
+        }
+
+        private async Task<bool> RemoveAreaDate()
+        {
+            //bool result = await ActionDateRepository.Remove(CurrentArea);
+            //if (result)
+            //{
+            //    Areas.Remove(CurrentArea);
+            //    OnPropertyChanged("Areas");
+            //}
+            //return result;
+            return true;
         }
 
     }
