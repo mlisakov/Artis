@@ -76,16 +76,16 @@ namespace Artis.Data
             set { _area = value; }
         }
 
-        public ShortAction(Action action,Area area, DateTime date, string time, string priceRange)
+        public ShortAction(ActionDate actionDate)
         {
-            Name = action.Name;
-            DateStart = date;
-            Time = time;
-            ID = action.ID;
-            if (action.Genre != null)
-                GenreName = action.Genre.Name;
-            PriceRange = priceRange;
-            Area=area.Name;
+            Name = actionDate.Action.Name;
+            DateStart = actionDate.Date;
+            Time = actionDate.Time;
+            ID = actionDate.ID;
+            if (actionDate.Action.Genre != null)
+                GenreName = actionDate.Action.Genre.Name;
+            PriceRange = actionDate.PriceRange;
+            Area = actionDate.Area.Name;
         }
     }
 }

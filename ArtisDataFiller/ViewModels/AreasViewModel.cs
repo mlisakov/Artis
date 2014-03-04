@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Artis.Consts;
 using Artis.Data;
@@ -228,16 +229,24 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Заполнение источников данных
         /// </summary>
+        //private async void InitDataSource()
+        //{
+        //    IList<Area> areas = await Task.Run(
+        //    () =>
+        //    {
+        //        Task<IList<Area>> t = DataRequestFactory.GetAreas();
+        //        t.Wait();
+        //        return t.Result;
+        //    });
+        //    Areas = new ObservableCollection<Area>(areas);
+        //}
+
+        /// <summary>
+        /// Заполнение источников данных
+        /// </summary>
         private async void InitDataSource()
         {
-            IList<Area> areas = await Task.Run(
-            () =>
-            {
-                Task<IList<Area>> t = DataRequestFactory.GetAreas();
-                t.Wait();
-               return t.Result;
-            });
-            Areas = new ObservableCollection<Area>(areas);
+            Areas = new ObservableCollection<Area>(await DataRequestFactory.GetAreas());
         }
 
         private void InitVariables()

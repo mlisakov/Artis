@@ -5,42 +5,33 @@ using System.Linq;
 
 namespace Artis.Data
 {
-    public class MiddleAction
+    public class MiddleAction:ShortAction
     {
-        private long _id;
-        private string _name;
         private string _description;
-        private string _genreName;
+        private string _areaAddress;
+        private long _idArea;
         
         private ICollection<Actor> _actors;
         private ICollection<Producer> _producers;
 
         /// <summary>
-        /// Идентификатор
+        /// Адрес площадки
         /// </summary>
-        public long ID
+        public string AreaAddress
         {
-            get { return _id; }
-            protected set { _id = value; }
+            get { return _areaAddress; }
+            set { _areaAddress = value; }
         }
 
         /// <summary>
-        /// Наименование
+        /// Идентификатор площадки
         /// </summary>
-        public string Name
+        public long IDArea
         {
-            get { return _name; }
-            set { _name = value; }
+            get { return _idArea; }
+            set { _idArea = value; }
         }
 
-        /// <summary>
-        /// Наименование жанра
-        /// </summary>
-        public string GenreName
-        {
-            get { return _genreName; }
-            set { _genreName = value; }
-        } 
         /// <summary>
         /// Описание мероприятия
         /// </summary>
@@ -68,15 +59,14 @@ namespace Artis.Data
             set { _producers = value; }
         }
 
-        public MiddleAction(Action action)
+        public MiddleAction(ActionDate actionDate):base(actionDate)
         {
-            Name = action.Name;
-            ID = action.ID;
-            if (action.Genre != null)
-                GenreName = action.Genre.Name;
-            Description = action.Description;
-            Actor = new Collection<Actor>(action.Actor.ToList());
-            Producer = new Collection<Producer>(action.Producer.ToList());
+            AreaAddress = actionDate.Area.Addres;
+            IDArea = actionDate.Area.ID;
+
+            Description = actionDate.Action.Description;
+            Actor = new Collection<Actor>(actionDate.Action.Actor.ToList());
+            Producer = new Collection<Producer>(actionDate.Action.Producer.ToList());
         }
 
     }

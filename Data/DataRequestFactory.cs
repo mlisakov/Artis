@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using NHibernate;
@@ -38,7 +39,7 @@ namespace Artis.Data
                 List<ShortAction> middleActions =
                     session.Query<ActionDate>()
                         .Where(i => i.Date >= startDate && i.Date <= finishDate)
-                        .Select(i => new ShortAction(i.Action,i.Area, i.Date, i.Time, i.PriceRange)).ToList();
+                        .Select(i => new ShortAction(i)).ToList();
 
                 return new JavaScriptSerializer().Serialize(middleActions);
 
@@ -103,7 +104,7 @@ namespace Artis.Data
                 List<ShortAction> shortActions =
                    session.Query<ActionDate>()
                        .Where(i => i.Date >= startDate && i.Date <= finishDate).Take(count)
-                       .Select(i => new ShortAction(i.Action, i.Area, i.Date, i.Time, i.PriceRange)).ToList();
+                       .Select(i => new ShortAction(i)).ToList();
                 return new JavaScriptSerializer().Serialize(shortActions);
 
             }
@@ -117,11 +118,10 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
-                Action act = session.Query<Action>().First(i => i.ID == ID);
+                ActionDate act = session.Query<ActionDate>().First(i => i.ID == ID);
                 MiddleAction middleAction = new MiddleAction(act);
                 return new JavaScriptSerializer().Serialize(middleAction);
             }
-            return string.Empty;
         }
 
         /// <summary>
@@ -133,8 +133,8 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
-                Action act = session.Query<Action>().First(i => i.ID == ID);
-                return new JavaScriptSerializer().Serialize(act.Data);
+                ActionDate act = session.Query<ActionDate>().First(i => i.ID == ID);
+                return new JavaScriptSerializer().Serialize(act.Action.Data);
             }
         }
 
@@ -208,7 +208,7 @@ namespace Artis.Data
                     criteria.Add(Restrictions.Where<ActionDate>(i => i.Date >= dateStart && i.Date <= dateFinish));
 
                 IList<ActionDate> allActions = criteria.List<ActionDate>();
-                List<ShortAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new ShortAction(i.Action,i.Area,i.Date,i.Time,i.PriceRange)).ToList();
+                List<ShortAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new ShortAction(i)).ToList();
 
                 int count = allActions.Count() / PageSize;
                 if ((allActions.Count() % PageSize) != 0)
@@ -253,7 +253,7 @@ namespace Artis.Data
                 List<ShortAction> act =
                     allActions.Skip((Page - 1)*PageSize)
                         .Take(PageSize)
-                        .Select(i => new ShortAction(i.Action, i.Area, i.Date, i.Time, i.PriceRange))
+                        .Select(i => new ShortAction(i))
                         .ToList();
                 int count = allActions.Count() / PageSize;
                 if ((allActions.Count() % PageSize) != 0)
@@ -331,7 +331,7 @@ namespace Artis.Data
         /// <returns>Список всех жанров</returns>
         public static async Task<List<Genre>> GetGenres()
         {
-            using (ISession session = Domain.Session)
+            using (ISession session = await Domain.GetSession())
             {
                 IEnumerable<Genre> genres = session.Query<Genre>();
                 return genres.ToList();

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Artis.Consts;
 using Artis.Data;
+using Microsoft.Win32;
 using Action = Artis.Data.Action;
 
 namespace Artis.ArtisDataFiller.ViewModels
@@ -386,10 +388,53 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteRemoveImageCommand(object obj)
         {
+            if (SelectedImage.ID != 0)
+            {
+                _deletedImages.Add(SelectedImage.ID);
+                Images.Remove(Images.First(i => i.ID == SelectedImage.ID));
+            }
+            else
+                Images.Remove(Images.First(i => i.Base64StringData.Equals(SelectedImage.Base64String)));
+
+            if (_addedImages.Any(i => i.Base64StringData.Equals(SelectedImage.Base64String)))
+            {
+                Data.Data image = _addedImages.First(i => i.ID == SelectedImage.ID);
+                _addedImages.Remove(image);
+            }
+
+            OnPropertyChanged("Images");
         }
 
         private void ExecuteAddImageCommand(object obj)
         {
+            OpenFileDialog openDialog = new OpenFileDialog
+            {
+                Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+                Title = "Пожалуйста, выберите необхожимые изображения.",
+                Multiselect = true
+            };
+
+            if (openDialog.ShowDialog().Value)
+            {
+                Stream[] selectedFiles = openDialog.OpenFiles();
+                foreach (Stream file in selectedFiles)
+                {
+                    MemoryStream stream = new MemoryStream();
+                    file.CopyTo(stream);
+                    file.Close();
+                    byte[] imageArray = stream.ToArray();
+                    string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
+                    if (!string.IsNullOrEmpty(base64String))
+                    {
+                        Data.Data image = new Data.Data() { Base64StringData = base64String };
+
+                        _addedImages.Add(image);
+
+                        Images.Add(image);
+                        OnPropertyChanged("Images");
+                    }
+                }
+            }
         }
 
         private void ExecuteRemoveProducerCommand(object obj)

@@ -288,9 +288,9 @@
 			<Button Content="Удалить" Grid.Column="4" Grid.Row="6" Width="110" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,76,0,0" Style="{DynamicResource selectedActorItemButton}" Command="{Binding RemoveActorCommand}"/>
 			<Button Content="Добавить…" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="110" Margin="10,30,0,0" Template="{DynamicResource SimpleButtonTemplate}" Command="{Binding AddProducerCommand}"/>
 			<Button Content="Удалить" Grid.Column="4" Grid.Row="7" Width="110" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,76,0,0" Style="{DynamicResource selectedProducerItemButton}" Command="{Binding RemoveProducerCommand}"/>
-			<Button Content="Добавить…" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="8" VerticalAlignment="Top" Width="110" Margin="10,30,0,0" Template="{DynamicResource SimpleButtonTemplate}"/>
-			<Button Content="Удалить" Grid.Column="4" Grid.Row="8" Width="110" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,76,0,0" Style="{DynamicResource selectedImageItemButton}"/>
-			<Button x:Name="SaveButton" Content="Сохранить" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="8" VerticalAlignment="Bottom" Width="110" Template="{DynamicResource SimpleButtonTemplate}" Margin="10,0,0,20"/>
+            <Button Content="Добавить…" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="8" VerticalAlignment="Top" Width="110" Margin="10,30,0,0" Template="{DynamicResource SimpleButtonTemplate}" Command="{Binding AddImageCommand}"/>
+            <Button Content="Удалить" Grid.Column="4" Grid.Row="8" Width="110" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,76,0,0" Style="{DynamicResource selectedImageItemButton}" Command="{Binding RemoveImageCommand}"/>
+            <Button x:Name="SaveButton" Content="Сохранить" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="8" VerticalAlignment="Bottom" Width="110" Template="{DynamicResource SimpleButtonTemplate}" Margin="10,0,0,20"  Command="{Binding SaveCommand}"/>
 			<Button x:Name="BackButton" Content="Назад" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="8" VerticalAlignment="Bottom" Width="110" Template="{DynamicResource BadSimpleButtonTemplate}" Margin="130,0,0,20"/>
 		</Grid>
 		

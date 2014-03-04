@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using NHibernate;
+using NHibernate.Linq;
 using NLog;
 
 namespace Artis.Data
@@ -81,6 +83,11 @@ namespace Artis.Data
         {
             try
             {
+                using (ISession session = Domain.Session)
+                {
+                    if (session.Query<ActionDate>().Any(i => i.Area.ID == area.ID))
+                        return false;
+                }
                 _area.Delete(area);
             }
             catch (Exception ex)
