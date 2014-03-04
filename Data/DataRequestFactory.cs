@@ -301,7 +301,7 @@ namespace Artis.Data
         /// <returns>Список площадок, отсортированный по имени</returns>
         public static async Task<IList<Area>> GetAreas(string areaName = "")
         {
-            using (ISession session = Domain.Session)
+            using (ISession session = await Domain.GetSession())
             {
                 if (string.IsNullOrEmpty(areaName))
                     return session.Query<Area>().Select(i => i).OrderBy(i => i.Name).ToList();
@@ -310,7 +310,6 @@ namespace Artis.Data
                 criteria.Add(Restrictions.Like("Name", "%" + areaName + "%").IgnoreCase());
                 return criteria.List<Area>().OrderBy(i => i.Name).ToList();
             }
-
         }
 
         /// <summary>

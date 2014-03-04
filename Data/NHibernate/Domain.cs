@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using NHibernate;
 using NHibernate.Cfg;
 
@@ -33,6 +34,18 @@ namespace Artis.Data
         //        Init();
         //    }
         //}
+
+        public static async Task<ISession> GetSession()
+        {
+            if (sessionFactory == null)
+            {
+                await Task.Run(() => Init());
+            }
+            lock (_lockObject)
+            {
+                return sessionFactory.OpenSession();
+            }
+        }
 
         private static void Init()
         {
