@@ -23,5 +23,9 @@ namespace Artis.ArtisDataFiller
             Image = image;
             Base64String = base64String;
         }
+
+        public DataImage()
+        {
+        }
     }
 }

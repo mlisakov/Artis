@@ -8,7 +8,6 @@
 	  MinWidth="1024" 
 	  MinHeight="680">
 	<Grid.Resources>
-        <artisDataFiller:Base64StringToBitmapImageConverter x:Key="base64StringToBitmapImageConverter" />
 		<Style x:Key="selectedItemButton" TargetType="{x:Type Button}">
 			<Setter Property="IsEnabled" Value="True"/>
 			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
@@ -253,7 +252,7 @@
 				 MinWidth="800" 
 				 Margin="40,0,0,20" 
                  SelectedItem="{Binding SelectedImage}"
-                 ItemsSource="{Binding Images, Converter={StaticResource base64StringToBitmapImageConverter}}" 				 
+                 ItemsSource="{Binding Images}" 				 
 				 ItemsPanel="{DynamicResource ImageListBoxItemsPanelTemplate}" 
 				 ItemContainerStyle="{DynamicResource ImageListBoxItemContainerStyle}" 
 				 ItemTemplate="{DynamicResource ImageListBoxItemTemplate}"				 

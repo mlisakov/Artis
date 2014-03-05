@@ -425,7 +425,7 @@
                      Margin="0,30,0,20" 
                      Grid.Column="1"
                      SelectedItem="{Binding SelectedImage}"
-                     ItemsSource="{Binding Images, Converter={StaticResource Base64StringToBitmapImageConverter}}" 
+                     ItemsSource="{Binding Images}" 
                      ItemTemplate="{DynamicResource ImageListBoxItemTemplate}" 
                      ItemContainerStyle="{DynamicResource ImageListBoxItemContainerStyle}" 
 					 ItemsPanel="{DynamicResource ImageListBoxItemsPanelTemplate}"

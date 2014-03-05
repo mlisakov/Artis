@@ -4,9 +4,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
 using Microsoft.Win32;
+using NLog;
 using Action = Artis.Data.Action;
 
 namespace Artis.ArtisDataFiller.ViewModels
@@ -24,14 +26,19 @@ namespace Artis.ArtisDataFiller.ViewModels
         private Actor _selectedActor;
         private Producer _selectedProducer;
 
-        private ObservableCollection<Data.Data> _images;
+        private ObservableCollection<DataImage> _images;
         private List<long> _deletedImages;
-        private List<Data.Data> _addedImages;
+        private List<DataImage> _addedImages;
 
         private ObservableCollection<Area> _filterAreasItemsSource;        
         private ObservableCollection<Genre> _genresItemsSource;
         private ObservableCollection<State> _statesItemsSource;
         private ObservableCollection<ActionDate> _actionsItemsSource;
+
+        /// <summary>
+        /// Логгер
+        /// </summary>
+        private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Команда поиска
@@ -110,7 +117,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Список картинок для редактируемой/создаваемой площадки
         /// </summary>
-        public ObservableCollection<Data.Data> Images
+        public ObservableCollection<DataImage> Images
         {
             get { return _images; }
             set
@@ -337,7 +344,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         private void InitVariables()
         {
             _deletedImages = new List<long>();
-            _addedImages = new List<Data.Data>();
+            _addedImages = new List<DataImage>();
         }
 
         /// <summary>
@@ -388,7 +395,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             if (IsEdit)
                 SaveActionDate();
             else
-                AddAreaDate();
+                AddActionDate();
 
             ClearVariables();
         }
@@ -401,11 +408,11 @@ namespace Artis.ArtisDataFiller.ViewModels
                 Images.Remove(Images.First(i => i.ID == SelectedImage.ID));
             }
             else
-                Images.Remove(Images.First(i => i.Base64StringData.Equals(SelectedImage.Base64String)));
+                Images.Remove(Images.First(i => i.Base64String.Equals(SelectedImage.Base64String)));
 
-            if (_addedImages.Any(i => i.Base64StringData.Equals(SelectedImage.Base64String)))
+            if (_addedImages.Any(i => i.Base64String.Equals(SelectedImage.Base64String)))
             {
-                Data.Data image = _addedImages.First(i => i.ID == SelectedImage.ID);
+                DataImage image = _addedImages.First(i => i.ID == SelectedImage.ID);
                 _addedImages.Remove(image);
             }
 
@@ -433,7 +440,7 @@ namespace Artis.ArtisDataFiller.ViewModels
                     string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
                     if (!string.IsNullOrEmpty(base64String))
                     {
-                        Data.Data image = new Data.Data() { Base64StringData = base64String };
+                        DataImage image = new DataImage() { Base64String = base64String };
 
                         _addedImages.Add(image);
 
@@ -473,14 +480,14 @@ namespace Artis.ArtisDataFiller.ViewModels
             IsEdit = false; // не удалять
 
             CurrentActionDate=new ActionDate(){Date = DateTime.Today,Action=new Action()};
-            Images=new ObservableCollection<Data.Data>();
+            Images=new ObservableCollection<DataImage>();
         }
 
-        private void ExecuteEditActionCommand(object obj)
+        private async void ExecuteEditActionCommand(object obj)
         {
             IsEdit = true; // не удалять
-            Images = new ObservableCollection<Data.Data>(CurrentActionDate.Action.Data);
-            _addedImages = new List<Data.Data>();
+            Images = new ObservableCollection<DataImage>(await ImageHelper.ConvertImages(CurrentActionDate.Action.Data));
+            _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
 
@@ -510,12 +517,19 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async Task<bool> SaveActionDate()
         {
-            return await ActionDateRepository.Save(CurrentActionDate, _addedImages, _deletedImages);
+            return
+                await
+                    ActionDateRepository.Save(CurrentActionDate,
+                        _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList(),
+                        _deletedImages);
         }
 
-        private async Task<bool> AddAreaDate()
+        private async Task<bool> AddActionDate()
         {
-            bool result = await ActionDateRepository.Add(CurrentActionDate, _addedImages);
+            bool result =
+                await
+                    ActionDateRepository.Add(CurrentActionDate,
+                        _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList());
             if (result)
             {
                 ActionsItemsSource.Add(CurrentActionDate);
@@ -524,7 +538,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             return result;
         }
 
-        private async Task<bool> RemoveAreaDate()
+        private async Task<bool> RemoveActionDate()
         {
             //bool result = await ActionDateRepository.Remove(CurrentArea);
             //if (result)

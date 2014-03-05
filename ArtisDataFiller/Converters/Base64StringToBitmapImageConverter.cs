@@ -20,26 +20,37 @@ namespace Artis.ArtisDataFiller
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
-                return new ObservableCollection<BitmapImage>();
-
-            ObservableCollection<DataImage> convertedImages = new ObservableCollection<DataImage>();
-            ICollection<Data.Data> images=(ICollection<Data.Data>) value;
-                foreach (Data.Data data in images)
+                return new ObservableCollection<DataImage>();
+            ICollection<Data.Data> images = (ICollection<Data.Data>) value;
+            Task<ObservableCollection<DataImage>> convertedImagesTask = Task.Run(
+                () =>
                 {
-                    Data.Data data1 = data;
-                    Task<BitmapImage> task = GetImage(data1.Base64StringData);
+                    Task<ObservableCollection<DataImage>> task = ConvertImages(images);
                     task.Wait();
-                    BitmapImage convertedImage = task.Result;
-
-                    if (convertedImage != null)
-                        convertedImages.Add(new DataImage(data.ID,convertedImage,data.Base64StringData));
-                }
-                return convertedImages;
+                    return task.Result;
+                });
+            convertedImagesTask.Wait();
+            return convertedImagesTask.Result;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
+        }
+
+        private async Task<ObservableCollection<DataImage>> ConvertImages(IEnumerable<Data.Data> images)
+        {
+            ObservableCollection<DataImage> convertedImages = new ObservableCollection<DataImage>();
+            foreach (Data.Data data in images)
+            {
+                Data.Data data1 = data;
+
+                BitmapImage convertedImage = await GetImage(data1.Base64StringData);
+
+                if (convertedImage != null)
+                    convertedImages.Add(new DataImage(data.ID, convertedImage, data.Base64StringData));
+            }
+            return convertedImages;
         }
 
         /// <summary>
