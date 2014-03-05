@@ -32,6 +32,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         private ObservableCollection<Genre> _genresItemsSource;
         private ObservableCollection<State> _statesItemsSource;
         private ObservableCollection<ActionDate> _actionsItemsSource;
+        private bool _isNewOne;
 
         /// <summary>
         /// Команда поиска
@@ -218,7 +219,15 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// Флаг - создается ли новое мероприятие, или к существующему мапятся дата/место проведения
         /// <remarks>Необходимо для задания readonly полей</remarks>
         /// </summary>
-        public bool IsNewOne { get; set; }
+        public bool IsNewOne
+        {
+            get { return _isNewOne; }
+            set
+            {
+                _isNewOne = value;
+                OnPropertyChanged();
+            }
+        }
 
         /// <summary>
         /// Выделенное мероприятие в результатах поиска
