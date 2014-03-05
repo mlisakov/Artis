@@ -8,8 +8,8 @@
     <property name="connection.driver_class">NHibernate.Driver.SqlClientDriver</property>
     <property name="dialect">NHibernate.Dialect.MsSql2008Dialect</property>
     <!--<property name="connection.connection_string">Server=WIN-6G8DDV64I16;Initial Catalog=ARTIS;User ID=QueryBase;Password=pass@optima1;</property>-->
-    <property name="connection.connection_string">Server=KRAKOTSPC;Initial Catalog=ARTIS;User ID=Artis;Password=pass@optima1;</property>
-    <!--<property name="connection.connection_string">Server=EPRUPETW0475;Initial Catalog=ARTIS;Integrated Security = true;</property>-->
+<!--    <property name="connection.connection_string">Server=KRAKOTSPC;Initial Catalog=ARTIS;User ID=Artis;Password=pass@optima1;</property>-->
+    <property name="connection.connection_string">Server=EPRUPETW0475;Initial Catalog=ARTIS;Integrated Security = true;</property>
 
     <!--resource="Artis.Data.MainMapping.hbm.xml"-->
     <mapping assembly="Artis.Data" />

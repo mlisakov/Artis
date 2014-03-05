@@ -1,7 +1,7 @@
 ﻿<Grid
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"  
-	  xmlns:Controls="clr-namespace:Artis.ArtisDataFiller.Controls"
+	  xmlns:controls="clr-namespace:Artis.ArtisDataFiller.Controls"
 	  xmlns:artisDataFiller="clr-namespace:Artis.ArtisDataFiller"
 	  x:Class="Artis.ArtisDataFiller.ActionsPage"  
 	  Background="#FF001B23" 
@@ -9,8 +9,8 @@
 	  >
 	
 	<Grid.Resources>
-        <artisDataFiller:Base64StringToBitmapImageConverter x:Key="base64StringToBitmapImageConverter" />
-        <Style x:Key="selectedItemButton" TargetType="{x:Type Button}">
+        <artisDataFiller:Base64StringToBitmapImageConverter x:Key="Base64StringToBitmapImageConverter" />
+        <Style x:Key="SelectedItemButton" TargetType="{x:Type Button}">
 			<Setter Property="IsEnabled" Value="True"/>			
 			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
 			<Style.Triggers>
@@ -20,7 +20,7 @@
 			</Style.Triggers>
 		</Style>
 
-		<Style x:Key="selectedActorItemButton" TargetType="{x:Type Button}">
+		<Style x:Key="SelectedActorItemButton" TargetType="{x:Type Button}">
 			<Setter Property="IsEnabled" Value="True"/>			
 			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
 			<Style.Triggers>
@@ -30,7 +30,7 @@
 			</Style.Triggers>
 		</Style>
 
-		<Style x:Key="selectedProducerItemButton" TargetType="{x:Type Button}">
+		<Style x:Key="SelectedProducerItemButton" TargetType="{x:Type Button}">
 			<Setter Property="IsEnabled" Value="True"/>			
 			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
 			<Style.Triggers>
@@ -40,7 +40,7 @@
 			</Style.Triggers>
 		</Style>
 
-		<Style x:Key="selectedImageItemButton" TargetType="{x:Type Button}">
+		<Style x:Key="SelectedImageItemButton" TargetType="{x:Type Button}">
 			<Setter Property="IsEnabled" Value="True"/>			
 			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
 			<Style.Triggers>
@@ -50,59 +50,59 @@
 			</Style.Triggers>
 		</Style>
 		<Storyboard x:Key="OnClick1">
-			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="searchGrid">
+			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="SearchGrid">
 				<EasingColorKeyFrame KeyTime="0" Value="#4C000000"/>
 			</ColorAnimationUsingKeyFrames>
-			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="searchGrid">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="SearchGrid">
 				<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="-1000"/>
 			</DoubleAnimationUsingKeyFrames>
-			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="searchGrid">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="SearchGrid">
 				<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
 			</DoubleAnimationUsingKeyFrames>
-			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="scrollViewer">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="EditScrollViewer">
 				<EasingDoubleKeyFrame KeyTime="0" Value="1000"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
 			</DoubleAnimationUsingKeyFrames>
-			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="editGrid">
+			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="EditGrid">
 				<EasingColorKeyFrame KeyTime="0" Value="#4C000000"/>
 				<EasingColorKeyFrame KeyTime="0:0:0.6" Value="#00000000"/>
 			</ColorAnimationUsingKeyFrames>
-			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="scrollViewer">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="EditScrollViewer">
 				<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
 			</DoubleAnimationUsingKeyFrames>
-			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="scrollViewer">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="EditScrollViewer">
 				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
 			</ObjectAnimationUsingKeyFrames>
 		</Storyboard>
 		<Storyboard x:Key="BackButtonClick">
-			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="scrollViewer">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="EditScrollViewer">
 				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
 				<DiscreteObjectKeyFrame KeyTime="0:0:0.5" Value="{x:Static Visibility.Visible}"/>
 				<DiscreteObjectKeyFrame KeyTime="0:0:0.6" Value="{x:Static Visibility.Collapsed}"/>
 			</ObjectAnimationUsingKeyFrames>
-			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="scrollViewer">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="EditScrollViewer">
 				<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1000"/>
 			</DoubleAnimationUsingKeyFrames>
-			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="scrollViewer">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="EditScrollViewer">
 				<EasingDoubleKeyFrame KeyTime="0" Value="1"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
 			</DoubleAnimationUsingKeyFrames>
-			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="editGrid">
+			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="EditGrid">
 				<EasingColorKeyFrame KeyTime="0" Value="#4C000000"/>
 			</ColorAnimationUsingKeyFrames>
-			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="searchGrid">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="SearchGrid">
 				<EasingDoubleKeyFrame KeyTime="0" Value="-1000"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="0"/>
 			</DoubleAnimationUsingKeyFrames>
-			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="searchGrid">
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Opacity)" Storyboard.TargetName="SearchGrid">
 				<EasingDoubleKeyFrame KeyTime="0" Value="0"/>
 				<EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1"/>
 			</DoubleAnimationUsingKeyFrames>
-			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="searchGrid">
+			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="SearchGrid">
 				<EasingColorKeyFrame KeyTime="0" Value="#4C000000"/>
 				<EasingColorKeyFrame KeyTime="0:0:0.5" Value="#4C000000"/>
 				<EasingColorKeyFrame KeyTime="0:0:0.6" Value="#00000000"/>
@@ -110,17 +110,17 @@
 		</Storyboard>
 	</Grid.Resources>
 	<Grid.Triggers>
-		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="addActionButton">
+		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="AddActionButton">
 			<BeginStoryboard Storyboard="{StaticResource OnClick1}"/>
 		</EventTrigger>
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="EditAreaButton">
 			<BeginStoryboard Storyboard="{StaticResource OnClick1}"/>
 		</EventTrigger>
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="BackButton">
-			<BeginStoryboard x:Name="BackButtonClick_BeginStoryboard" Storyboard="{StaticResource BackButtonClick}"/>
+			<BeginStoryboard Storyboard="{StaticResource BackButtonClick}"/>
 		</EventTrigger>
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="SaveButton">
-			<BeginStoryboard x:Name="BackButtonClick_BeginStoryboard1" Storyboard="{StaticResource BackButtonClick}"/>
+			<BeginStoryboard Storyboard="{StaticResource BackButtonClick}"/>
 		</EventTrigger>
 	</Grid.Triggers>
 
@@ -130,13 +130,16 @@
 	</Grid.RowDefinitions>
 
 	<TextBlock HorizontalAlignment="Left" 
-		TextWrapping="Wrap"
-		Text="Мероприятия" 
-		VerticalAlignment="Top" 
-		Style="{DynamicResource HeaderTextBlockStyle}"
-		Margin="20,12.526,0,0"/>
+			   TextWrapping="Wrap"
+			   Text="Мероприятия" 
+			   VerticalAlignment="Top" 
+			   Style="{DynamicResource HeaderTextBlockStyle}"
+			   Margin="20,12.526,0,0"/>
 
-	<Grid x:Name="searchGrid" Grid.Row="1" Background="#00000000" RenderTransformOrigin="0.5,0.5">
+	<Grid x:Name="SearchGrid" 
+		  Grid.Row="1" 
+		  Background="#00000000" 
+		  RenderTransformOrigin="0.5,0.5">
 		<Grid.RenderTransform>
 			<TransformGroup>
 				<ScaleTransform/>
@@ -145,6 +148,7 @@
 				<TranslateTransform/>
 			</TransformGroup>
 		</Grid.RenderTransform>
+		
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="40"/>
 			<ColumnDefinition Width="auto"/>
@@ -154,17 +158,50 @@
 			<ColumnDefinition Width="*"/>
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
+		
 		<Grid.RowDefinitions>
 			<RowDefinition Height="34"/>
 			<RowDefinition Height="34"/>
 			<RowDefinition Height="34"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		<Controls:WatermarkedTextBox Grid.ColumnSpan="5" TextWrapping="Wrap" Text="{Binding FilterName}" Watermark="Наименование" VerticalAlignment="Center" Margin="0" Grid.Column="1"/>
-		<TextBlock Grid.Column="1" Grid.Row="2" TextWrapping="Wrap" Text="с" Style="{DynamicResource SimpleTextStyle}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-		<TextBlock Grid.Column="3" Grid.Row="2" TextWrapping="Wrap" Text="по" Style="{DynamicResource SimpleTextStyle}" VerticalAlignment="Center" HorizontalAlignment="Right"/>
-		<DatePicker Grid.Column="2" Grid.Row="2" VerticalAlignment="Center" Margin="10,0,0,0" SelectedDate="{Binding FromDate}"/>
-		<DatePicker Grid.Column="4" Grid.Row="2" VerticalAlignment="Center" Margin="10,0,0,0" SelectedDate="{Binding ToDate}"/>
+		
+		<controls:WatermarkedTextBox Grid.ColumnSpan="5" 
+									 TextWrapping="Wrap" 
+									 Text="{Binding FilterName}" 
+									 Watermark="Наименование" 
+									 VerticalAlignment="Center" 
+									 Margin="0" 
+									 Grid.Column="1"/>
+		
+		<TextBlock Grid.Column="1" 
+				   Grid.Row="2" 
+				   TextWrapping="Wrap" 
+				   Text="с" 
+				   Style="{DynamicResource SimpleTextStyle}" 
+				   VerticalAlignment="Center" 
+				   HorizontalAlignment="Right"/>
+		
+		<TextBlock Grid.Column="3" 
+				   Grid.Row="2" 
+				   TextWrapping="Wrap" 
+				   Text="по" 
+				   Style="{DynamicResource SimpleTextStyle}" 
+				   VerticalAlignment="Center"
+				   HorizontalAlignment="Right"/>
+		
+		<DatePicker Grid.Column="2" 
+					Grid.Row="2" 
+					VerticalAlignment="Center" 
+					Margin="10,0,0,0" 
+					SelectedDate="{Binding FromDate}"/>
+		
+		<DatePicker Grid.Column="4" 
+					Grid.Row="2" 
+					VerticalAlignment="Center" 
+					Margin="10,0,0,0" 
+					SelectedDate="{Binding ToDate}"/>
+		
 		<ListView Grid.ColumnSpan="5" 
 				  Grid.Column="1" 
 				  Grid.Row="3" 
@@ -183,13 +220,36 @@
 				</GridView>
 			</ListView.View>
 		</ListView>
-		<Controls:WatermarkedComboBox Grid.Column="1" Grid.Row="1" VerticalAlignment="Center" 
-									  Margin="0" Watermark="Площадка" Grid.ColumnSpan="2" 
-									  ItemsSource="{Binding FilterAreasItemsSource}" DisplayMemberPath="Name" SelectedValuePath="Name"
+		
+		<controls:WatermarkedComboBox Grid.Column="1" 
+									  Grid.Row="1" 
+									  VerticalAlignment="Center" 
+									  Margin="0" 
+									  Watermark="Площадка" 
+									  Grid.ColumnSpan="2" 
+									  ItemsSource="{Binding FilterAreasItemsSource}" 
+									  DisplayMemberPath="Name" 
+									  SelectedValuePath="Name"
 									  SelectedItem="{Binding FilterArea}"/>
-		<Button Content="Поиск" Grid.Column="6" Margin="10,0,0,0" Template="{DynamicResource SimpleButtonTemplate}" Width="110" HorizontalAlignment="Left" Grid.RowSpan="3" VerticalAlignment="Center" Command="{Binding SearchCommand}"/>
-		<StackPanel Grid.Column="6" Grid.Row="3" Margin="10,10,0,0" HorizontalAlignment="Left" VerticalAlignment="Top">
-						<Button x:Name="addActionButton" Content="Добавить…" 					
+		
+		<Button Content="Поиск" 
+				Grid.Column="6" 
+				Margin="10,0,0,0" 
+				Template="{DynamicResource SimpleButtonTemplate}" 
+				Width="110" 
+				HorizontalAlignment="Left" 
+				Grid.RowSpan="3" 
+				VerticalAlignment="Center" 
+				Command="{Binding SearchCommand}"/>
+		
+		<StackPanel Grid.Column="6"
+					Grid.Row="3" 
+					Margin="10,10,0,0" 
+					HorizontalAlignment="Left" 
+					VerticalAlignment="Top">
+			
+			<Button x:Name="AddActionButton" 
+					Content="Добавить…" 					
 					Margin="0" 
 					Template="{DynamicResource SimpleButtonTemplate}" 
 					Command="{Binding CreateActionCommand}"				
@@ -202,16 +262,23 @@
 					Command="{Binding EditActionCommand}"					
 					Width="110" 
 					VerticalAlignment="Top" 
-					Style="{DynamicResource selectedItemButton}"/>
+					Style="{DynamicResource SelectedItemButton}"/>
 
-			<Button Content="Удалить…" 					
+			<Button Content="Удалить" 					
 					Margin="0,10,0,0" 					
 					Width="110" 
 					VerticalAlignment="Top" 
-					Style="{DynamicResource selectedItemButton}" Command="{Binding RemoveActionCommand}"/>
+					Style="{DynamicResource SelectedItemButton}" Command="{Binding RemoveActionCommand}"/>
 		</StackPanel>
 	</Grid>
-	<ScrollViewer x:Name="scrollViewer" Grid.Row="1" ScrollViewer.VerticalScrollBarVisibility="Auto" RenderTransformOrigin="0.5,0.5" Opacity="0" Visibility="Collapsed">
+	
+	<ScrollViewer x:Name="EditScrollViewer"
+				  Grid.Row="1" 
+				  VerticalScrollBarVisibility="Auto" 
+				  RenderTransformOrigin="0.5,0.5"
+				  Opacity="0" 
+				  Visibility="Collapsed">
+		
 		<ScrollViewer.RenderTransform>
 			<TransformGroup>
 				<ScaleTransform/>
@@ -220,7 +287,10 @@
 				<TranslateTransform X="1000"/>
 			</TransformGroup>
 		</ScrollViewer.RenderTransform>
-		<Grid x:Name="editGrid" Background="#00000000" >
+		
+		<Grid x:Name="EditGrid" 
+			  Background="#00000000" >
+			
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="40"/>
 				<ColumnDefinition Width="160.667"/>
@@ -228,6 +298,7 @@
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
+			
 			<Grid.RowDefinitions>
 				<RowDefinition Height="34"/>
 				<RowDefinition Height="34"/>
@@ -239,23 +310,107 @@
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*" MinHeight="300"/>
 			</Grid.RowDefinitions>
-            <Controls:WatermarkedTextBox TextWrapping="Wrap" Watermark="Наименование" Grid.ColumnSpan="3" VerticalAlignment="Center" Margin="0,6.02" Grid.Column="1" Text="{Binding CurrentActionDate.Action.Name}"/>
-            <DatePicker Grid.Row="1" VerticalAlignment="Center" Margin="0,5" Grid.Column="1" SelectedDate="{Binding CurrentActionDate.Date}"/>
-            <Controls:WatermarkedTextBox Grid.Column="2" Grid.Row="1" TextWrapping="Wrap" Watermark="Время" VerticalAlignment="Center" Margin="10,0,0,0" Text="{Binding CurrentActionDate.Time}"/>
-            <Controls:WatermarkedTextBox Grid.ColumnSpan="3" Grid.Row="2" TextWrapping="Wrap" Watermark="Ценовой диапазон" Grid.Column="1" VerticalAlignment="Center" Text="{Binding CurrentActionDate.PriceRange}"/>
+			
+            <controls:WatermarkedTextBox TextWrapping="Wrap"
+										 Watermark="Наименование" 
+										 Grid.ColumnSpan="3" 
+										 VerticalAlignment="Center" 
+										 Margin="0,6.02" 
+										 Grid.Column="1" 
+										 Text="{Binding CurrentActionDate.Action.Name}"/>
+			
+            <DatePicker Grid.Row="1" 
+						VerticalAlignment="Center" 
+						Margin="0,5" 
+						Grid.Column="1" 
+						SelectedDate="{Binding CurrentActionDate.Date}"/>
+			
+            <controls:WatermarkedTextBox Grid.Column="2" 
+										 Grid.Row="1"
+										 TextWrapping="Wrap" 
+										 Watermark="Время" 
+										 VerticalAlignment="Center" 
+										 Margin="10,0,0,0" 
+										 Text="{Binding CurrentActionDate.Time}"/>
+			
+            <controls:WatermarkedTextBox Grid.ColumnSpan="3" 
+										 Grid.Row="2" 
+										 TextWrapping="Wrap" 
+										 Watermark="Ценовой диапазон" 
+										 Grid.Column="1" 
+										 VerticalAlignment="Center" 
+										 Text="{Binding CurrentActionDate.PriceRange}"/>
 
-            <Controls:WatermarkedComboBox Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" Watermark="Жанр" ItemsSource="{Binding GenresItemsSource}" SelectedItem="{Binding CurrentActionDate.Action.Genre}" DisplayMemberPath="Name"/>
+            <controls:WatermarkedComboBox Grid.Row="3" 
+										  Grid.Column="1" 
+										  VerticalAlignment="Center"
+										  Watermark="Жанр"
+										  ItemsSource="{Binding GenresItemsSource}" 
+										  SelectedItem="{Binding CurrentActionDate.Action.Genre}"										  
+										  DisplayMemberPath="Name"/>
 
-            <Controls:WatermarkedComboBox Visibility="Collapsed" Grid.Column="2" Grid.Row="3" VerticalAlignment="Center" Margin="10,0,0,0" Watermark="Состояние" ItemsSource="{Binding StatesItemsSource}" SelectedItem="{Binding CurrentActionDate.Action.State}" DisplayMemberPath="Name"/>
-            <Controls:WatermarkedComboBox Grid.ColumnSpan="2" Grid.Row="4" Grid.Column="1" VerticalAlignment="Center" Watermark="Площадка" ItemsSource="{Binding FilterAreasItemsSource}" SelectedItem="{Binding CurrentActionDate.Area}" DisplayMemberPath="Name"/>
+            <controls:WatermarkedComboBox Visibility="Collapsed" 
+										  Grid.Column="2" 
+										  Grid.Row="3" 
+										  VerticalAlignment="Center" 
+										  Margin="10,0,0,0"
+										  Watermark="Состояние"
+										  ItemsSource="{Binding StatesItemsSource}"
+										  SelectedItem="{Binding CurrentActionDate.Action.State}"
+										  DisplayMemberPath="Name"/>
+			
+            <controls:WatermarkedComboBox Grid.ColumnSpan="2" 
+										  Grid.Row="4" 
+										  Grid.Column="1" 
+										  VerticalAlignment="Center" 
+										  Watermark="Площадка" 
+										  ItemsSource="{Binding FilterAreasItemsSource}" 
+										  SelectedItem="{Binding CurrentActionDate.Area}"
+										  DisplayMemberPath="Name"/>
 
-            <Controls:WatermarkedTextBox TextWrapping="Wrap" Watermark="Описание" Grid.ColumnSpan="3" Grid.Row="5" Grid.Column="1" Height="100" Text="{Binding CurrentActionDate.Action.Description}"/>
+            <controls:WatermarkedTextBox TextWrapping="Wrap" 
+										 Watermark="Описание" 
+										 Grid.ColumnSpan="3" 
+										 Grid.Row="5" 
+										 Grid.Column="1" 
+										 Height="100" 
+										 Text="{Binding CurrentActionDate.Action.Description}"
+										 ScrollViewer.VerticalScrollBarVisibility="auto"/>
 
-			<TextBlock Grid.Row="6" TextWrapping="Wrap" Text="Актеры" VerticalAlignment="Top" Style="{DynamicResource SimpleTextStyle}" Margin="0,-0.001,0,0" Grid.Column="1" Padding="0,10,0,0"/>
-            <ListBox Grid.Row="6" Grid.ColumnSpan="3" Margin="0,30,0,0" Grid.Column="1" Height="100" ItemsSource="{Binding CurrentActionDate.Action.Actor}" SelectedItem="{Binding SelectedActor}" DisplayMemberPath="FIO"/>
+			<TextBlock Grid.Row="6" 
+					   TextWrapping="Wrap" 
+					   Text="Актеры" 
+					   VerticalAlignment="Top" 
+					   Style="{DynamicResource SimpleTextStyle}" 
+					   Margin="0,-0.001,0,0" 
+					   Grid.Column="1" 
+					   Padding="0,10,0,0"/>
+			
+            <ListBox Grid.Row="6" 
+					 Grid.ColumnSpan="3" 
+					 Margin="0,30,0,0" 
+					 Grid.Column="1" 
+					 Height="100" 
+					 ItemsSource="{Binding CurrentActionDate.Action.Actor}" 
+					 SelectedItem="{Binding SelectedActor}" 
+					 DisplayMemberPath="FIO"/>
 
-			<TextBlock Grid.Row="7" TextWrapping="Wrap" Text="Продюсеры" VerticalAlignment="Top" Style="{DynamicResource SimpleTextStyle}" Grid.Column="1" Padding="0,10,0,0"/>
-            <ListBox Grid.Row="7" Grid.ColumnSpan="3" Margin="0,30,0,0" Grid.Column="1" Height="100" ItemsSource="{Binding CurrentActionDate.Action.Producer}" SelectedItem="{Binding SelectedProducer}" DisplayMemberPath="FIO"/>
+			<TextBlock Grid.Row="7"
+					   TextWrapping="Wrap" 
+					   Text="Продюсеры" 
+					   VerticalAlignment="Top" 
+					   Style="{DynamicResource SimpleTextStyle}" 
+					   Grid.Column="1" 
+					   Padding="0,10,0,0"/>
+			
+            <ListBox Grid.Row="7" 
+					 Grid.ColumnSpan="3" 
+					 Margin="0,30,0,0" 
+					 Grid.Column="1" 
+					 Height="100" 
+					 ItemsSource="{Binding CurrentActionDate.Action.Producer}" 
+					 SelectedItem="{Binding SelectedProducer}" 
+					 DisplayMemberPath="FIO"/>
 
 			<TextBlock Grid.Row="8" 
                        TextWrapping="Wrap" 
@@ -264,37 +419,101 @@
                        Style="{DynamicResource SimpleTextStyle}"
                        Grid.Column="1" 
                        Margin="0,10,0,0"/>
+			
 			<ListBox Grid.Row="8" 
                      Grid.ColumnSpan="3" 
                      Margin="0,30,0,20" 
                      Grid.Column="1"
                      SelectedItem="{Binding SelectedImage}"
-                     ItemsSource="{Binding Images, Converter={StaticResource base64StringToBitmapImageConverter}}" 
-                     ItemTemplate="{DynamicResource DataTemplate1}" 
-                     ItemContainerStyle="{DynamicResource ListBoxItemStyle1}">
-                <ListBox.Resources>
-                    <DataTemplate x:Key="DataTemplate1">
-                        <Image Source="{Binding Image}"/>
-                    </DataTemplate>
-                    <Style x:Key="ListBoxItemStyle1" TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="Background" Value="Transparent"/>
-                        <Setter Property="Width" Value="150"/>
-                        <Setter Property="Height" Value="150"/>
-                    </Style>
-                </ListBox.Resources>
+                     ItemsSource="{Binding Images, Converter={StaticResource Base64StringToBitmapImageConverter}}" 
+                     ItemTemplate="{DynamicResource ImageListBoxItemTemplate}" 
+                     ItemContainerStyle="{DynamicResource ImageListBoxItemContainerStyle}" 
+					 ItemsPanel="{DynamicResource ImageListBoxItemsPanelTemplate}"
+					 VirtualizingPanel.VirtualizationMode="Recycling"
+				 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             </ListBox>
 
-            <Button Content="Добавить…" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="6" VerticalAlignment="Top" Width="110" Margin="10,30,0,0" Template="{DynamicResource SimpleButtonTemplate}" Command="{Binding AddActorCommand}"/>
-			<Button Content="Удалить" Grid.Column="4" Grid.Row="6" Width="110" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,76,0,0" Style="{DynamicResource selectedActorItemButton}" Command="{Binding RemoveActorCommand}"/>
-			<Button Content="Добавить…" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="7" VerticalAlignment="Top" Width="110" Margin="10,30,0,0" Template="{DynamicResource SimpleButtonTemplate}" Command="{Binding AddProducerCommand}"/>
-			<Button Content="Удалить" Grid.Column="4" Grid.Row="7" Width="110" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,76,0,0" Style="{DynamicResource selectedProducerItemButton}" Command="{Binding RemoveProducerCommand}"/>
-            <Button Content="Добавить…" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="8" VerticalAlignment="Top" Width="110" Margin="10,30,0,0" Template="{DynamicResource SimpleButtonTemplate}" Command="{Binding AddImageCommand}"/>
-            <Button Content="Удалить" Grid.Column="4" Grid.Row="8" Width="110" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,76,0,0" Style="{DynamicResource selectedImageItemButton}" Command="{Binding RemoveImageCommand}"/>
-            <Button x:Name="SaveButton" Content="Сохранить" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="8" VerticalAlignment="Bottom" Width="110" Template="{DynamicResource SimpleButtonTemplate}" Margin="10,0,0,20"  Command="{Binding SaveCommand}"/>
-			<Button x:Name="BackButton" Content="Назад" Grid.Column="4" HorizontalAlignment="Left" Grid.Row="8" VerticalAlignment="Bottom" Width="110" Template="{DynamicResource BadSimpleButtonTemplate}" Margin="130,0,0,20"/>
+            <Button Content="Добавить…" 
+					Grid.Column="4" 
+					HorizontalAlignment="Left" 
+					Grid.Row="6" 
+					VerticalAlignment="Top" 
+					Width="110"
+					Margin="10,30,0,0" 
+					Template="{DynamicResource SimpleButtonTemplate}" 
+					Command="{Binding AddActorCommand}"/>
+			
+			<Button Content="Удалить" 
+					Grid.Column="4" 
+					Grid.Row="6" 
+					Width="110" 
+					HorizontalAlignment="Left" 
+					VerticalAlignment="Top" 
+					Margin="10,76,0,0" 
+					Style="{DynamicResource SelectedActorItemButton}" 
+					Command="{Binding RemoveActorCommand}"/>
+			
+			<Button Content="Добавить…" 
+					Grid.Column="4" 
+					HorizontalAlignment="Left" 
+					Grid.Row="7" 
+					VerticalAlignment="Top"
+					Width="110" 
+					Margin="10,30,0,0" 
+					Template="{DynamicResource SimpleButtonTemplate}" 
+					Command="{Binding AddProducerCommand}"/>
+			
+			<Button Content="Удалить" 
+					Grid.Column="4"
+					Grid.Row="7" 
+					Width="110" 
+					HorizontalAlignment="Left" 
+					VerticalAlignment="Top" 
+					Margin="10,76,0,0" 
+					Style="{DynamicResource SelectedProducerItemButton}" 
+					Command="{Binding RemoveProducerCommand}"/>
+			
+            <Button Content="Добавить…" 
+					Grid.Column="4" 
+					HorizontalAlignment="Left"
+					Grid.Row="8" 
+					VerticalAlignment="Top" 
+					Width="110" 
+					Margin="10,30,0,0" 
+					Template="{DynamicResource SimpleButtonTemplate}" 
+					Command="{Binding AddImageCommand}"/>
+			
+            <Button Content="Удалить"
+					Grid.Column="4" 
+					Grid.Row="8" 
+					Width="110" 
+					HorizontalAlignment="Left" 
+					VerticalAlignment="Top" 
+					Margin="10,76,0,0" 
+					Style="{DynamicResource SelectedImageItemButton}" 
+					Command="{Binding RemoveImageCommand}"/>
+			
+            <Button x:Name="SaveButton" 
+					Content="Сохранить" 
+					Grid.Column="4" 
+					HorizontalAlignment="Left" 
+					Grid.Row="8" 
+					VerticalAlignment="Bottom" 
+					Width="110" 
+					Template="{DynamicResource SimpleButtonTemplate}" 
+					Margin="10,0,0,20"  
+					Command="{Binding SaveCommand}"/>
+			
+			<Button x:Name="BackButton" 
+					Content="Назад" 
+					Grid.Column="4" 
+					HorizontalAlignment="Left" 
+					Grid.Row="8" 
+					VerticalAlignment="Bottom"
+					Width="110" 
+					Template="{DynamicResource BadSimpleButtonTemplate}"
+					Margin="130,0,0,20"/>
 		</Grid>
 		
 	</ScrollViewer>
-		
-
 </Grid>
