@@ -140,6 +140,7 @@
 				 Margin="40,0,0,0" 
 				 ItemsSource="{Binding Areas}"
 				 SelectedItem="{Binding CurrentArea}"
+				 VirtualizingPanel.VirtualizationMode="Recycling"
 				 DisplayMemberPath="Name" />
 
 		<StackPanel Margin="10,0,0,20" 
@@ -184,8 +185,7 @@
 	<Grid x:Name="EditGrid" 
 		  Grid.Row="1" 
 		  RenderTransformOrigin="0.5,0.5" 
-		  Background="Black" 
-		  Opacity="0">
+		  Background="Black" Opacity="0">
 		<Grid.RenderTransform>
 			<TransformGroup>
 				<ScaleTransform/>
@@ -196,12 +196,10 @@
 		</Grid.RenderTransform>
 
 		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-			<RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+			<RowDefinition Height="34"/>
+			<RowDefinition Height="34"/>
+            <RowDefinition Height="150" />
+            <RowDefinition Height="34"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
@@ -210,12 +208,11 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 
-		<controls:WatermarkedTextBox HorizontalAlignment="Left" 
+		<controls:WatermarkedTextBox 
 									 TextWrapping="Wrap" 
 									 VerticalAlignment="Center"
 									 Watermark="Наименование новой площадки" 
-									 Margin="40,16.503,0,16.502" 
-									 Width="800"			
+									 Margin="40,0,0,0"			
 									 Text="{Binding CurrentArea.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 			<controls:WatermarkedTextBox.Style>
 				<Style BasedOn="{StaticResource {x:Type controls:WatermarkedTextBox}}" TargetType="{x:Type controls:WatermarkedTextBox}">
@@ -231,56 +228,37 @@
 				</Style>
 			</controls:WatermarkedTextBox.Style>
 		</controls:WatermarkedTextBox>
-
-        <TextBlock  Grid.Row="1" 
-					Text="Адрес" 
-					Style="{DynamicResource SimpleTextStyle}" 
-					Margin="40,0,0,10"/>
         
         <controls:WatermarkedTextBox 
             TextWrapping="Wrap" 
             Watermark="Адрес" 
-            Grid.Row="2"
+            Grid.Row="1"
             Margin="40,0,0,0"
-            Text="{Binding CurrentArea.Addres}"/>
-
-        <TextBlock  Grid.Row="3" 
-					Text="Описание" 
-					Style="{DynamicResource SimpleTextStyle}" 
-					Margin="40,0,0,10"/>
+            Text="{Binding CurrentArea.Addres}" VerticalAlignment="Center"/>
 
         <controls:WatermarkedTextBox 
             TextWrapping="Wrap" 
+			ScrollViewer.VerticalScrollBarVisibility="auto"
             Watermark="Описание" 
-            Grid.Row="4"
-            Margin="40,0,0,0"
+            Grid.Row="2"
+            Margin="40,6.02,0,6.02"
             Text="{Binding CurrentArea.Description}"/>
         
-        <TextBlock  Grid.Row="5" 
+        <TextBlock  Grid.Row="3" 
 					Text="Картинки" 
 					Style="{DynamicResource SimpleTextStyle}" 
-					Margin="40,0,0,10"/>
+					Margin="40,0,0,0" VerticalAlignment="Center"/>
 
-		<ListBox Grid.Row="6" 
+		<ListBox Grid.Row="5" 
 				 MinWidth="800" 
-				 Margin="40,0,0,0" 
-				 VerticalAlignment="Top" 
-				 Height="500" 
-				 HorizontalAlignment="Left" 
+				 Margin="40,0,0,20" 
                  SelectedItem="{Binding SelectedImage}"
-                 ItemsSource="{Binding Images, Converter={StaticResource base64StringToBitmapImageConverter}}" 
-				 ItemTemplate="{DynamicResource DataTemplate1}" 
-				 ItemContainerStyle="{DynamicResource ListBoxItemStyle1}">
-			<ListBox.Resources>
-				<DataTemplate x:Key="DataTemplate1">
-					<Image Source="{Binding Image}"/>
-				</DataTemplate>
-				<Style x:Key="ListBoxItemStyle1" TargetType="{x:Type ListBoxItem}">
-					<Setter Property="Background" Value="Transparent"/>
-					<Setter Property="Width" Value="150"/>
-					<Setter Property="Height" Value="150"/>
-				</Style>
-			</ListBox.Resources>
+                 ItemsSource="{Binding Images, Converter={StaticResource base64StringToBitmapImageConverter}}" 				 
+				 ItemsPanel="{DynamicResource ImageListBoxItemsPanelTemplate}" 
+				 ItemContainerStyle="{DynamicResource ImageListBoxItemContainerStyle}" 
+				 ItemTemplate="{DynamicResource ImageListBoxItemTemplate}"				 
+				 VirtualizingPanel.VirtualizationMode="Recycling"
+				 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 		</ListBox>
 
 
@@ -289,7 +267,7 @@
 				Grid.Row="6" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
-				Margin="0" 
+				Margin="10,0,0,0" 
 				Command="{Binding AddImagesCommand}"
 				Template="{DynamicResource SimpleButtonTemplate}" 					
 				Width="80" VerticalAlignment="Top"/>
@@ -299,7 +277,7 @@
 				Grid.Row="6" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
-				Margin="0,40.96,0,0" 
+				Margin="10,40.96,0,0" 
 				Command="{Binding RemoveImagesCommand}"
 				Template="{DynamicResource SimpleButtonTemplate}" 					
 				Width="80" VerticalAlignment="Top">
@@ -322,7 +300,7 @@
 				HorizontalAlignment="Left" 
 				Command="{Binding SaveCommand}"
 				Template="{DynamicResource SimpleButtonTemplate}" 					
-				Width="80" VerticalAlignment="Bottom"/>
+				Width="80" VerticalAlignment="Bottom" Margin="10,0,0,20"/>
 
 		<Button x:Name="BackButton" 
 				Content="Назад" 
@@ -331,7 +309,7 @@
 				HorizontalAlignment="Left" 
 				Command="{Binding BackCommand}"
 				Template="{DynamicResource BadSimpleButtonTemplate}" 					
-				Width="80" VerticalAlignment="Bottom" Margin="90,0,0,0"/>
+				Width="80" VerticalAlignment="Bottom" Margin="100,0,0,20"/>
 	</Grid>
 
 	<Grid x:Name="PictureGrid"/>
