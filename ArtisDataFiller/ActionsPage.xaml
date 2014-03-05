@@ -264,7 +264,7 @@
 					VerticalAlignment="Top" 
 					Style="{DynamicResource SelectedItemButton}"/>
 
-			<Button Content="Удалить…" 					
+			<Button Content="Удалить" 					
 					Margin="0,10,0,0" 					
 					Width="110" 
 					VerticalAlignment="Top" 
@@ -346,7 +346,7 @@
 										  VerticalAlignment="Center"
 										  Watermark="Жанр"
 										  ItemsSource="{Binding GenresItemsSource}" 
-										  SelectedItem="{Binding CurrentActionDate.Action.Genre}" 
+										  SelectedItem="{Binding CurrentActionDate.Action.Genre}"										  
 										  DisplayMemberPath="Name"/>
 
             <controls:WatermarkedComboBox Visibility="Collapsed" 
@@ -365,7 +365,7 @@
 										  VerticalAlignment="Center" 
 										  Watermark="Площадка" 
 										  ItemsSource="{Binding FilterAreasItemsSource}" 
-										  SelectedItem="{Binding CurrentActionDate.Area}" 
+										  SelectedItem="{Binding CurrentActionDate.Area}"
 										  DisplayMemberPath="Name"/>
 
             <controls:WatermarkedTextBox TextWrapping="Wrap" 

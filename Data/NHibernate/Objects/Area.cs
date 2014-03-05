@@ -99,5 +99,31 @@ namespace Artis.Data
             get { return _data; }
             set { _data = value; }
         }
+
+        protected bool Equals(Area other)
+        {
+            return _id == other._id && string.Equals(_name, other._name);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (_id.GetHashCode() * 397) ^ (_name != null ? _name.GetHashCode() : 0);
+            }
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((Area) obj);
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }
