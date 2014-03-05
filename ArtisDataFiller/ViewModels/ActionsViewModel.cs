@@ -44,6 +44,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         public ArtisCommand CreateActionCommand { get; private set; }
 
         /// <summary>
+        /// Команда копирования мероприятия
+        /// </summary>
+        public ArtisCommand CopyActionCommand { get; private set; }
+
+        /// <summary>
         /// Команда редактирования мероприятия
         /// </summary>
         public ArtisCommand EditActionCommand { get; private set; }
@@ -210,6 +215,12 @@ namespace Artis.ArtisDataFiller.ViewModels
         public bool IsEdit { get; set; }
 
         /// <summary>
+        /// Флаг - создается ли новое мероприятие, или к существующему мапятся дата/место проведения
+        /// <remarks>Необходимо для задания readonly полей</remarks>
+        /// </summary>
+        public bool IsNewOne { get; set; }
+
+        /// <summary>
         /// Выделенное мероприятие в результатах поиска
         /// </summary>
         public ActionDate CurrentActionDate
@@ -350,16 +361,17 @@ namespace Artis.ArtisDataFiller.ViewModels
             SearchCommand = new ArtisCommand(CanExecuteSearchCommand, ExecuteSearchCommand);
 
             CreateActionCommand = new ArtisCommand(CanExecute, ExecuteCreateActionCommand);
+            CopyActionCommand = new ArtisCommand(CanExecute, ExecuteCopyActionCommand);
             EditActionCommand = new ArtisCommand(CanExecute, ExecuteEditActionCommand);
             RemoveActionCommand = new ArtisCommand(CanExecute, ExecuteRemoveActionCommand);
 
-            AddActorCommand = new ArtisCommand(CanExecute, ExecuteAddActorCommand);
+            AddActorCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddActorCommand);
             RemoveActorCommand = new ArtisCommand(CanExecute, ExecuteRemoveActorCommand);
 
-            AddProducerCommand = new ArtisCommand(CanExecute, ExecuteAddProducerCommand);
+            AddProducerCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddProducerCommand);
             RemoveProducerCommand = new ArtisCommand(CanExecute, ExecuteRemoveProducerCommand);
 
-            AddImageCommand = new ArtisCommand(CanExecute, ExecuteAddImageCommand);
+            AddImageCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddImageCommand);
             RemoveImageCommand = new ArtisCommand(CanExecute, ExecuteRemoveImageCommand);
 
             SaveCommand = new ArtisCommand(CanExecute, ExecuteSaveCommand);
@@ -370,6 +382,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         private bool CanExecute(object parameters)
         {
             return true;
+        }
+
+        private bool CanExecuteAddCommands(object parameters)
+        {
+            return IsNewOne;
         }
 
         private void ExecuteCancelCommand(object obj)
@@ -461,9 +478,15 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         }
 
+        private void ExecuteCopyActionCommand(object obj)
+        {
+            IsNewOne = false;
+        }
+
         private void ExecuteCreateActionCommand(object obj)
         {
             IsEdit = false; // не удалять
+            IsNewOne = true; // не удалять
         }
 
         private void ExecuteEditActionCommand(object obj)

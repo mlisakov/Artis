@@ -122,6 +122,9 @@
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="SaveButton">
 			<BeginStoryboard Storyboard="{StaticResource BackButtonClick}"/>
 		</EventTrigger>
+		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="CloneActionButton">
+			<BeginStoryboard Storyboard="{StaticResource OnClick1}"/>
+		</EventTrigger>
 	</Grid.Triggers>
 
 	<Grid.RowDefinitions>
@@ -256,6 +259,14 @@
 					Width="110" 
 					VerticalAlignment="Top"/>
 
+			<Button x:Name="CloneActionButton" 
+					Content="Копировать…" 					
+					Margin="0,10,0,0" 
+					Template="{DynamicResource SimpleButtonTemplate}" 
+					Command="{Binding CopyActionCommand}"				
+					Width="110" 
+					VerticalAlignment="Top" Style="{DynamicResource SelectedItemButton}"/>
+
 			<Button x:Name="EditAreaButton"
 					Content="Редактировать…" 					
 					Margin="0,10,0,0" 
@@ -317,7 +328,8 @@
 										 VerticalAlignment="Center" 
 										 Margin="0,6.02" 
 										 Grid.Column="1" 
-										 Text="{Binding CurrentActionDate.Action.Name}"/>
+										 Text="{Binding CurrentActionDate.Action.Name}"
+										 IsEnabled="{Binding IsNewOne}"/>
 			
             <DatePicker Grid.Row="1" 
 						VerticalAlignment="Center" 
@@ -339,7 +351,8 @@
 										 Watermark="Ценовой диапазон" 
 										 Grid.Column="1" 
 										 VerticalAlignment="Center" 
-										 Text="{Binding CurrentActionDate.PriceRange}"/>
+										 Text="{Binding CurrentActionDate.PriceRange}"
+										 IsEnabled="{Binding IsNewOne}"/>
 
             <controls:WatermarkedComboBox Grid.Row="3" 
 										  Grid.Column="1" 
@@ -347,7 +360,8 @@
 										  Watermark="Жанр"
 										  ItemsSource="{Binding GenresItemsSource}" 
 										  SelectedItem="{Binding CurrentActionDate.Action.Genre}"										  
-										  DisplayMemberPath="Name"/>
+										  DisplayMemberPath="Name"
+										  IsEnabled="{Binding IsNewOne}"/>
 
             <controls:WatermarkedComboBox Visibility="Collapsed" 
 										  Grid.Column="2" 
@@ -357,7 +371,8 @@
 										  Watermark="Состояние"
 										  ItemsSource="{Binding StatesItemsSource}"
 										  SelectedItem="{Binding CurrentActionDate.Action.State}"
-										  DisplayMemberPath="Name"/>
+										  DisplayMemberPath="Name"
+										  IsEnabled="{Binding IsNewOne}"/>
 			
             <controls:WatermarkedComboBox Grid.ColumnSpan="2" 
 										  Grid.Row="4" 
@@ -375,7 +390,8 @@
 										 Grid.Column="1" 
 										 Height="100" 
 										 Text="{Binding CurrentActionDate.Action.Description}"
-										 ScrollViewer.VerticalScrollBarVisibility="auto"/>
+										 ScrollViewer.VerticalScrollBarVisibility="auto"
+										 IsEnabled="{Binding IsNewOne}"/>
 
 			<TextBlock Grid.Row="6" 
 					   TextWrapping="Wrap" 
@@ -393,7 +409,8 @@
 					 Height="100" 
 					 ItemsSource="{Binding CurrentActionDate.Action.Actor}" 
 					 SelectedItem="{Binding SelectedActor}" 
-					 DisplayMemberPath="FIO"/>
+					 DisplayMemberPath="FIO"
+					 IsEnabled="{Binding IsNewOne}"/>
 
 			<TextBlock Grid.Row="7"
 					   TextWrapping="Wrap" 
@@ -410,7 +427,8 @@
 					 Height="100" 
 					 ItemsSource="{Binding CurrentActionDate.Action.Producer}" 
 					 SelectedItem="{Binding SelectedProducer}" 
-					 DisplayMemberPath="FIO"/>
+					 DisplayMemberPath="FIO"
+					 IsEnabled="{Binding IsNewOne}"/>
 
 			<TextBlock Grid.Row="8" 
                        TextWrapping="Wrap" 
@@ -430,7 +448,8 @@
                      ItemContainerStyle="{DynamicResource ImageListBoxItemContainerStyle}" 
 					 ItemsPanel="{DynamicResource ImageListBoxItemsPanelTemplate}"
 					 VirtualizingPanel.VirtualizationMode="Recycling"
-				 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+				 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+				 IsEnabled="{Binding IsNewOne}">
             </ListBox>
 
             <Button Content="Добавить…" 
