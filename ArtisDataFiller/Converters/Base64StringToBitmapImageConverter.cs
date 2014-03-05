@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Media.Imaging;
 using NLog;
@@ -26,7 +27,9 @@ namespace Artis.ArtisDataFiller
                 foreach (Data.Data data in images)
                 {
                     Data.Data data1 = data;
-                    BitmapImage convertedImage = GetImage(data1.Base64StringData);
+                    Task<BitmapImage> task = GetImage(data1.Base64StringData);
+                    task.Wait();
+                    BitmapImage convertedImage = task.Result;
 
                     if (convertedImage != null)
                         convertedImages.Add(new DataImage(data.ID,convertedImage,data.Base64StringData));
@@ -44,7 +47,7 @@ namespace Artis.ArtisDataFiller
         /// </summary>
         /// <param name="data"></param>
         /// <returns></returns>
-        private BitmapImage GetImage(string data)
+        private async Task<BitmapImage> GetImage(string data)
         {
             try
             {

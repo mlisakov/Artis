@@ -54,5 +54,32 @@ namespace Artis.Data
             }
             return true;
         }
+
+        public static async Task<bool> Add(ActionDate actionDate, List<Data> images)
+        {
+            try
+            {
+                Action action = actionDate.Action;
+                _actionRepository.Add(action);
+
+                if (images != null)
+                    foreach (Data data in images)
+                    {
+                        DataRepository _dataRepository = new DataRepository();
+                        _dataRepository.Add(data);
+                        if (action.Data == null)
+                            action.Data = new Collection<Data>();
+                        action.Data.Add(data);
+                    }
+                _actionRepository.Update(action);
+                _actionDateRepository.Add(actionDate);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Ошибка записи изображения ", ex);
+                return false;
+            }
+            return true;
+        }
     }
 }

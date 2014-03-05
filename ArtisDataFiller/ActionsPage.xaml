@@ -44,7 +44,7 @@
 			<Setter Property="IsEnabled" Value="True"/>			
 			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
 			<Style.Triggers>
-				<DataTrigger Binding="{Binding SelectedItem}" Value="{x:Null}">
+                <DataTrigger Binding="{Binding SelectedImage}" Value="{x:Null}">
 					<Setter Property="IsEnabled" Value="False"/>
 				</DataTrigger>
 			</Style.Triggers>

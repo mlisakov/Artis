@@ -337,11 +337,18 @@ namespace Artis.ArtisDataFiller.ViewModels
         public ActionsViewModel()
         {
             InitCommands();
-
             FromDate = ToDate = DateTime.Today;
-            //SelectedAction = new Action();
-
             InitDataSource();
+            InitVariables();
+        }
+
+        /// <summary>
+        /// Инициализация переменных
+        /// </summary>
+        private void InitVariables()
+        {
+            _deletedImages = new List<long>();
+            _addedImages = new List<Data.Data>();
         }
 
         /// <summary>
@@ -487,6 +494,9 @@ namespace Artis.ArtisDataFiller.ViewModels
         {
             IsEdit = false; // не удалять
             IsNewOne = true; // не удалять
+
+            CurrentActionDate=new ActionDate(){Date = DateTime.Today,Action=new Action()};
+            Images=new ObservableCollection<Data.Data>();
         }
 
         private void ExecuteEditActionCommand(object obj)
@@ -528,14 +538,13 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async Task<bool> AddAreaDate()
         {
-            //bool result = await ActionDateRepository.Add(CurrentArea, _addedImages);
-            //if (result)
-            //{
-            //    ActionsItemsSource.Add(CurrentArea);
-            //    OnPropertyChanged("Areas");
-            //}
-            //return result;
-            return true;
+            bool result = await ActionDateRepository.Add(CurrentActionDate, _addedImages);
+            if (result)
+            {
+                ActionsItemsSource.Add(CurrentActionDate);
+                OnPropertyChanged("ActionsItemsSource");
+            }
+            return result;
         }
 
         private async Task<bool> RemoveAreaDate()
