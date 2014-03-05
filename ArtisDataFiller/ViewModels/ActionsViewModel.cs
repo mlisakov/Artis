@@ -501,9 +501,12 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         }
 
-        private void ExecuteCopyActionCommand(object obj)
+        private async void ExecuteCopyActionCommand(object obj)
         {
             IsNewOne = false;
+            Images = new ObservableCollection<DataImage>(await ImageHelper.ConvertImages(CurrentActionDate.Action.Data));
+            _addedImages = new List<DataImage>();
+            _deletedImages = new List<long>();
         }
 
         private void ExecuteCreateActionCommand(object obj)
@@ -518,6 +521,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         private async void ExecuteEditActionCommand(object obj)
         {
             IsEdit = true; // не удалять
+            IsNewOne = true;
             Images = new ObservableCollection<DataImage>(await ImageHelper.ConvertImages(CurrentActionDate.Action.Data));
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
