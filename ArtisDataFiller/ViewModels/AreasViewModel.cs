@@ -335,7 +335,6 @@ namespace Artis.ArtisDataFiller.ViewModels
                     }
                 }
             }
-
         } 
         
 
