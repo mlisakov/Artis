@@ -112,12 +112,16 @@
     </Compile>
     <Compile Include="Helpers\DataImage.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
+    <Compile Include="GenresSettingsPage.xaml.cs">
+      <DependentUpon>GenresSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="NLog-NHibernate.cs" />
     <Compile Include="ViewModels\ActionsViewModel.cs" />
     <Compile Include="ViewModels\AddActorViewModel.cs" />
     <Compile Include="ViewModels\AreasViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
+    <Compile Include="ViewModels\GenresSettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Page Include="ActionsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -147,6 +151,10 @@
       <DependentUpon>DownloadPage.xaml</DependentUpon>
     </Compile>
     <Page Include="EditPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GenresSettingsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -255,6 +263,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\actions.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\genresSettings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
