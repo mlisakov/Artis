@@ -1,0 +1,112 @@
+﻿<Grid
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"	   
+	  xmlns:controls="clr-namespace:Artis.ArtisDataFiller.Controls"
+	  xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity" xmlns:ei="http://schemas.microsoft.com/expression/2010/interactions" x:Class="Artis.ArtisDataFiller.GenresSettingsPage"
+	  MinWidth="1024" MinHeight="500">
+	
+	<Grid.Resources>
+		<Style x:Key="UsedGenresSelectedItemButton" TargetType="{x:Type Button}">
+			<Setter Property="IsEnabled" Value="True"/>			
+			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding SelectedUsedGenre}" Value="{x:Null}">
+					<Setter Property="IsEnabled" Value="False"/>
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+
+		<Style x:Key="UsedGenresButton" TargetType="{x:Type Button}">
+			<Setter Property="IsEnabled" Value="True"/>			
+			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding UsedGenres}" Value="{x:Null}">
+					<Setter Property="IsEnabled" Value="False"/>
+				</DataTrigger>
+				<DataTrigger Binding="{Binding UsedGenres.Count}" Value="0">
+					<Setter Property="IsEnabled" Value="False"/>
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+
+		<Style x:Key="OthersGenresSelectedItemButton" TargetType="{x:Type Button}">
+			<Setter Property="IsEnabled" Value="True"/>			
+			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding SelectedOtherGenre}" Value="{x:Null}">
+					<Setter Property="IsEnabled" Value="False"/>
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+
+		<Style x:Key="OthersGenresButton" TargetType="{x:Type Button}">
+			<Setter Property="IsEnabled" Value="True"/>			
+			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
+			<Style.Triggers>
+				<DataTrigger Binding="{Binding OthersGenres}" Value="{x:Null}">
+					<Setter Property="IsEnabled" Value="False"/>
+				</DataTrigger>
+				<DataTrigger Binding="{Binding OthersGenres.Count}" Value="0">
+					<Setter Property="IsEnabled" Value="False"/>
+				</DataTrigger>
+			</Style.Triggers>
+		</Style>
+	</Grid.Resources>
+	
+		<Grid.RowDefinitions>
+		<RowDefinition Height="Auto"/>
+		<RowDefinition Height="*"/>
+	</Grid.RowDefinitions>
+
+	<TextBlock HorizontalAlignment="Left" 
+		TextWrapping="Wrap"
+		Text="Настройка категорий мероприятий" 
+		VerticalAlignment="Top" 
+		Style="{DynamicResource HeaderTextBlockStyle}"
+		Margin="20,12.526,0,0"/>
+
+	<Grid Grid.Row="1">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="34"/>
+			<RowDefinition Height="34"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="34"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="40"/>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="Auto"/>			
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+
+		<controls:WatermarkedComboBox 
+			VerticalAlignment="Center" 
+			Margin="0" 
+			Watermark="Категория" 								
+			ItemsSource="{Binding Categories}" 
+			DisplayMemberPath="Name" 
+			SelectedValuePath="Name"
+			SelectedItem="{Binding CurrentCategory}" Grid.Column="1"/>
+										
+		<TextBlock Grid.Column="1" Grid.Row="1" TextWrapping="Wrap" Text="Примененные жанры" VerticalAlignment="Center" Style="{DynamicResource SimpleTextStyle}"/>
+		<TextBlock Grid.Column="3" Grid.Row="1" TextWrapping="Wrap" Text="Остальные жанры" VerticalAlignment="Center" Style="{DynamicResource SimpleTextStyle}"/>
+
+		<ListBox Grid.Column="1" Grid.Row="2" ItemsSource="{Binding UsedGenres}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedUsedGenre}" AllowDrop="True" >
+
+		</ListBox>
+
+		<StackPanel Grid.Row="2" Grid.Column="2" Margin="20,0">
+			<Button Content="→" FontFamily="Arial" Template="{DynamicResource SimpleButtonTemplate}" Width="50" FontSize="21.333" Style="{DynamicResource UsedGenresSelectedItemButton}"/>			
+			<Button  Content="↠" FontFamily="Arial" Template="{DynamicResource SimpleButtonTemplate}" Width="50" Margin="0,10,0,0" FontSize="21.333" Style="{DynamicResource UsedGenresButton}"/>			
+			<Button Content="←" FontFamily="Arial" Template="{DynamicResource SimpleButtonTemplate}" Width="50" Margin="0,10,0,0" FontSize="21.333" Style="{DynamicResource OthersGenresSelectedItemButton}"/>			
+			<Button Content="↞" FontFamily="Arial" Template="{DynamicResource SimpleButtonTemplate}" Width="50" Margin="0,10,0,0" FontSize="21.333" Style="{DynamicResource OthersGenresButton}"/>			
+		</StackPanel>
+
+		<ListBox Grid.Column="3" Grid.Row="2" ItemsSource="{Binding OthersGenres}" DisplayMemberPath="Name" SelectedItem="{Binding SelectedOtherGenre}" AllowDrop="True" >
+	
+		</ListBox>
+		<Button Content="Сохранить" Grid.Column="4" Grid.Row="2" Template="{DynamicResource SimpleButtonTemplate}" VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="20,0,0,0" Width="110"/>
+
+	</Grid>
+</Grid>

@@ -1,7 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-using System.Windows;
-
-namespace Artis.ArtisDataFiller.ViewModels
+﻿namespace Artis.ArtisDataFiller.ViewModels
 {
     /// <summary>
     /// ViewModel страницы просмотра данных
@@ -10,6 +7,7 @@ namespace Artis.ArtisDataFiller.ViewModels
     {
         private bool _isAreasPageOpened;
         private bool _isActionsPageOpened;
+        private bool _isGenresSettingsOpened;
 
         public EditViewModel()
         {
@@ -23,18 +21,11 @@ namespace Artis.ArtisDataFiller.ViewModels
             get { return _isAreasPageOpened; }
             set
             {
-                DisposeViewContent();
-
-                if (IsActionPageOpened)
-                {
-                    IsActionPageOpened = false;
-                    OnPropertyChanged("IsActionPageOpened");
-                }
-
                 _isAreasPageOpened = value;
 
                 if (_isAreasPageOpened)
                 {
+                    DisposeViewContent();
                     ViewContent = new AreasPage();
                 }
             }
@@ -48,19 +39,30 @@ namespace Artis.ArtisDataFiller.ViewModels
             get { return _isActionsPageOpened; }
             set
             {
-                DisposeViewContent();
-
-                if (IsAreasPageOpened)
-                {
-                    IsAreasPageOpened = false;
-                    OnPropertyChanged("IsAreasPageOpened");
-                }
-
                 _isActionsPageOpened = value;
 
                 if (_isActionsPageOpened)
                 {
+                    DisposeViewContent();
                     ViewContent = new ActionsPage();
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Открыта ли сейчас страница настройки жанров
+        /// </summary>
+        public bool IsGenresSettingsOpened
+        {
+            get { return _isGenresSettingsOpened; }
+            set
+            {
+                _isGenresSettingsOpened = value;
+                if (_isGenresSettingsOpened)
+                {
+                    DisposeViewContent();
+                    ViewContent = new GenresSettingsPage();
                 }
             }
         }

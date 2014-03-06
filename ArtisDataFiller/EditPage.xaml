@@ -8,12 +8,15 @@
 
 	<Grid Background="#FF006191">
 		<StackPanel VerticalAlignment="Top" Margin="0,100,0,0">
-			<ToggleButton x:Name="Areas" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsAreasPageOpened}" ToolTip="Площадки" Background="#FF006191">
+			<RadioButton x:Name="Areas" IsChecked="{Binding IsAreasPageOpened}" ToolTip="Площадки"  Style="{DynamicResource RadioButtonStyle}">
 				<Image Source="Images/areas.png" Stretch="Fill" />
-			</ToggleButton>
-			<ToggleButton x:Name="Actions" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsActionPageOpened}" ToolTip="Мероприятия" Background="#FF006191">
+			</RadioButton>						
+			<RadioButton x:Name="Actions" IsChecked="{Binding IsActionPageOpened}" ToolTip="Мероприятия"  Style="{DynamicResource RadioButtonStyle}">
 				<Image Source="Images/actions.png" Stretch="Fill" />
-			</ToggleButton>
+			</RadioButton>
+			<RadioButton Style="{DynamicResource RadioButtonStyle}" IsChecked="{Binding IsGenresSettingsOpened}" ToolTip="Настройка категорий мероприятий">
+				<Image Source="Images/genresSettings.png" ></Image>
+			</RadioButton>
 		</StackPanel>
 	</Grid>
 
