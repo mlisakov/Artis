@@ -286,9 +286,7 @@
 	<ScrollViewer x:Name="EditScrollViewer"
 				  Grid.Row="1" 
 				  VerticalScrollBarVisibility="Auto" 
-				  RenderTransformOrigin="0.5,0.5"
-				  Opacity="0" 
-				  Visibility="Collapsed">
+				  RenderTransformOrigin="0.5,0.5" Visibility="Collapsed" Opacity="0">
 		
 		<ScrollViewer.RenderTransform>
 			<TransformGroup>

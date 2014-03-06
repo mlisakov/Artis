@@ -81,6 +81,7 @@
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Windows.Interactivity" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
@@ -106,18 +107,27 @@
     <Compile Include="Controls\WatermarkedComboBox.cs" />
     <Compile Include="Controls\WatermarkedTextBox.cs" />
     <Compile Include="Converters\Base64StringToBitmapImageConverter.cs" />
+    <Compile Include="AddActorDialogWindow.xaml.cs">
+      <DependentUpon>AddActorDialogWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\DataImage.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="NLog-NHibernate.cs" />
     <Compile Include="ViewModels\ActionsViewModel.cs" />
+    <Compile Include="ViewModels\AddActorViewModel.cs" />
     <Compile Include="ViewModels\AreasViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
+    <Compile Include="ViewModels\DialogViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Page Include="ActionsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="AreasPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddActorDialogWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
@@ -484,6 +485,16 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteAddProducerCommand(object obj)
         {
+            var viewModel = new AddActorViewModel();
+            viewModel.Title = "Добавление нового продюсера";
+
+            var window = new AddActorDialogWindow { ViewModel = viewModel };
+
+            var dialogResult = window.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                MessageBox.Show("И тут я должен был добавить нового продюсера с именем " + viewModel.Name);
+            }
         }
 
         private void ExecuteRemoveActorCommand(object obj)
@@ -493,7 +504,16 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteAddActorCommand(object obj)
         {
+            var viewModel = new AddActorViewModel();            
+            viewModel.Title = "Добавление нового актера";
 
+            var window = new AddActorDialogWindow {ViewModel = viewModel};
+
+            var dialogResult = window.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                MessageBox.Show("И тут я должен был добавить нового актера с именем " + viewModel.Name);
+            }
         }
 
         private void ExecuteRemoveActionCommand(object obj)
