@@ -365,6 +365,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteCancelCommand(object obj)
         {
+            ClearVariables();
         }
 
         private void ExecuteSaveCommand(object obj)
@@ -447,8 +448,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteAddProducerCommand(object obj)
         {
-            var viewModel = new AddActorViewModel();
-            viewModel.Title = "Добавление нового продюсера";
+            var viewModel = new AddProducerViewModel(CurrentActionDate.Action) {Title = "Добавление нового продюсера"};
 
             var window = new AddActorDialogWindow { ViewModel = viewModel };
 
@@ -466,16 +466,16 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteAddActorCommand(object obj)
         {
-            var viewModel = new AddActorViewModel();            
-            viewModel.Title = "Добавление нового актера";
+            var viewModel = new AddActorViewModel(CurrentActionDate.Action) { Title = "Добавление нового актера" };
 
             var window = new AddActorDialogWindow {ViewModel = viewModel};
 
             var dialogResult = window.ShowDialog();
             if (dialogResult.HasValue && dialogResult.Value)
             {
-                MessageBox.Show("И тут я должен был добавить нового актера с именем " + viewModel.Name);
+                OnPropertyChanged("CurrentActionDate");
             }
+            
         }
 
         private void ExecuteRemoveActionCommand(object obj)

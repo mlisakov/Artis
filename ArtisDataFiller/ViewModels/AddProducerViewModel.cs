@@ -3,7 +3,7 @@ using NLog;
 
 namespace Artis.ArtisDataFiller.ViewModels
 {
-    public class AddActorViewModel : DialogViewModel
+    public class AddProducerViewModel : DialogViewModel
     {
         /// <summary>
         /// Логгер
@@ -13,7 +13,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         private string _name;
         private Action _action;
         /// <summary>
-        /// ФИО актера
+        /// ФИО режисера
         /// </summary>
         public string Name
         {
@@ -25,19 +25,19 @@ namespace Artis.ArtisDataFiller.ViewModels
             }
         }
 
-        public AddActorViewModel(Action action)
+        public AddProducerViewModel(Action action)
         {
             _action = action;
         }
 
         public override bool CanExecuteOkCommand(object parameter)
         {
-            return !string.IsNullOrEmpty(Name);            
+            return !string.IsNullOrEmpty(Name);
         }
 
         public async override void ExecuteOkCommand(object parameter)
         {
-           await ActorRepository.AddActor(new Actor() {FIO = Name}, _action);
+            await ProducerRepository.AddProducer(new Producer() { FIO = Name }, _action);
         }
     }
 }

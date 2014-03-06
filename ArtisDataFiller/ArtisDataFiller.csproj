@@ -118,6 +118,7 @@
     <Compile Include="NLog-NHibernate.cs" />
     <Compile Include="ViewModels\ActionsViewModel.cs" />
     <Compile Include="ViewModels\AddActorViewModel.cs" />
+    <Compile Include="ViewModels\AddProducerViewModel.cs" />
     <Compile Include="ViewModels\AreasViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />

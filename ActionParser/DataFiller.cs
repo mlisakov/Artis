@@ -57,7 +57,7 @@ namespace Artis.ActionParser
         {
             foreach (IUrlDataLoader dataLoader in _urlDataLoaders)
             {
-                dataLoader.LoadData(start, finish);
+                await dataLoader.LoadData(start, finish);
             }
         }
 

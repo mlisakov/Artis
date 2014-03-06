@@ -16,24 +16,13 @@ namespace Artis.Data
         {
             get
             {
-                lock (_lockObject)
+                if (sessionFactory == null)
                 {
-                    if (sessionFactory == null)
-                    {
-                        Init();
-                    }
-                    return sessionFactory.OpenSession();
+                    Init();
                 }
+                return sessionFactory.OpenSession();
             }
         }
-
-        //static Domain()
-        //{
-        //    if (sessionFactory == null)
-        //    {
-        //        Init();
-        //    }
-        //}
 
         public static async Task<ISession> GetSession()
         {
@@ -41,20 +30,24 @@ namespace Artis.Data
             {
                 await Task.Run(() => Init());
             }
-            lock (_lockObject)
-            {
-                return sessionFactory.OpenSession();
-            }
+            return sessionFactory.OpenSession();
         }
 
         private static void Init()
         {
             try
             {
-                _configuration = new Configuration();
-                _configuration.Configure(AppDomain.CurrentDomain.BaseDirectory + "/NHibernate/Mapping/hibernate.cfg.xml");
-                //Тяжелый процесс, должен вызываться один раз
-                sessionFactory = _configuration.BuildSessionFactory();
+                lock (_lockObject)
+                {
+                    if (sessionFactory == null)
+                    {
+                        _configuration = new Configuration();
+                        _configuration.Configure(AppDomain.CurrentDomain.BaseDirectory +
+                                                 "/NHibernate/Mapping/hibernate.cfg.xml");
+                        //Тяжелый процесс, должен вызываться один раз
+                        sessionFactory = _configuration.BuildSessionFactory();
+                    }
+                }
             }
             catch (Exception ex)
             {

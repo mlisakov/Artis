@@ -197,7 +197,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             return (FromDate <= ToDate);
         }
 
-        private void ExecuteDownloadCommand(object parameter)
+        private async void ExecuteDownloadCommand(object parameter)
         {
             IsLoadingFinished = false; //скрываем кнопку "Отчеты"
 
@@ -207,7 +207,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
             try
             {
-                _dataFiller.ParseActionsAsync(FromDate, ToDate);
+                await _dataFiller.ParseActionsAsync(FromDate, ToDate);
             }
             catch (Exception ex)
             {

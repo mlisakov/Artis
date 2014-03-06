@@ -36,6 +36,8 @@ namespace Artis.DataLoader
 
         public async Task LoadData(DateTime start, DateTime finish)
         {
+            _cancelToken = new CancellationTokenSource();
+
             DateTime checkedFinish = finish;
             if (start.AddMonths(3) < finish)
                 checkedFinish = start.AddMonths(3);
