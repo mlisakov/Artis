@@ -23,7 +23,6 @@ namespace Artis.ArtisDataFiller.ViewModels
         private DateTime? _fromDate;
         private DateTime? _toDate;
         private ActionDate _currentActionDate;
-        //private Action _currentAction;
         private Actor _selectedActor;
         private Producer _selectedProducer;
 
@@ -251,19 +250,6 @@ namespace Artis.ArtisDataFiller.ViewModels
         }
 
         /// <summary>
-        /// Текущий создаваемое/редактируемое мероприятие
-        /// </summary>
-        //public Action CurrentAction
-        //{
-        //    get { return _currentAction; }
-        //    set
-        //    {
-        //        _currentAction = value; 
-        //        OnPropertyChanged();
-        //    }
-        //}
-
-        /// <summary>
         /// Источник данных для списка с жанрами
         /// </summary>
         public ObservableCollection<Genre> GenresItemsSource
@@ -290,24 +276,6 @@ namespace Artis.ArtisDataFiller.ViewModels
         }
 
         /// <summary>
-        /// Источник данных для актеров создаваемого/редактируемого мероприятия
-        /// </summary>
-        //public ObservableCollection<Actor> CurrentActionActors
-        //{
-        //    get
-        //    {
-        //        if (CurrentActionDate != null && CurrentActionDate.Action.Actor != null)
-        //            return new ObservableCollection<Actor>(CurrentActionDate.Action.Actor);
-        //        return new ObservableCollection<Actor>();
-        //    }
-        //    set
-        //    {
-        //        if (CurrentActionDate != null)
-        //            CurrentActionDate.Action.Actor = value;
-        //    }
-        //}
-
-        /// <summary>
         /// Выделенный актер в списке актеров создаваемого/редактируемого мероприятия
         /// </summary>
         public Actor SelectedActor
@@ -319,24 +287,6 @@ namespace Artis.ArtisDataFiller.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        /// <summary>
-        /// Источник данных для продюсеров создаваемого/редактируемого мероприятия
-        /// </summary>
-        //public ObservableCollection<Producer> CurrentActionProducers
-        //{
-        //    get
-        //    {
-        //        if (CurrentActionDate != null && CurrentActionDate.Action.Producer != null)
-        //            return new ObservableCollection<Producer>(CurrentActionDate.Action.Producer);
-        //        return new ObservableCollection<Producer>();
-        //    }
-        //    set
-        //    {
-        //        if (CurrentActionDate != null)
-        //            CurrentActionDate.Action.Producer = value;
-        //    }
-        //}
 
         /// <summary>
         /// Выделенный продюсер в списке продюсеров создаваемого/редактируемого мероприятия
@@ -420,7 +370,12 @@ namespace Artis.ArtisDataFiller.ViewModels
         private void ExecuteSaveCommand(object obj)
         {
             if (IsEdit)
-                SaveActionDate();
+            {
+                if (IsNewOne)
+                    SaveActionDate();
+                else
+                    AddNewActionDate();
+            }
             else
                 AddActionDate();
 
@@ -465,9 +420,16 @@ namespace Artis.ArtisDataFiller.ViewModels
                     file.Close();
                     byte[] imageArray = stream.ToArray();
                     string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
+
+                    stream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage bitMapImage = new BitmapImage();
+                    bitMapImage.BeginInit();
+                    bitMapImage.StreamSource = stream;
+                    bitMapImage.EndInit();
+
                     if (!string.IsNullOrEmpty(base64String))
                     {
-                        DataImage image = new DataImage() { Base64String = base64String };
+                        DataImage image = new DataImage() {Base64String = base64String, Image = bitMapImage};
 
                         _addedImages.Add(image);
 
@@ -523,7 +485,9 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async void ExecuteCopyActionCommand(object obj)
         {
+            IsEdit = true;
             IsNewOne = false;
+
             Images = new ObservableCollection<DataImage>(await ImageHelper.ConvertImages(CurrentActionDate.Action.Data));
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
@@ -542,6 +506,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         {
             IsEdit = true; // не удалять
             IsNewOne = true;
+
             Images = new ObservableCollection<DataImage>(await ImageHelper.ConvertImages(CurrentActionDate.Action.Data));
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
@@ -571,15 +536,24 @@ namespace Artis.ArtisDataFiller.ViewModels
             _addedImages = null;
         }
 
+        /// <summary>
+        /// Сохранение изменений 
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> SaveActionDate()
         {
-            return
-                await
+            bool result = await
                     ActionDateRepository.Save(CurrentActionDate,
                         _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList(),
                         _deletedImages);
+            return result;
+
         }
 
+        /// <summary>
+        /// Добавление нового мероприятия
+        /// </summary>
+        /// <returns></returns>
         private async Task<bool> AddActionDate()
         {
             bool result =
@@ -588,8 +562,25 @@ namespace Artis.ArtisDataFiller.ViewModels
                         _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList());
             if (result)
             {
-                ActionsItemsSource.Add(CurrentActionDate);
-                OnPropertyChanged("ActionsItemsSource");
+                //ActionsItemsSource.Add(CurrentActionDate);
+                //OnPropertyChanged("ActionsItemsSource");
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Добавление новой даты проведения мероприятия
+        /// </summary>
+        /// <returns></returns>
+        private async Task<bool> AddNewActionDate()
+        {
+            bool result =
+                await
+                    ActionDateRepository.AddActionDate(CurrentActionDate);
+            if (result)
+            {
+                //ActionsItemsSource.Add(CurrentActionDate);
+                //OnPropertyChanged("ActionsItemsSource");
             }
             return result;
         }
