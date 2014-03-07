@@ -49,7 +49,7 @@ namespace Artis.Data
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Ошибка записи изображения ", ex);
+                _logger.ErrorException("Ошибка обновления мероприятия ", ex);
                 return false;
             }
             return true;
@@ -76,7 +76,21 @@ namespace Artis.Data
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Ошибка записи изображения ", ex);
+                _logger.ErrorException("Ошибка добавления мероприятия ", ex);
+                return false;
+            }
+            return true;
+        }
+
+        public static async Task<bool> AddActionDate(ActionDate actionDate)
+        {
+            try
+            {
+                _actionDateRepository.Add(actionDate);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Ошибка добавления даты проведения мероприятия ", ex);
                 return false;
             }
             return true;

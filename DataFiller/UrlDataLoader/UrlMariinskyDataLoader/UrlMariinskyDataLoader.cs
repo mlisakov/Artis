@@ -45,6 +45,8 @@ namespace Artis.DataLoader
 
         public async Task LoadData(DateTime start, DateTime finish)
         {
+            _cancelToken = new CancellationTokenSource();
+
             await DownloadAreasInfo();
 
             DateTime currentDate = start;

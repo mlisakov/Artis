@@ -92,7 +92,7 @@ namespace Artis.Data
                     actionWeb.AreaSchemaImage, actionWeb.AreaImage, metro);
 
                 List<Producer> producers = new List<Producer>();
-                if (actionWeb.Producer != null)
+                if (actionWeb.Producer != null && !string.IsNullOrEmpty(actionWeb.Producer))
                     foreach (string producerItem in actionWeb.Producer.Split(','))
                     {
                         Producer producer = CreateProducer(producerItem);
@@ -101,7 +101,7 @@ namespace Artis.Data
                     }
 
                 List<Actor> actors = new List<Actor>();
-                if (actionWeb.Actors != null)
+                if (actionWeb.Actors != null && !string.IsNullOrEmpty(actionWeb.Actors))
                     foreach (string actorItem in actionWeb.Actors.Split(','))
                     {
                         Actor actor = CreateActor(actorItem);

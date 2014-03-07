@@ -21,12 +21,9 @@ namespace Artis.ArtisDataFiller.ViewModels
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
         private string _filterName;
-       
         private Area _currentArea;
-        //private DataImage _currentAreaImage;        
         private DataImage _selectedImage;
         private bool _isEdit;
-        //private string _editName; 
 
         private ObservableCollection<Area> _areas;
         private ObservableCollection<DataImage> _images;
@@ -113,30 +110,6 @@ namespace Artis.ArtisDataFiller.ViewModels
                 OnPropertyChanged();
             }
         }
-
-        //public DataImage CurrentAreaImage  
-        //{
-        //    get { return _currentAreaImage; }
-        //    set
-        //    {
-        //        _currentAreaImage = value; 
-        //        OnPropertyChanged();
-        //    }
-        //}
-        
-
-        /// <summary>
-        /// Поле - наименование редактируемой или создаваемой площадки
-        /// </summary>
-        //public string EditName
-        //{
-        //    get { return _editName; }
-        //    set
-        //    {
-        //        _editName = value;
-        //        OnPropertyChanged();
-        //    }
-        //}
 
         /// <summary>
         /// true - если сейчас редактируется площадка.
@@ -230,21 +203,6 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Заполнение источников данных
         /// </summary>
-        //private async void InitDataSource()
-        //{
-        //    IList<Area> areas = await Task.Run(
-        //    () =>
-        //    {
-        //        Task<IList<Area>> t = DataRequestFactory.GetAreas();
-        //        t.Wait();
-        //        return t.Result;
-        //    });
-        //    Areas = new ObservableCollection<Area>(areas);
-        //}
-
-        /// <summary>
-        /// Заполнение источников данных
-        /// </summary>
         private async void InitDataSource()
         {
             Areas = new ObservableCollection<Area>(await DataRequestFactory.GetAreas());
@@ -325,10 +283,15 @@ namespace Artis.ArtisDataFiller.ViewModels
                     file.Close();
                     byte[] imageArray = stream.ToArray();
                     string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
+
+                    stream.Seek(0, SeekOrigin.Begin);
+                    BitmapImage bitMapImage = new BitmapImage();
+                    bitMapImage.BeginInit();
+                    bitMapImage.StreamSource = stream;
+                    bitMapImage.EndInit();
                     if (!string.IsNullOrEmpty(base64String))
                     {
-                        DataImage image = new DataImage() { Base64String = base64String };
-
+                        DataImage image = new DataImage() { Base64String = base64String, Image = bitMapImage };
                         _addedImages.Add(image);
 
                         Images.Add(image);

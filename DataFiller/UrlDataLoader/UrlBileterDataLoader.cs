@@ -52,6 +52,8 @@ namespace Artis.DataLoader
         /// <returns></returns>
         public async Task LoadData(DateTime start, DateTime finish)
         {
+            _cancelToken = new CancellationTokenSource();
+
             KeyValuePair<string,HtmlDocument> doc = await DownloadDataFromWebSite(start, finish);
 
             if (doc.Value.DocumentNode.ChildNodes.Count == 0)
