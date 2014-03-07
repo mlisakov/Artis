@@ -98,10 +98,6 @@
       <Project>{8d331482-2207-4c27-92ba-f5676bf2a80a}</Project>
       <Name>Consts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Logger\Logger.csproj">
-      <Project>{3ae6d2b3-ffff-43b3-b225-062214ee5fad}</Project>
-      <Name>Logger</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Library\" />

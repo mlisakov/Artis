@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Artis.Consts;
-using Artis.Logger;
 using NLog;
 
 namespace Artis.Data
