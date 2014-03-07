@@ -324,9 +324,9 @@ namespace Artis.ArtisDataFiller.ViewModels
         private async void InitDataSource()
         {
             //FilterName = "Наименование мероприятия";
-            FilterAreasItemsSource = new ObservableCollection<Area>(await DataRequestFactory.GetAreas());
+            FilterAreasItemsSource = await DataRequestFactory.GetAreas();
             ActionsItemsSource = new ObservableCollection<ActionDate>();
-            GenresItemsSource = new ObservableCollection<Genre>(await DataRequestFactory.GetGenres());
+            GenresItemsSource = await DataRequestFactory.GetGenres();
             StatesItemsSource = new ObservableCollection<State>();
         }
 
@@ -488,7 +488,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             IsEdit = true;
             IsNewOne = false;
 
-            Images = new ObservableCollection<DataImage>(await ImageHelper.ConvertImages(CurrentActionDate.Action.Data));
+            Images = await ImageHelper.ConvertImages(CurrentActionDate.Action.Data);
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
@@ -507,7 +507,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             IsEdit = true; // не удалять
             IsNewOne = true;
 
-            Images = new ObservableCollection<DataImage>(await ImageHelper.ConvertImages(CurrentActionDate.Action.Data));
+            Images =await ImageHelper.ConvertImages(CurrentActionDate.Action.Data);
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
@@ -524,7 +524,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async void ExecuteSearchCommand(object parameters)
         {
-            ActionsItemsSource = new ObservableCollection<ActionDate>(await DataRequestFactory.GetActions(FilterName, FilterArea, FromDate, ToDate));
+            ActionsItemsSource = await DataRequestFactory.GetActions(FilterName, FilterArea, FromDate, ToDate);
         }
 
         private void ClearVariables()

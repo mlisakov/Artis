@@ -55,7 +55,7 @@ namespace Artis.Data
         /// <param name="finishDate">Конечная дата для фильтра</param>
       
         /// <returns></returns>
-        public static async Task<IList<ActionDate>> GetActions(string actionName,Area area,DateTime? startDate, DateTime? finishDate)
+        public static async Task<ObservableCollection<ActionDate>> GetActions(string actionName,Area area,DateTime? startDate, DateTime? finishDate)
         {
             using (ISession session = Domain.Session)
             {
@@ -81,7 +81,7 @@ namespace Artis.Data
                     criteria.Add(Restrictions.Where<ActionDate>(i => i.Date >= startDate.Value.Date && i.Date <= finishDate.Value.Date));
                 }
 
-                return  criteria.List<ActionDate>();
+                return  new ObservableCollection<ActionDate>(criteria.List<ActionDate>());
 
             }
         }
@@ -299,16 +299,16 @@ namespace Artis.Data
         /// Получение всех площадок
         /// </summary>
         /// <returns>Список площадок, отсортированный по имени</returns>
-        public static async Task<IList<Area>> GetAreas(string areaName = "")
+        public static async Task<ObservableCollection<Area>> GetAreas(string areaName = "")
         {
             using (ISession session = await Domain.GetSession())
             {
                 if (string.IsNullOrEmpty(areaName))
-                    return session.Query<Area>().Select(i => i).OrderBy(i => i.Name).ToList();
+                    return new ObservableCollection<Area>(session.Query<Area>().Select(i => i).OrderBy(i => i.Name));
 
                 ICriteria criteria = session.CreateCriteria(typeof (Area));
                 criteria.Add(Restrictions.Like("Name", "%" + areaName + "%").IgnoreCase());
-                return criteria.List<Area>().OrderBy(i => i.Name).ToList();
+                return new ObservableCollection<Area>(criteria.List<Area>().OrderBy(i => i.Name));
             }
         }
 
@@ -329,12 +329,12 @@ namespace Artis.Data
         /// Получение списка жанров
         /// </summary>
         /// <returns>Список всех жанров</returns>
-        public static async Task<List<Genre>> GetGenres()
+        public static async Task<ObservableCollection<Genre>> GetGenres()
         {
             using (ISession session = await Domain.GetSession())
             {
                 IEnumerable<Genre> genres = session.Query<Genre>();
-                return genres.ToList();
+                return new ObservableCollection<Genre>(genres);
             }
         }
 

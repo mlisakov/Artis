@@ -205,7 +205,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// </summary>
         private async void InitDataSource()
         {
-            Areas = new ObservableCollection<Area>(await DataRequestFactory.GetAreas());
+            Areas = await DataRequestFactory.GetAreas();
         }
 
         private void InitVariables()
@@ -233,7 +233,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async void ExecuteSearchCommand(object parameters)
         {
-            Areas = new ObservableCollection<Area>(await DataRequestFactory.GetAreas(FilterName));
+            Areas = await DataRequestFactory.GetAreas(FilterName);
         }
 
         private void ExecuteNewAreaCommand(object parameter)
@@ -324,7 +324,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         private async void ExecuteEditCommand(object parameter)
         {
             IsEdit = true; // устанавливаем флаг
-            Images = new ObservableCollection<DataImage>(await ImageHelper.ConvertImages(CurrentArea.Data));
+            Images = await ImageHelper.ConvertImages(CurrentArea.Data);
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
