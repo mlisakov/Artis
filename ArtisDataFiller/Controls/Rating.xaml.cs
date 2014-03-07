@@ -95,9 +95,14 @@ namespace Artis.ArtisDataFiller.Controls
             for (int i = 0; i < Maximum; i++)
             {
                 var star = new RatingItem {OnColor = StarOnColor, OffColor = StarOffColor, Tag = value};
+                if (i < Value)
+                {
+                    star.State = StarState.On;
+                }
                 star.StateChanged += star_StateChanged;
                 star.MouseEnter += star_MouseEnter;
                 star.MouseLeave += star_MouseLeave;
+
 
                 value++;
 
