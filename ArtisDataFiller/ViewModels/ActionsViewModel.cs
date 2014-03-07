@@ -34,6 +34,8 @@ namespace Artis.ArtisDataFiller.ViewModels
         private ObservableCollection<Genre> _genresItemsSource;
         private ObservableCollection<State> _statesItemsSource;
         private ObservableCollection<ActionDate> _actionsItemsSource;
+        private ObservableCollection<Actor> _actorsItemsSource;
+        private ObservableCollection<Producer> _producersItemsSource;
         private bool _isNewOne;
 
         /// <summary>
@@ -245,7 +247,20 @@ namespace Artis.ArtisDataFiller.ViewModels
             set
             {
                 _currentActionDate = value;
+                if (CurrentActionDate != null && CurrentActionDate.Action.Actor != null)
+                {
+                    ActorsItemsSource = new ObservableCollection<Actor>(CurrentActionDate.Action.Actor);
+                    ProducersItemsSource=new ObservableCollection<Producer>(CurrentActionDate.Action.Producer);
+                }
+                else
+                {
+                    ActorsItemsSource=new ObservableCollection<Actor>();
+                    ProducersItemsSource=new ObservableCollection<Producer>();
+                }
+                
                 OnPropertyChanged();
+                //OnPropertyChanged("ActorsItemsSource");
+                //OnPropertyChanged("ProducersItemsSource");
             }
         }
 
@@ -258,6 +273,32 @@ namespace Artis.ArtisDataFiller.ViewModels
             set
             {
                 _genresItemsSource = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Список актеров
+        /// </summary>
+        public ObservableCollection<Actor> ActorsItemsSource
+        {
+            get { return _actorsItemsSource; }
+            set
+            {
+                _actorsItemsSource = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Список актеров
+        /// </summary>
+        public ObservableCollection<Producer> ProducersItemsSource
+        {
+            get { return _producersItemsSource; }
+            set
+            {
+                _producersItemsSource = value;
                 OnPropertyChanged();
             }
         }
@@ -328,6 +369,8 @@ namespace Artis.ArtisDataFiller.ViewModels
             ActionsItemsSource = new ObservableCollection<ActionDate>();
             GenresItemsSource = await DataRequestFactory.GetGenres();
             StatesItemsSource = new ObservableCollection<State>();
+            ActorsItemsSource=new ObservableCollection<Actor>();
+            ProducersItemsSource=new ObservableCollection<Producer>();
         }
 
         private void InitCommands()
@@ -441,9 +484,11 @@ namespace Artis.ArtisDataFiller.ViewModels
             }
         }
 
-        private void ExecuteRemoveProducerCommand(object obj)
+        private async void ExecuteRemoveProducerCommand(object obj)
         {
-
+            await RemoveProducer();
+            ProducersItemsSource.Remove(SelectedProducer);
+            OnPropertyChanged("ProducersItemsSource");
         }
 
         private void ExecuteAddProducerCommand(object obj)
@@ -455,13 +500,16 @@ namespace Artis.ArtisDataFiller.ViewModels
             var dialogResult = window.ShowDialog();
             if (dialogResult.HasValue && dialogResult.Value)
             {
-                MessageBox.Show("И тут я должен был добавить нового продюсера с именем " + viewModel.Name);
+                ProducersItemsSource.Add(viewModel.Producer);
+                OnPropertyChanged("ProducersItemsSource");
             }
         }
 
-        private void ExecuteRemoveActorCommand(object obj)
+        private async void ExecuteRemoveActorCommand(object obj)
         {
-
+            await RemoveActor();
+            ActorsItemsSource.Remove(SelectedActor);
+            OnPropertyChanged("ActorsItemsSource");
         }
 
         private void ExecuteAddActorCommand(object obj)
@@ -473,7 +521,8 @@ namespace Artis.ArtisDataFiller.ViewModels
             var dialogResult = window.ShowDialog();
             if (dialogResult.HasValue && dialogResult.Value)
             {
-                OnPropertyChanged("CurrentActionDate");
+                ActorsItemsSource.Add(viewModel.Actor);
+                OnPropertyChanged("ActorsItemsSource");
             }
             
         }
@@ -595,6 +644,32 @@ namespace Artis.ArtisDataFiller.ViewModels
             //}
             //return result;
             return true;
+        }
+
+        private async Task<bool> RemoveActor()
+        {
+            bool result =
+               await
+                   ActorRepository.Remove(SelectedActor,CurrentActionDate.Action);
+            if (result)
+            {
+                //ActionsItemsSource.Add(CurrentActionDate);
+                //OnPropertyChanged("ActionsItemsSource");
+            }
+            return result;
+        }
+
+        private async Task<bool> RemoveProducer()
+        {
+            bool result =
+               await
+                   ProducerRepository.Remove(SelectedProducer, CurrentActionDate.Action);
+            if (result)
+            {
+                //ActionsItemsSource.Add(CurrentActionDate);
+                //OnPropertyChanged("ActionsItemsSource");
+            }
+            return result;
         }
 
     }

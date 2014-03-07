@@ -412,7 +412,7 @@
 					 Margin="0,30,0,0" 
 					 Grid.Column="1" 
 					 Height="100" 
-					 ItemsSource="{Binding CurrentActionDate.Action.Actor}" 
+					 ItemsSource="{Binding ActorsItemsSource}" 
 					 SelectedItem="{Binding SelectedActor}" 
 					 DisplayMemberPath="FIO"
 					 IsEnabled="{Binding IsNewOne}"/>
@@ -430,7 +430,7 @@
 					 Margin="0,30,0,0" 
 					 Grid.Column="1" 
 					 Height="100" 
-					 ItemsSource="{Binding CurrentActionDate.Action.Producer}" 
+					 ItemsSource="{Binding ProducersItemsSource}" 
 					 SelectedItem="{Binding SelectedProducer}" 
 					 DisplayMemberPath="FIO"
 					 IsEnabled="{Binding IsNewOne}"/>

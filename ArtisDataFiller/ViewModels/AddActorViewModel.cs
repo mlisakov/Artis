@@ -12,6 +12,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private string _name;
         private Action _action;
+        private Actor _actor;
         /// <summary>
         /// ФИО актера
         /// </summary>
@@ -23,6 +24,11 @@ namespace Artis.ArtisDataFiller.ViewModels
                 _name = value;
                 OnPropertyChanged();
             }
+        }
+
+        public Actor Actor
+        {
+            get { return _actor; }
         }
 
         public AddActorViewModel(Action action)
@@ -37,7 +43,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         public async override void ExecuteOkCommand(object parameter)
         {
-           await ActorRepository.AddActor(new Actor() {FIO = Name}, _action);
+            _actor = new Actor() {FIO = Name};
+            await ActorRepository.AddActor(_actor, _action);
         }
     }
 }

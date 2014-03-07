@@ -12,6 +12,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private string _name;
         private Action _action;
+        private Producer _producer;
         /// <summary>
         /// ФИО режисера
         /// </summary>
@@ -23,6 +24,11 @@ namespace Artis.ArtisDataFiller.ViewModels
                 _name = value;
                 OnPropertyChanged();
             }
+        }
+
+        public Producer Producer
+        {
+            get { return _producer; }
         }
 
         public AddProducerViewModel(Action action)
@@ -37,7 +43,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         public async override void ExecuteOkCommand(object parameter)
         {
-            await ProducerRepository.AddProducer(new Producer() { FIO = Name }, _action);
+            _producer = new Producer() {FIO = Name};
+            await ProducerRepository.AddProducer(_producer, _action);
         }
     }
 }

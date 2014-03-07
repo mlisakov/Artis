@@ -35,5 +35,21 @@ namespace Artis.Data
             }
             return true;
         }
+
+        public static async Task<bool> Remove(Producer producer, Action action)
+        {
+            try
+            {
+                //_producerRepository.Delete(producer);
+                action.Producer.Remove(producer);
+                _actionRepository.Update(action);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Ошибка удаления продюссера из мероприятия ", ex);
+                return false;
+            }
+            return true;
+        }
     }
 }
