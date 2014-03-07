@@ -58,10 +58,6 @@
       <Project>{4bc0ab1e-0b81-4fbe-83e0-8ffafa4a5ef5}</Project>
       <Name>DBConnector</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Logger\Logger.csproj">
-      <Project>{3ae6d2b3-ffff-43b3-b225-062214ee5fad}</Project>
-      <Name>Logger</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Library\nunit.framework.dll" />
