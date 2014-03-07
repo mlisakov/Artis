@@ -1,0 +1,10 @@
+﻿<UserControl x:Class="Artis.ArtisDataFiller.Controls.Rating"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 Width="auto"
+			 Height="auto"
+			 Loaded="Rating_OnLoaded"
+             >
+	<StackPanel x:Name="StarsStackPanel"
+				Orientation="Horizontal"/>
+</UserControl>
