@@ -58,7 +58,7 @@ namespace Artis.Data
             catch (Exception ex)
             {
                 _logger.ErrorException("Ошибка инициализации NHibernate",ex);
-                throw new DBAccessFailedException("Ошибка доступа к Базе данных \"Артис\"");
+                throw new DBAccessFailedException("Ошибка доступа к Базе данных \"Артис\".Текущая директория:" + AppDomain.CurrentDomain.BaseDirectory);
             }
         }
     }

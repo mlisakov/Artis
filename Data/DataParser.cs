@@ -126,6 +126,8 @@ namespace Artis.Data
             {
                 _logger.Fatal("Не удалось подключение к базе данных.Проверьте параметры подключения.Работа приложения остановлена!");
                 InvokeFatalErrorEvent(dbAccessExp.Message);
+                throw new DBAccessFailedException("Ошибка доступа к Базе данных \"Артис\".Текущая директория:" + AppDomain.CurrentDomain.BaseDirectory);
+                
             }
             catch (Exception ex)
             {
