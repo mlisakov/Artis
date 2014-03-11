@@ -11,6 +11,7 @@ namespace Artis.Data
         private long _id;
         private string _name;
         private string _description;
+        private int _rating;
 
         private Genre _genre;
         private State _state;
@@ -36,6 +37,16 @@ namespace Artis.Data
             get { return _name; }
             set { _name = value; }
         }
+
+        /// <summary>
+        /// Наименование
+        /// </summary>
+        public virtual int Rating
+        {
+            get { return _rating; }
+            set { _rating = value; }
+        }
+
 
         /// <summary>
         /// Описание мероприятия

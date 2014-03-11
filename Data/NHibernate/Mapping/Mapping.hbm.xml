@@ -9,6 +9,7 @@
     </id>
     <property name="Name" />
     <property name="Description" length="10000" />
+    <property name="Rating" />
 
     <!--<many-to-one name="Area" class="Area" column="idArea" lazy="false" />-->
     <many-to-one name="Genre" class="Genre" column="idGenre" lazy="false"/>

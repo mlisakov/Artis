@@ -357,7 +357,7 @@
 			
 			<TextBlock Text="Рейтинг" Style="{DynamicResource SimpleTextStyle}" Grid.Row="3" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"/>
 
-			<controls:Rating Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="60,3,0,0" Value="3"/>
+            <controls:Rating Grid.Column="1" Grid.Row="3" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="60,3,0,0" Value="{Binding CurrentActionDate.Action.Rating}"/>
 
             <controls:WatermarkedComboBox Grid.Row="4" 
 										  Grid.Column="1" 

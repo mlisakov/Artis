@@ -15,8 +15,14 @@ namespace Artis.ArtisDataFiller.Controls
 
         public int Value
         {
-            get { return (int) GetValue(ValueProperty); }
-            set { SetValue(ValueProperty, value); }
+            get
+            {
+                return (int) GetValue(ValueProperty);
+            }
+            set
+            {
+                SetValue(ValueProperty, value);
+            }
         }
 
         public static readonly DependencyProperty MaximumProperty = DependencyProperty.Register(
