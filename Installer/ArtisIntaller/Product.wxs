@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <?define ProductName="Artis Administrative Tool" ?>
+  <?define ProductVersion="1.0.0.0" ?>
+  <?define ProductCode="b7bc7c6f-9a4e-4973-be84-eca8e3427c97"?>
+  <?define UpgradeCode="06a81104-1e30-463d-87e1-e8a79b4c682a"?>
+  <?define Manufacturer="SAAC"?>
+  <?define RootPath="C:\Work\ArtisDataFiller\ArtisDataFiller\bin\Debug"?>
+  
+	<Product Id="$(var.ProductCode)" Name="$(var.ProductName)" 
+           Language="1049" 
+           Version="$(var.ProductVersion)"
+           Manufacturer="$(var.Manufacturer)" 
+           UpgradeCode="$(var.UpgradeCode)">
+    <Package InstallerVersion="200" Compressed="yes" />
+
+    <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
+          <Directory Id="NHibernate" Name="NHibernate">
+            <Directory Id="Mapping" Name="Mapping">
+              <Component Id="MappingComponent" Guid="5C81E576-76F4-4FA9-AB9E-C9D1DC1F055A">
+                <File Id='hibernate.cfg' DiskId='1' Source="$(var.RootPath)\\NHibernate\Mapping\hibernate.cfg.xml"/>
+                <File Id='Mapping.hbm' DiskId='1' Source="$(var.RootPath)\\NHibernate\Mapping\Mapping.hbm.xml"/>
+              </Component>
+            </Directory>
+          </Directory>
+          <Component Id="ProductComponent" Guid="b11556a2-e066-4393-af5c-9c9210187eb2">
+            <File Id='ArtisDataFiller' DiskId='1' Source="$(var.RootPath)\Artis.ArtisDataFiller.exe"/>
+            <File Id='ActionParser' DiskId='1' Source="$(var.RootPath)\\Artis.ActionParser.dll"/>
+            <File Id='Consts' DiskId='1' Source="$(var.RootPath)\\Artis.Consts.dll"/>
+            <File Id='Data' DiskId='1' Source="$(var.RootPath)\\Artis.Data.dll"/>
+            <File Id='DataLoader' DiskId='1' Source="$(var.RootPath)\\Artis.DataLoader.dll"/>
+            <File Id='HtmlAgilityPack' DiskId='1' Source="$(var.RootPath)\\HtmlAgilityPack.dll"/>
+            <File Id='Iesi.Collections' DiskId='1' Source="$(var.RootPath)\\Iesi.Collections.dll"/>
+            <File Id='Microsoft.Expression.Drawing' DiskId='1' Source="$(var.RootPath)\\Microsoft.Expression.Drawing.dll"/>
+            <File Id='Microsoft.Expression.Interactions' DiskId='1' Source="$(var.RootPath)\\Microsoft.Expression.Interactions.dll"/>
+            <File Id='NHibernate' DiskId='1' Source="$(var.RootPath)\\NHibernate.dll"/>
+            <File Id='NLog' DiskId='1' Source="$(var.RootPath)\\NLog.dll"/>
+            <File Id='System.Windows.Interactivity' DiskId='1' Source="$(var.RootPath)\\System.Windows.Interactivity.dll"/>
+            <File Id='WPFToolkit' DiskId='1' Source="$(var.RootPath)\\WPFToolkit.dll"/>
+          </Component>
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)">
+          <Component Id="ApplicationShortcutCalc" Guid="4CEBD68F-E933-47f9-B02C-A4FC69FDB551">
+            <Shortcut Id="ShortcutCalc"
+                 Name="Calc"
+                 Description="$(var.ProductName)"
+                 Target="[INSTALLLOCATION]Artis.ArtisDataFiller.exe"
+                 WorkingDirectory="INSTALLLOCATION"/>
+            <RemoveFolder Id="ApplicationProgramsFolder" On="uninstall"/>
+            <RegistryValue Root="HKCU" Key="Software\$(var.Manufacturer)\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Feature Id="ProductFeature" Title="SetupProject1" Level="1">
+      <ComponentRef Id="ProductComponent" />
+      <ComponentRef Id="ApplicationShortcutCalc" />
+      <ComponentRef Id="MappingComponent" />
+    </Feature>
+
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" ></Property>
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.rtf"/>
+  </Product>
+</Wix>
