@@ -15,12 +15,9 @@ namespace Artis.ArtisDataFiller.Controls
 
         public int Value
         {
-            get
-            {
-                return (int) GetValue(ValueProperty);
-            }
+            get { return (int) GetValue(ValueProperty); }
             set
-            {
+            {                
                 SetValue(ValueProperty, value);
             }
         }
@@ -44,7 +41,8 @@ namespace Artis.ArtisDataFiller.Controls
         }
 
         public static readonly DependencyProperty StarOnColorProperty = DependencyProperty.Register(
-            "StarOnColor", typeof(Brush), typeof(Rating), new PropertyMetadata(Brushes.LightCoral, OnStarOnColorChanged));
+            "StarOnColor", typeof (Brush), typeof (Rating),
+            new PropertyMetadata(Brushes.LightCoral, OnStarOnColorChanged));
 
         public Brush StarOnColor
         {
@@ -62,14 +60,10 @@ namespace Artis.ArtisDataFiller.Controls
             set { SetValue(StarOffColorProperty, value); }
         }
 
-                /// <summary>
+        /// <summary>
         /// Notifies when rating has been changed.
         /// </summary>
         public event EventHandler<RatingChangedEventArgs> RatingChanged;
-
-
-
-
 
 
         public Rating()
@@ -77,23 +71,30 @@ namespace Artis.ArtisDataFiller.Controls
             InitializeComponent();
         }
 
-                private static void OnValueChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        private static void OnValueChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             var rating = obj as Rating;
 
             if (rating != null)
             {
                 rating.OnRatingChanged();
+                rating.InitializeStars();
             }
         }
 
         private void Rating_OnLoaded(object sender, RoutedEventArgs e)
         {
-                    InitializeStars();
+            InitializeStars();
         }
 
         private void InitializeStars()
         {
+            foreach (RatingItem item in StarsStackPanel.Children)
+            {
+                item.StateChanged -= star_StateChanged;
+                item.MouseEnter -= star_MouseEnter;
+                item.MouseLeave -= star_MouseLeave;
+            }
             StarsStackPanel.Children.Clear();
 
             int value = 1;
@@ -112,7 +113,7 @@ namespace Artis.ArtisDataFiller.Controls
 
                 value++;
 
-                
+
                 StarsStackPanel.Children.Insert(i, star);
             }
         }
@@ -136,13 +137,13 @@ namespace Artis.ArtisDataFiller.Controls
             return current;
         }
 
-                private static void OnStarOffColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
+        private static void OnStarOffColorChanged(DependencyObject obj, DependencyPropertyChangedEventArgs e)
         {
             var rating = obj as Rating;
 
             if (rating != null)
             {
-                var offColor = (Brush)e.NewValue;
+                var offColor = (Brush) e.NewValue;
 
                 foreach (RatingItem star in rating.StarsStackPanel.Children)
                 {
@@ -157,7 +158,7 @@ namespace Artis.ArtisDataFiller.Controls
 
             if (rating != null)
             {
-                var onColor = (Brush)e.NewValue;
+                var onColor = (Brush) e.NewValue;
 
                 foreach (RatingItem star in rating.StarsStackPanel.Children)
                 {
@@ -166,20 +167,20 @@ namespace Artis.ArtisDataFiller.Controls
             }
         }
 
-        
+
         private void star_MouseLeave(object sender, MouseEventArgs e)
         {
-            var star = (RatingItem)sender;
+            var star = (RatingItem) sender;
 
             if (!star.IsOn)
             {
-                var current = (int)star.Tag;
+                var current = (int) star.Tag;
 
                 foreach (RatingItem str in StarsStackPanel.Children)
                 {
                     DisableStateChange(str);
 
-                    var value = (int)str.Tag;
+                    var value = (int) str.Tag;
 
                     if (value < current && value > Value)
                     {
@@ -193,17 +194,17 @@ namespace Artis.ArtisDataFiller.Controls
 
         private void star_MouseEnter(object sender, MouseEventArgs e)
         {
-            var star = (RatingItem)sender;
+            var star = (RatingItem) sender;
 
             if (!star.IsOn)
             {
-                var current = (int)star.Tag;
+                var current = (int) star.Tag;
 
                 foreach (RatingItem str in StarsStackPanel.Children)
                 {
                     DisableStateChange(str);
 
-                    var value = (int)str.Tag;
+                    var value = (int) str.Tag;
 
                     if (value < current)
                     {
@@ -215,12 +216,12 @@ namespace Artis.ArtisDataFiller.Controls
             }
         }
 
-                private void EnableStateChange(RatingItem str)
+        private void EnableStateChange(RatingItem str)
         {
             str.StateChanged += star_StateChanged;
         }
 
-                private void DisableStateChange(RatingItem str)
+        private void DisableStateChange(RatingItem str)
         {
             str.StateChanged -= star_StateChanged;
         }
@@ -233,18 +234,18 @@ namespace Artis.ArtisDataFiller.Controls
             }
         }
 
-        
+
         private void star_StateChanged(object sender, StarStateChangedEventArgs e)
         {
-            var star = (RatingItem)sender;
+            var star = (RatingItem) sender;
 
-            var current = (int)star.Tag;
+            var current = (int) star.Tag;
 
             bool reset = (current < Value);
 
             foreach (RatingItem str in StarsStackPanel.Children)
             {
-                var value = (int)str.Tag;
+                var value = (int) str.Tag;
 
                 DisableStateChange(str);
 
