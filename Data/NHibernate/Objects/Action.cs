@@ -12,6 +12,7 @@ namespace Artis.Data
         private string _name;
         private string _description;
         private int _rating;
+        private string _duration;
 
         private Genre _genre;
         private State _state;
@@ -45,6 +46,15 @@ namespace Artis.Data
         {
             get { return _rating; }
             set { _rating = value; }
+        }
+
+        /// <summary>
+        /// Продолжительность
+        /// </summary>
+        public virtual string Duration
+        {
+            get { return _duration; }
+            set { _duration = value; }
         }
 
 
