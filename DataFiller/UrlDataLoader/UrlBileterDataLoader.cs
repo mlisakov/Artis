@@ -393,19 +393,21 @@ namespace Artis.DataLoader
                     int index = 0;
                     Dictionary<string, int> imageUrlList = new Dictionary<string, int>();
                     List<string> stringImages = new List<string>();
-                    foreach (HtmlNode img in areaGoogleImageInfo.DocumentNode.SelectNodes("//td/a/img"))
-                    {
-                        if (index >= 10) break;
-                        string imageUrl = img.Attributes["src"].Value;
-                        HtmlNode tdNode = img.ParentNode.ParentNode;
-                        string imageSize = HttpUtility.HtmlDecode(tdNode.ChildNodes.Last().InnerText).Trim();
-                        string[] splitedSize = imageSize.Split(';');
-                        int imageActualSize = 0;
-                        int.TryParse(splitedSize[1].Replace("КБ", "").Replace("-", "").Replace("jpg", "").Trim(),
-                            out imageActualSize);
-                        imageUrlList.Add(imageUrl, imageActualSize);
-                        index++;
-                    }
+                    HtmlNodeCollection images = areaGoogleImageInfo.DocumentNode.SelectNodes("//td/a/img");
+                    if (images!=null)
+                        foreach (HtmlNode img in images)
+                        {
+                            if (index >= 10) break;
+                            string imageUrl = img.Attributes["src"].Value;
+                            HtmlNode tdNode = img.ParentNode.ParentNode;
+                            string imageSize = HttpUtility.HtmlDecode(tdNode.ChildNodes.Last().InnerText).Trim();
+                            string[] splitedSize = imageSize.Split(';');
+                            int imageActualSize = 0;
+                            int.TryParse(splitedSize[1].Replace("КБ", "").Replace("-", "").Replace("jpg", "").Trim(),
+                                out imageActualSize);
+                            imageUrlList.Add(imageUrl, imageActualSize);
+                            index++;
+                        }
 
                     using (WebClient client = new WebClient())
                     {

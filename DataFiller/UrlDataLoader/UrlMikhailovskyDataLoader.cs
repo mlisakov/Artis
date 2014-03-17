@@ -315,10 +315,13 @@ namespace Artis.DataLoader
                     {
                         string url = imgNode.Attributes["href"].Value.Remove(0, 2);
                         int i = url.IndexOf('?');
-                        url="http://"+url.Remove(i, url.Length - i);
-                        byte[] image = client.DownloadData(url);
-                        string base64String = Convert.ToBase64String(image, 0, image.Length);
-                        _areaImages.Add(base64String);
+                        if (i > 0)
+                        {
+                            url = "http://" + url.Remove(i, url.Length - i);
+                            byte[] image = client.DownloadData(url);
+                            string base64String = Convert.ToBase64String(image, 0, image.Length);
+                            _areaImages.Add(base64String);
+                        }
                     }
                 }
             }

@@ -95,7 +95,7 @@ namespace Artis.Data
                     foreach (string producerItem in actionWeb.Producer.Split(','))
                     {
                         Producer producer = CreateProducer(producerItem);
-                        if (producers.All(i => i.ID != producer.ID))
+                        if (producer!=null && producers.All(i => i.ID != producer.ID))
                             producers.Add(producer);
                     }
 
@@ -112,7 +112,7 @@ namespace Artis.Data
                 Genre genre = CreateGenre(actionWeb.Genre);
 
                 Action action = CreateAction(actionWeb.Name, actionWeb.AreaName, actionWeb.Date, actionWeb.Time,
-                    actionWeb.PriceRange, actionWeb.Description, actionWeb.Image, area, genre, actors, producers);
+                    actionWeb.PriceRange, actionWeb.Description, actionWeb.Duration, actionWeb.Image, area, genre, actors, producers);
                 if (action != null)
                 {
                     InvokeActionLoadedEvent(actionWeb);
@@ -331,7 +331,7 @@ namespace Artis.Data
             return null;
         }
 
-        private Action CreateAction(string Name, string AreaName, string Date, string Time, string PriceRange, string Description, IEnumerable<string> Image, Area area, Genre Genre, List<Actor> Actors, List<Producer> Producers)
+        private Action CreateAction(string Name, string AreaName, string Date, string Time, string PriceRange, string Description,string Duration, IEnumerable<string> Image, Area area, Genre Genre, List<Actor> Actors, List<Producer> Producers)
         {
             Action action = _actionRepository.GetByName(Name);
             if (action == null)
@@ -356,6 +356,7 @@ namespace Artis.Data
                 action = new Action()
                 {
                     Name = Name,
+                    Duration = Duration
                 };
 
                 if (action.Area==null)
