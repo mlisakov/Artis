@@ -16,7 +16,7 @@
 
     <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
-    <Directory Id="TARGETDIR" Name="SourceDir">
+    <!--<Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)">
           <Directory Id="NHibernate" Name="NHibernate">
@@ -66,6 +66,6 @@
     </Feature>
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" ></Property>
-    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.rtf"/>
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.rtf"/>-->
   </Product>
 </Wix>
