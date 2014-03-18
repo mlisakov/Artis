@@ -1,0 +1,129 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
+                   namespace="Artis.Data"
+                   assembly="Artis.Data">
+  <class name="Action" table="Action">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="Name" />
+    <property name="Description" length="10000" />
+    <property name="Rating" />
+    <property name="Duration" />
+
+    <!--<many-to-one name="Area" class="Area" column="idArea" lazy="false" />-->
+    <many-to-one name="Genre" class="Genre" column="idGenre" lazy="false"/>
+    <!--<many-to-one name="State" class="State" column="idState" lazy="false"/>-->
+
+    <set name="Area" table="ActionArea" lazy="false">
+      <key column="idAction" />
+      <many-to-many class="Area" column="idArea" />
+    </set>
+    
+    <set name="ActionDate" table="ActionDate" lazy="false">
+      <key column="idAction" />
+      <one-to-many class="ActionDate"/>
+    </set>
+    
+    <set name="Data" table="ActionData" lazy="false">
+      <key column="idAction" />
+      <many-to-many class="Data" column="idData" />
+    </set>
+
+    <set name="Actor" table="ActionActor" lazy="false">
+      <key column="idAction" />
+      <many-to-many class="Actor" column="idActor" />
+    </set>
+
+    <set name="Producer" table="ActionProducer" lazy="false">
+      <key column="idAction" />
+      <many-to-many class="Producer" column="idProducer" />
+    </set>
+
+  </class>
+
+  <class name="Area" table="Area">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="Name" />
+    <property name="AreaIndex" />
+    <property name="Addres" />
+    <property name="Description" length="10000" />
+    <property name="SchemaImage" length="10000" />
+
+    <many-to-one name="Metro" class="Metro" column="idMetro" lazy="false"/>
+    <many-to-one name="AreaType" class="AreaType" column="idAreaType" lazy="false"/>
+
+    <set name="Data" table="AreaData" lazy="false">
+      <key column="idArea" />
+      <many-to-many class="Data" column="idData" />
+    </set>
+  </class>
+
+  <class name="ActionDate" table="ActionDate">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="Date" />
+    <property name="Time" />
+    <property name="MinPrice" />
+    <property name="MaxPrice" />
+    <property name="PriceRange" />
+    
+    <many-to-one name="Action" class="Action" column="idAction" lazy="false"/>
+    <many-to-one name="Area" class="Area" column="idArea" lazy="false"/>
+  </class>
+
+  <class name="Genre" table="Genre">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="Name" />
+  </class>
+
+  <class name="State" table="State" >
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="Name" />
+  </class>
+
+  <class name="Producer" table="Producer">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="FIO" />
+    <property name="Description" />
+  </class>
+
+  <class name="Actor" table="Actor">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="FIO" />
+    <property name="Description" />
+  </class>
+
+  <class name="Data" table="Data">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="Base64StringData" column="ContentData"  length="10000"/>
+  </class>
+
+  <class name="Metro" table="Metro">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="Name" />
+  </class>
+
+  <class name="AreaType" table="AreaType">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="Name" />
+  </class>
+</hibernate-mapping>

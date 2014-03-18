@@ -202,14 +202,14 @@ namespace Artis.ArtisDataFiller.ViewModels
             NotLoadedItems = new ObservableCollection<ActionWeb>();
             LogItems = new ObservableCollection<string>();
 
-            try
-            {
+            //try
+            //{
                 await _dataFiller.ParseActionsAsync(FromDate, ToDate);
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage = ex.Message;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    ErrorMessage = ex.Message;
+            //}
         }
 
         private void ExecuteCancelCommand(object parameter)

@@ -18,7 +18,7 @@
     <HostInBrowser>true</HostInBrowser>
     <TargetZone>Internet</TargetZone>
     <GenerateManifests>true</GenerateManifests>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>C:\Users\max\Desktop\Publish\ArtisATWeb\</PublishUrl>
     <Install>false</Install>
@@ -31,7 +31,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationRevision>24</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -55,6 +55,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Data\Library\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Drawing, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Expression.Interactions, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -99,6 +103,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="ArtisAdministrativeToolWeb_TemporaryKey.pfx" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -110,6 +115,10 @@
     <ProjectReference Include="..\..\ArtisDataFiller\ArtisDataFiller.csproj">
       <Project>{5a1f9b8c-5952-4a7e-a689-189a70ac336b}</Project>
       <Name>ArtisDataFiller</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\NHibernateMapping\NHibernateMapping.csproj">
+      <Project>{3351dbc8-ac9a-43fb-85c7-ce67e259c672}</Project>
+      <Name>NHibernateMapping</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -136,7 +145,7 @@
     <ManifestKeyFile>ArtisAdministrativeToolWeb_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>592BC0570A6B810EA2DDC01D58F6E1565091D67F</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>9559F30D0DCC1AB58BD808B4843F75DC2B99A8E6</ManifestCertificateThumbprint>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
