@@ -66,6 +66,9 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Iesi.Collections">
+      <HintPath>..\Data\Library\Iesi.Collections.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Expression.Interactions" />
     <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -85,6 +88,7 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -234,6 +238,10 @@
     <ProjectReference Include="..\Data\DBConnector.csproj">
       <Project>{4BC0AB1E-0B81-4FBE-83E0-8FFAFA4A5EF5}</Project>
       <Name>DBConnector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\NHibernateMapping\NHibernateMapping.csproj">
+      <Project>{3351dbc8-ac9a-43fb-85c7-ce67e259c672}</Project>
+      <Name>NHibernateMapping</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
