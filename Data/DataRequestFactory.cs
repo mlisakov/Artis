@@ -312,6 +312,37 @@ namespace Artis.Data
             }
         }
 
+        public static async Task<ObservableCollection<GuiSection>> GetGuiSections()
+        {
+            using (ISession session = await Domain.GetSession())
+            {
+                return new ObservableCollection<GuiSection>(session.Query<GuiSection>());
+            }
+        }
+
+        /// <summary>
+        /// Получение списка жанров для категории
+        /// </summary>
+        /// <param name="sectionGuid">Идентификатор категории</param>
+        /// <returns>Список жанров для указанной категории</returns>
+        public static async Task<ObservableCollection<Genre>> GetGuiSectionGenres(long sectionGuid)
+        {
+            using (ISession session = await Domain.GetSession())
+            {
+                return new ObservableCollection<Genre>(session.Query<GuiSection>().First(i => i.ID == sectionGuid).Genre);
+            }
+        }
+
+        public static async Task<ObservableCollection<Genre>> GetGuiSectionRestGenres(long sectionGuid)
+        {
+            using (ISession session = await Domain.GetSession())
+            {
+                ObservableCollection<Genre> guiSectionGenres=new ObservableCollection<Genre>(session.Query<GuiSection>().First(i => i.ID == sectionGuid).Genre);
+                ICriteria criteria = session.CreateCriteria<Genre>("genre").Add(Restrictions.Not(Restrictions.In("ID", guiSectionGenres.Select(i=>i.ID).ToList())));
+                return new ObservableCollection<Genre>(criteria.List<Genre>());
+            }
+        }
+
         /// <summary>
         /// Получение списка жанров
         /// </summary>

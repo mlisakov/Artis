@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Artis.Consts;
 using Artis.Data;
 
@@ -6,14 +7,16 @@ namespace Artis.ArtisDataFiller.ViewModels
 {
     public class GenresSettingsViewModel:ViewModel
     {
-        private ObservableCollection<string> _categories;
-        private string _currentCategory;
+        private ObservableCollection<GuiSection> _categories;
+        private GuiSection _currentCategory;
         private ObservableCollection<Genre> _usedGenres;
         private ObservableCollection<Genre> _othersGenres;
         private Genre _selectedUsedGenre;
         private Genre _selectedOtherGenre;
 
+        private GuiSectionRepository _guiSectionRepository;
 
+        public ArtisCommand SaveCommand { get; private set; }
         public ArtisCommand LeftCommand { get; private set; }
         public ArtisCommand AllLeftCommand { get; private set; }
         public ArtisCommand RightCommand { get; private set; }
@@ -22,7 +25,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Коллекция категорий с гуи сайта
         /// </summary>
-        public ObservableCollection<string> Categories
+        public ObservableCollection<GuiSection> Categories
         {
             get { return _categories; }
             set
@@ -35,13 +38,14 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Текущая категория с гуи сайта
         /// </summary>
-        public string CurrentCategory
+        public GuiSection CurrentCategory
         {
             get { return _currentCategory; }
             set
             {
                 _currentCategory = value;
                 OnPropertyChanged();
+                InitGenres();
             }
         }
 
@@ -99,20 +103,25 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         public GenresSettingsViewModel()
         {
+            _guiSectionRepository=new GuiSectionRepository();
             InitCommands();
-
-            UsedGenres = new ObservableCollection<Genre>
-            {
-                new Genre {Name = "some name"},
-                new Genre {Name = "some name2"}
-            };
-
-            OthersGenres = new ObservableCollection<Genre>
-            {
-                new Genre {Name = "some name3"},
-                new Genre {Name = "some name4"}
-            };            
+            InitDataSource();
         }
+
+        /// <summary>
+        /// Инициализация источников данных
+        /// </summary>
+        private async void InitDataSource()
+        {
+            Categories = await DataRequestFactory.GetGuiSections();
+        }
+
+        private async void InitGenres()
+        {
+            UsedGenres = await DataRequestFactory.GetGuiSectionGenres(CurrentCategory.ID);
+            OthersGenres = await DataRequestFactory.GetGuiSectionRestGenres(CurrentCategory.ID);
+        }
+
 
         private void InitCommands()
         {
@@ -120,6 +129,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             RightCommand = new ArtisCommand(CanExecute, ExecuteRightCommand);
             AllLeftCommand = new ArtisCommand(CanExecute, ExecuteAllLeftCommand);
             AllRightCommand = new ArtisCommand(CanExecute, ExecuteAllRightCommand);
+            SaveCommand = new ArtisCommand(CanExecute, ExecuteSaveCommand);
         }
 
         private bool CanExecute(object parameter)
@@ -129,22 +139,44 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteLeftCommand(object parameter)
         {
-            
+            UsedGenres.Add(SelectedOtherGenre);
+            OthersGenres.Remove(SelectedOtherGenre);
         }
 
         private void ExecuteRightCommand(object parameter)
-        {
-            
+        {            
+            OthersGenres.Add(SelectedUsedGenre);
+            UsedGenres.Remove(SelectedUsedGenre);
         }
 
         private void ExecuteAllLeftCommand(object parameter)
         {
-            
+            foreach (Genre genre in OthersGenres)
+            {
+                UsedGenres.Add(genre);
+            }
+            OthersGenres.Clear();
         }
 
         private void ExecuteAllRightCommand(object parameter)
         {
-            
+            foreach (Genre genre in UsedGenres)
+            {
+                OthersGenres.Add(genre);
+            }
+            UsedGenres.Clear();
+        }
+
+        private void ExecuteSaveCommand(object parameter)
+        {
+            SaveGuiSectionGenres(UsedGenres);
+        }
+
+        private async Task<bool> SaveGuiSectionGenres(ObservableCollection<Genre> usedGenres)
+        {
+            bool result = await
+                   _guiSectionRepository.Save(CurrentCategory.ID, usedGenres);
+            return result;
         }
     }
 }

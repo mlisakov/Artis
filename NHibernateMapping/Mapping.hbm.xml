@@ -83,6 +83,17 @@
     <property name="Name" />
   </class>
 
+  <class name="GuiSection" table="GuiSection">
+    <id name="ID" column="id">
+      <generator class="identity" />
+    </id>
+    <property name="Name" />
+    <set name="Genre" table="GuiSectionGenre" lazy="false">
+      <key column="idGuiSection" />
+      <many-to-many class="Genre" column="idGenre" />
+    </set>
+  </class>
+
   <class name="State" table="State" >
     <id name="ID" column="id">
       <generator class="identity" />

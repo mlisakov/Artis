@@ -59,6 +59,7 @@
     <Compile Include="Exception\DBAccessFailedException.cs" />
     <Compile Include="NHibernate\Domain.cs" />
     <Compile Include="NHibernate\Extentions\AreaComparer.cs" />
+    <Compile Include="NHibernate\Extentions\GenreComparer.cs" />
     <Compile Include="NHibernate\Objects\Action.cs" />
     <Compile Include="NHibernate\Objects\ActionDate.cs" />
     <Compile Include="NHibernate\Objects\Actor.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="NHibernate\Objects\AreaType.cs" />
     <Compile Include="NHibernate\Objects\Data.cs" />
     <Compile Include="NHibernate\Objects\Genre.cs" />
+    <Compile Include="NHibernate\Objects\GuiSection.cs" />
     <Compile Include="NHibernate\Objects\Metro.cs" />
     <Compile Include="NHibernate\Objects\Producer.cs" />
     <Compile Include="NHibernate\Objects\Short\MiddleAction.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="NHibernate\Repository\BaseRepository.cs" />
     <Compile Include="NHibernate\Repository\DataRepository.cs" />
     <Compile Include="NHibernate\Repository\GenreRepository.cs" />
+    <Compile Include="NHibernate\Repository\GuiSectionRepository.cs" />
     <Compile Include="NHibernate\Repository\IRepository.cs" />
     <Compile Include="NHibernate\Repository\MetroRepository.cs" />
     <Compile Include="NHibernate\Repository\ProducerRepository.cs" />
