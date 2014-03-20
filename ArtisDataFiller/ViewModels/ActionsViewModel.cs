@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
@@ -37,6 +38,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         private ObservableCollection<Actor> _actorsItemsSource;
         private ObservableCollection<Producer> _producersItemsSource;
         private bool _isNewOne;
+        private ImageSource _newImage;
 
         /// <summary>
         /// Логгер
@@ -107,6 +109,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// Команда отмены изменений
         /// </summary>
         public ArtisCommand CancelCommand { get; private set; }
+
+        /// <summary>
+        /// Команда загрузки новой картинки
+        /// </summary>
+        public ArtisCommand OpenImageCommand { get; private set; }
 
         /// <summary>
         /// Наименование мероприятия
@@ -342,6 +349,19 @@ namespace Artis.ArtisDataFiller.ViewModels
             }
         }
 
+        /// <summary>
+        /// Новая загруженная картинка
+        /// </summary>
+        public ImageSource NewImage
+        {
+            get { return _newImage; }
+            set
+            {
+                _newImage = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ActionsViewModel()
         {
             InitCommands();
@@ -393,6 +413,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 
             SaveCommand = new ArtisCommand(CanExecute, ExecuteSaveCommand);
             CancelCommand = new ArtisCommand(CanExecute, ExecuteCancelCommand);
+
+            OpenImageCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteOpenImageCommand);
         }
 
 
@@ -445,6 +467,33 @@ namespace Artis.ArtisDataFiller.ViewModels
             OnPropertyChanged("Images");
         }
 
+        private void ExecuteOpenImageCommand(object obj)
+        {
+            OpenFileDialog openDialog = new OpenFileDialog
+            {
+                Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+                Title = "Пожалуйста, выберите необхожимые изображения.",
+                Multiselect = true
+            };
+
+
+            if (openDialog.ShowDialog().Value)
+            {
+                using (Stream stream = openDialog.OpenFile())
+                {
+                    BitmapImage bitMapImage = new BitmapImage();
+                    bitMapImage.BeginInit();
+                    bitMapImage.StreamSource = stream;
+                    bitMapImage.EndInit();
+
+                    NewImage = bitMapImage;
+                    NewImage = new BitmapImage(new Uri(openDialog.FileName));
+                }
+            }
+
+            OnPropertyChanged("NewImage");
+        }
+
         private void ExecuteAddImageCommand(object obj)
         {
             OpenFileDialog openDialog = new OpenFileDialog
@@ -454,34 +503,34 @@ namespace Artis.ArtisDataFiller.ViewModels
                 Multiselect = true
             };
 
-            if (openDialog.ShowDialog().Value)
-            {
-                Stream[] selectedFiles = openDialog.OpenFiles();
-                foreach (Stream file in selectedFiles)
-                {
-                    MemoryStream stream = new MemoryStream();
-                    file.CopyTo(stream);
-                    file.Close();
-                    byte[] imageArray = stream.ToArray();
-                    string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
-
-                    stream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage bitMapImage = new BitmapImage();
-                    bitMapImage.BeginInit();
-                    bitMapImage.StreamSource = stream;
-                    bitMapImage.EndInit();
-
-                    if (!string.IsNullOrEmpty(base64String))
-                    {
-                        DataImage image = new DataImage() {Base64String = base64String, Image = bitMapImage};
-
-                        _addedImages.Add(image);
-
-                        Images.Add(image);
-                        OnPropertyChanged("Images");
-                    }
-                }
-            }
+//            if (openDialog.ShowDialog().Value)
+//            {
+//                Stream[] selectedFiles = openDialog.OpenFiles();
+//                foreach (Stream file in selectedFiles)
+//                {
+//                    MemoryStream stream = new MemoryStream();
+//                    file.CopyTo(stream);
+//                    file.Close();
+//                    byte[] imageArray = stream.ToArray();
+//                    string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
+//
+//                    stream.Seek(0, SeekOrigin.Begin);
+//                    BitmapImage bitMapImage = new BitmapImage();
+//                    bitMapImage.BeginInit();
+//                    bitMapImage.StreamSource = stream;
+//                    bitMapImage.EndInit();
+//
+//                    if (!string.IsNullOrEmpty(base64String))
+//                    {
+//                        DataImage image = new DataImage() {Base64String = base64String, Image = bitMapImage};
+//
+//                        _addedImages.Add(image);
+//
+//                        Images.Add(image);
+//                        OnPropertyChanged("Images");
+//                    }
+//                }
+//            }
         }
 
         private async void ExecuteRemoveProducerCommand(object obj)

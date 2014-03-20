@@ -108,6 +108,88 @@
 				<EasingColorKeyFrame KeyTime="0:0:0.6" Value="#00000000"/>
 			</ColorAnimationUsingKeyFrames>
 		</Storyboard>
+		<Storyboard x:Key="VerticalImageEdit">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="VerticalZoomPanel">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+			</ObjectAnimationUsingKeyFrames>
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="HorizontalAlignmentButtonsPanel">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+			</ObjectAnimationUsingKeyFrames>
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="VerticalAlignmentButtonsPanel">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+			</ObjectAnimationUsingKeyFrames>
+
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="NewZoomImage">
+				<EasingDoubleKeyFrame KeyTime="0" Value="100"/>
+			</DoubleAnimationUsingKeyFrames>
+
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.HorizontalAlignment)" Storyboard.TargetName="ChangedImageBorder">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static HorizontalAlignment.Center}"/>
+			</ObjectAnimationUsingKeyFrames>
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.VerticalAlignment)" Storyboard.TargetName="ChangedImageBorder">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static VerticalAlignment.Center}"/>
+			</ObjectAnimationUsingKeyFrames>
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ChangedImageBorder">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+			</ObjectAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="HorizontalImageEdit">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="HorizontalAlignmentButtonsPanel">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+			</ObjectAnimationUsingKeyFrames>
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="VerticalAlignmentButtonsPanel">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+			</ObjectAnimationUsingKeyFrames>
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="VerticalZoomPanel">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+			</ObjectAnimationUsingKeyFrames>
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ChangedImageBorder">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+			</ObjectAnimationUsingKeyFrames>
+			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="NewZoomImage">
+				<EasingDoubleKeyFrame KeyTime="0" Value="834"/>
+			</DoubleAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="AddImageClick">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="EditImageGrid">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+			</ObjectAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="CloseImageAddingView">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="EditImageGrid">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
+			</ObjectAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="CentralHorizontalChecked">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.HorizontalAlignment)" Storyboard.TargetName="ChangedImageBorder">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static HorizontalAlignment.Center}"/>
+			</ObjectAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="RightHorizontalCheked">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.HorizontalAlignment)" Storyboard.TargetName="ChangedImageBorder">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static HorizontalAlignment.Right}"/>
+			</ObjectAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="LeftHorizontalChecked">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.HorizontalAlignment)" Storyboard.TargetName="ChangedImageBorder">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static HorizontalAlignment.Left}"/>
+			</ObjectAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="TopVerticalChecked">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.VerticalAlignment)" Storyboard.TargetName="ChangedImageBorder">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static VerticalAlignment.Top}"/>
+			</ObjectAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="CentralVerticalChecked">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.VerticalAlignment)" Storyboard.TargetName="ChangedImageBorder">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static VerticalAlignment.Center}"/>
+			</ObjectAnimationUsingKeyFrames>
+		</Storyboard>
+		<Storyboard x:Key="BottomVerticalChecked">
+			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.VerticalAlignment)" Storyboard.TargetName="ChangedImageBorder">
+				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static VerticalAlignment.Bottom}"/>
+			</ObjectAnimationUsingKeyFrames>
+		</Storyboard>
 	</Grid.Resources>
 	<Grid.Triggers>
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="AddActionButton">
@@ -124,6 +206,39 @@
 		</EventTrigger>
 		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="CloneActionButton">
 			<BeginStoryboard Storyboard="{StaticResource OnClick1}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="Selector.Selected" SourceName="VerticalComboBoxItem">
+			<BeginStoryboard x:Name="VerticalImageEdit_BeginStoryboard" Storyboard="{StaticResource VerticalImageEdit}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="Selector.Selected" SourceName="HorizontalComboBoxItem">
+			<BeginStoryboard x:Name="HorizontalImageEdit_BeginStoryboard" Storyboard="{StaticResource HorizontalImageEdit}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="addImageButton">
+			<BeginStoryboard x:Name="AddImageClick_BeginStoryboard" Storyboard="{StaticResource AddImageClick}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="BackImageButton">
+			<BeginStoryboard x:Name="CloseImageAddingView_BeginStoryboard" Storyboard="{StaticResource CloseImageAddingView}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="ButtonBase.Click" SourceName="SaveImageButton">
+			<BeginStoryboard x:Name="CloseImageAddingView_BeginStoryboard1" Storyboard="{StaticResource CloseImageAddingView}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="CentralHorizontal">
+			<BeginStoryboard x:Name="CentralHorizontalChecked_BeginStoryboard" Storyboard="{StaticResource CentralHorizontalChecked}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="RightHorizontal">
+			<BeginStoryboard x:Name="RightHorizontalCheked_BeginStoryboard" Storyboard="{StaticResource RightHorizontalCheked}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="LeftHorizontal">
+			<BeginStoryboard x:Name="LeftHorizontalChecked_BeginStoryboard" Storyboard="{StaticResource LeftHorizontalChecked}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="TopVertical">
+			<BeginStoryboard x:Name="TopVerticalChecked_BeginStoryboard" Storyboard="{StaticResource TopVerticalChecked}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="CentralVertical">
+			<BeginStoryboard x:Name="CentralVerticalChecked_BeginStoryboard" Storyboard="{StaticResource CentralVerticalChecked}"/>
+		</EventTrigger>
+		<EventTrigger RoutedEvent="ToggleButton.Checked" SourceName="BottomVertical">
+			<BeginStoryboard x:Name="BottomVerticalChecked_BeginStoryboard" Storyboard="{StaticResource BottomVerticalChecked}"/>
 		</EventTrigger>
 	</Grid.Triggers>
 
@@ -497,7 +612,7 @@
 					Style="{DynamicResource SelectedProducerItemButton}" 
 					Command="{Binding RemoveProducerCommand}"/>
 			
-            <Button Content="Добавить…" 
+            <Button x:Name="addImageButton" Content="Добавить…" 
 					Grid.Column="4" 
 					HorizontalAlignment="Left"
 					Grid.Row="9" 
@@ -541,4 +656,103 @@
 		</Grid>
 		
 	</ScrollViewer>
+
+	<Grid x:Name="EditImageGrid" RenderTransformOrigin="0.5,0.5" Background="#FF001B23" Grid.Row="1" Margin="0,0,6,0" Visibility="Collapsed">
+		<Grid.RenderTransform>
+			<TransformGroup>
+				<ScaleTransform/>
+				<SkewTransform/>
+				<RotateTransform/>
+				<TranslateTransform X="7"/>
+			</TransformGroup>
+		</Grid.RenderTransform>
+
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="40"/>
+				<ColumnDefinition Width="160.667"/>
+				<ColumnDefinition Width="200"/>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="34" />
+				<RowDefinition Height="34" />
+				<RowDefinition Height="34" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+
+			            <controls:WatermarkedComboBox x:Name="imageOrientation" 
+										  Grid.Column="1" 
+										  VerticalAlignment="Center"
+										  SelectedIndex="0"										  										  
+										  >
+							<ComboBoxItem x:Name="HorizontalComboBoxItem" Content="Горизонтальная" ></ComboBoxItem>	
+							<ComboBoxItem x:Name="VerticalComboBoxItem" Content="Вертикальная" ></ComboBoxItem>	
+						</controls:WatermarkedComboBox>
+
+						<StackPanel x:Name="HorizontalAlignmentButtonsPanel"  Grid.Row="1" Grid.Column="1" Grid.RowSpan="2">
+							<RadioButton x:Name="LeftHorizontal" Content="По левому краю" GroupName="HorizontalAlignment" IsChecked="True" Foreground="White"></RadioButton>
+							<RadioButton x:Name="CentralHorizontal" Content="По центру" GroupName="HorizontalAlignment" Foreground="White"></RadioButton>
+							<RadioButton x:Name="RightHorizontal" Content="По правому краю" GroupName="HorizontalAlignment" Foreground="White"></RadioButton>
+						</StackPanel>
+
+						<StackPanel x:Name="VerticalAlignmentButtonsPanel" Grid.Row="1" Grid.Column="2" Grid.RowSpan="2">
+							<RadioButton x:Name="TopVertical" Content="К верху" GroupName="VerticalAlignment" IsChecked="True" Foreground="White"></RadioButton>
+							<RadioButton x:Name="CentralVertical" Content="По центру" GroupName="VerticalAlignment" Foreground="White"></RadioButton>
+							<RadioButton x:Name="BottomVertical" Content="К низу" GroupName="VerticalAlignment" Foreground="White"></RadioButton>
+						</StackPanel>
+
+						<StackPanel x:Name="VerticalZoomPanel" Grid.Row="1" Grid.Column="1" Grid.RowSpan="2" Visibility="Collapsed">
+							<RadioButton x:Name="WidthZoom" Content="По ширине" GroupName="ZoomGroup" IsChecked="True" Foreground="White" Visibility="Collapsed"></RadioButton>
+							<RadioButton x:Name="HeightZoom" Content="По высоте" GroupName="ZoomGroup" Foreground="White" Visibility="Collapsed"></RadioButton>
+						</StackPanel>
+
+						<Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,0,0,20" BorderBrush="LightGray" BorderThickness="1">
+						<Grid  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,20">
+															
+							<Image x:Name="NewZoomImage" Source="{Binding NewImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 	
+							
+								 Width="834" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+							
+							<Rectangle x:Name="ChangedImageBorder" Stroke="Red" StrokeThickness="2" Width="580" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top" StrokeDashArray="1 1"
+						
+									 >
+								
+							</Rectangle>
+						</Grid>
+						</Border>
+					
+
+				<Button x:Name="OpenImageButton" 
+					Content="Загрузить…" 
+					Grid.Column="4" 
+					HorizontalAlignment="Left" 
+					Grid.Row="3" 
+					VerticalAlignment="Top" 
+					Width="110" 
+					Template="{DynamicResource SimpleButtonTemplate}"  
+					Command="{Binding OpenImageCommand}" Margin="10,0,0,0"/>
+
+				 <Button x:Name="SaveImageButton" 
+					Content="Добавить" 
+					Grid.Column="4" 
+					HorizontalAlignment="Left" 
+					Grid.Row="9" 
+					VerticalAlignment="Bottom" 
+					Width="110" 
+					Template="{DynamicResource SimpleButtonTemplate}" 
+					Margin="10,0,0,20"  
+					Command="{Binding SaveNewImageCommand}"/>
+			
+			<Button x:Name="BackImageButton" 
+					Content="Назад" 
+					Grid.Column="4" 
+					HorizontalAlignment="Left" 
+					Grid.Row="9" 
+					VerticalAlignment="Bottom"
+					Width="110" 
+					Template="{DynamicResource BadSimpleButtonTemplate}"
+					Margin="130,0,10,20"/>
+	</Grid>
 </Grid>
