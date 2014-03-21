@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Management.Instrumentation;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
@@ -39,7 +41,20 @@ namespace Artis.ArtisDataFiller.ViewModels
         private ObservableCollection<Producer> _producersItemsSource;
         private bool _isNewOne;
         private ImageSource _newImage;
+        private bool _isHorizontalImage;
 
+        //Соотношение ширины к высоте для последней добавленной картинки
+        private double _lastPercentOfImage;
+        //ширина оригинала - картинки на гуи
+        const int WidthConst = 834;
+
+        private bool _isOnLeft;
+        private bool _isCenter;
+        private bool _isTop;
+        private bool _isBotton;
+
+
+        
         /// <summary>
         /// Логгер
         /// </summary>
@@ -114,6 +129,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// Команда загрузки новой картинки
         /// </summary>
         public ArtisCommand OpenImageCommand { get; private set; }
+
+        /// <summary>
+        /// Команда обрезания и сохранения новой картинки
+        /// </summary>
+        public ArtisCommand SaveNewImageCommand { get; private set; }
 
         /// <summary>
         /// Наименование мероприятия
@@ -362,6 +382,71 @@ namespace Artis.ArtisDataFiller.ViewModels
             }
         }
 
+        /// <summary>
+        /// Горизонтальный режим добавления новой картинки
+        /// </summary>
+        public bool IsHorizontalImage
+        {
+            get { return _isHorizontalImage; }
+            set
+            {
+                _isHorizontalImage = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Выравнена ли добавляемая картинка по левому краю
+        /// </summary>
+        public bool IsLeft
+        {
+            get { return _isOnLeft; }
+            set
+            {
+                _isOnLeft = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Выравнена ли добавляемая картинка по центру по горизонтали
+        /// </summary>
+        public bool IsCenter
+        {
+            get { return _isCenter; }
+            set
+            {
+                _isCenter = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Выравнена ли добавляемая картинка по верхнему краю
+        /// </summary>
+        public bool IsTop
+        {
+            get { return _isTop; }
+            set
+            {
+                _isTop = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Выравнена ли добавляемая картинка по нижнему краю
+        /// </summary>
+        public bool IsBotton
+        {
+            get { return _isBotton; }
+            set
+            {
+                _isBotton = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ActionsViewModel()
         {
             InitCommands();
@@ -415,7 +500,10 @@ namespace Artis.ArtisDataFiller.ViewModels
             CancelCommand = new ArtisCommand(CanExecute, ExecuteCancelCommand);
 
             OpenImageCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteOpenImageCommand);
+            SaveNewImageCommand = new ArtisCommand(CanExecuteSaveNewImageCommand, ExecuteSaveNewImageCommand);
         }
+
+
 
 
         private bool CanExecute(object parameters)
@@ -426,6 +514,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         private bool CanExecuteAddCommands(object parameters)
         {
             return IsNewOne;
+        }
+
+        private bool CanExecuteSaveNewImageCommand(object parameter)
+        {
+            return NewImage != null;
         }
 
         private void ExecuteCancelCommand(object obj)
@@ -467,6 +560,76 @@ namespace Artis.ArtisDataFiller.ViewModels
             OnPropertyChanged("Images");
         }
 
+        private void ExecuteSaveNewImageCommand(object obj)
+        {
+            var originalImage = NewImage as BitmapImage;            
+            if(originalImage == null)
+                return;
+
+            BitmapSource result;
+            if (IsHorizontalImage)
+            {
+                //обрезаем для горизонтального варианта
+                int dx;
+                int dy;
+
+                if (IsLeft)
+                    dx = 0;
+                else dx = IsCenter ? (WidthConst - 580)/2 : WidthConst - 580;
+
+                if (IsTop)
+                    dy = 0;
+                else
+                {
+                    double height = (WidthConst/_lastPercentOfImage);
+                    dy = IsBotton ? Convert.ToInt32(height - 150) : Convert.ToInt32((height - 150)/2);
+                }
+
+                result = new CroppedBitmap(originalImage, new Int32Rect(dx, dy, 580, 150));
+            }
+            else
+            {
+                //todo сохраняем NewImage сначала
+                
+
+                //обрезаем для вертикального варианта
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.CacheOption = BitmapCacheOption.OnDemand;
+                bi.CreateOptions = BitmapCreateOptions.DelayCreation;
+                bi.DecodePixelHeight = Convert.ToInt32(100/_lastPercentOfImage);
+                bi.DecodePixelWidth = 100;
+
+                bi.UriSource = originalImage.UriSource;
+                bi.EndInit();
+
+                result = bi;
+            }
+
+            //todo сохраняем обрезанную картинку
+
+            BitmapEncoder encoder;
+            if (originalImage.UriSource.AbsoluteUri.EndsWith(".png"))
+                encoder = new PngBitmapEncoder();
+            else
+                encoder = new JpegBitmapEncoder();
+
+            encoder.Frames.Add(BitmapFrame.Create(result));
+
+            SaveFileDialog openDialog = new SaveFileDialog
+            {
+                Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+                Title = "Пожалуйста, выберите файл для сохранения.",
+            };
+            if (openDialog.ShowDialog().Value)
+                using (var fs = openDialog.OpenFile())
+                {
+                    encoder.Save(fs);
+                }
+
+            NewImage = null;
+        }
+
         private void ExecuteOpenImageCommand(object obj)
         {
             OpenFileDialog openDialog = new OpenFileDialog
@@ -482,26 +645,47 @@ namespace Artis.ArtisDataFiller.ViewModels
                 using (Stream stream = openDialog.OpenFile())
                 {
                     BitmapImage bitMapImage = new BitmapImage();
+
                     bitMapImage.BeginInit();
                     bitMapImage.StreamSource = stream;
                     bitMapImage.EndInit();
 
-                    NewImage = bitMapImage;
-                    NewImage = new BitmapImage(new Uri(openDialog.FileName));
+                    //определяем пропорции
+                    _lastPercentOfImage = (double)bitMapImage.PixelWidth / bitMapImage.PixelHeight;
+
+                    double height = WidthConst / _lastPercentOfImage;
+
+                    //устанавливаем пропорции, исходя из ширины 834 (ширина картинки на гуи)
+                    BitmapImage bi = new BitmapImage();
+                    bi.BeginInit();
+                    bi.CacheOption = BitmapCacheOption.OnDemand;
+                    bi.CreateOptions = BitmapCreateOptions.DelayCreation;
+                    bi.DecodePixelHeight = Convert.ToInt32(height);
+                    bi.DecodePixelWidth = 834;                    
+
+                    bi.UriSource = new Uri(openDialog.FileName);
+                    bi.EndInit();
+
+                    NewImage = bi;
                 }
             }
-
-            OnPropertyChanged("NewImage");
         }
 
         private void ExecuteAddImageCommand(object obj)
         {
-            OpenFileDialog openDialog = new OpenFileDialog
-            {
-                Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
-                Title = "Пожалуйста, выберите необхожимые изображения.",
-                Multiselect = true
-            };
+            #region Сбрасываем настройки перед показом окна
+            NewImage = null;
+            IsHorizontalImage = true;
+            IsLeft = true;
+            IsTop = true;
+            #endregion
+
+            //            OpenFileDialog openDialog = new OpenFileDialog
+//            {
+//                Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+//                Title = "Пожалуйста, выберите необхожимые изображения.",
+//                Multiselect = true
+//            };
 
 //            if (openDialog.ShowDialog().Value)
 //            {
