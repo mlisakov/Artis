@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -312,6 +313,15 @@ namespace Artis.Data
             }
         }
 
+        public static async Task<Area> GetOriginalArea(long ID)
+        {
+            using (ISession session = Domain.Session)
+            {
+                Area area = session.Query<Area>().First(i => i.ID == ID);
+                return area;
+            }
+        }
+
         public static async Task<ObservableCollection<GuiSection>> GetGuiSections()
         {
             using (ISession session = await Domain.GetSession())
@@ -414,6 +424,28 @@ namespace Artis.Data
 
                 return new JavaScriptSerializer().Serialize(shortArea);
             }
+        }
+
+        public static async Task<List<Data>> GetImages(string source, long id)
+        {
+            switch (source)
+            {
+                case "Area":
+                    using (ISession session = Domain.Session)
+                    {
+                        Area area = session.Query<Area>().First(i => i.ID == id);
+                        return area.Data.ToList();
+                    }
+                    break;
+                case "Action":
+                    using (ISession session = Domain.Session)
+                    {
+                        Action action = session.Query<Action>().First(i => i.ID == id);
+                        return action.Data.ToList();
+                    }
+                    break;
+            }
+            return new List<Data>();
         }
     }
 }

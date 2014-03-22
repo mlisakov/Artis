@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="XmlProviders\AreasXmlProvider.cs" />
     <Compile Include="DataParser.cs" />
     <Compile Include="DataRequestFactory.cs" />
     <Compile Include="Delegate\DataParserDelegates.cs" />
@@ -91,6 +92,7 @@
     <Compile Include="NHibernate\Repository\StateRepository.cs" />
     <Compile Include="NHibernate\Test.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="XmlProviders\DataXmlProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Consts\Consts.csproj">

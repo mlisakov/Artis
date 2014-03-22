@@ -11,7 +11,7 @@
         public virtual long ID
         {
             get { return _id; }
-            protected set
+            set
             {
                 _id = value;
             }
@@ -22,7 +22,7 @@
         public virtual string Name
         {
             get { return _name; }
-            protected set
+            set
             {
                 _name = value;
             }

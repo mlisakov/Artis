@@ -8,7 +8,7 @@
         public virtual long ID
         {
             get { return _id; }
-            protected set { _id = value; }
+            set { _id = value; }
         }
 
         /// <summary>
