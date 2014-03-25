@@ -1,37 +1,35 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using Artis.Data;
 using NLog;
 
 namespace Artis.Data
 {
-    public class AreasXmlProvider
+    public class ActorsXmlProvider
     {
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
-        [XmlArray("Areas"), XmlArrayItem(typeof(Area), ElementName = "Area")]
-        public List<Area> Areas { get; set; }
+        [XmlArray("Actors"), XmlArrayItem(typeof(Actor), ElementName = "Actor")]
+        public List<Actor> Actors { get; set; }
 
-        public AreasXmlProvider()
+        public ActorsXmlProvider()
         {
-            Areas=new List<Area>();
+            Actors = new List<Actor>();
         }
 
 
-        public AreasXmlProvider(IEnumerable<Area> areas)
+        public ActorsXmlProvider(IEnumerable<Actor> actors)
         {
-            Areas=new List<Area>(areas);
+            Actors = new List<Actor>(actors);
         }
 
         public XmlDocument ToXml()
         {
             try
             {
-                XmlSerializer xmlserializer = new XmlSerializer(typeof(AreasXmlProvider));
+                XmlSerializer xmlserializer = new XmlSerializer(typeof(ActorsXmlProvider));
                 StringWriter stringWriter = new StringWriter();
                 XmlWriter writer = XmlWriter.Create(stringWriter);
 
@@ -45,20 +43,20 @@ namespace Artis.Data
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Не удалось сериализовать площадки",ex);
-                throw new Exception("Не удалось сериализовать площадки");
+                _logger.ErrorException("Не удалось сериализовать мероприятия",ex);
+                throw new Exception("Не удалось сериализовать мероприятия");
             }
         }
 
-        public List<Area> FromXml(string doc)
+        public List<Actor> FromXml(string doc)
         {
-            XmlSerializer xmlserializer = new XmlSerializer(typeof(AreasXmlProvider));
+            XmlSerializer xmlserializer = new XmlSerializer(typeof(ActorsXmlProvider));
             StringReader stringReader = new StringReader(doc);
             XmlReader reader = XmlReader.Create(stringReader);
 
-            AreasXmlProvider result = (AreasXmlProvider) xmlserializer.Deserialize(reader);
+            ActorsXmlProvider result = (ActorsXmlProvider)xmlserializer.Deserialize(reader);
             reader.Close();
-            return result.Areas;
+            return result.Actors;
         }
     }
 }

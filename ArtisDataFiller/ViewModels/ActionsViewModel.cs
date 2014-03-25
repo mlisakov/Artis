@@ -19,6 +19,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 {
     public sealed class ActionsViewModel : ViewModel
     {
+        private WcfServiceCaller _wcfAdminService; 
+
         private string _filterName;
         private DataImage _selectedImage;
         
@@ -274,16 +276,16 @@ namespace Artis.ArtisDataFiller.ViewModels
             set
             {
                 _currentActionDate = value;
-                if (CurrentActionDate != null && CurrentActionDate.Action.Actor != null)
-                {
-                    ActorsItemsSource = new ObservableCollection<Actor>(CurrentActionDate.Action.Actor);
-                    ProducersItemsSource=new ObservableCollection<Producer>(CurrentActionDate.Action.Producer);
-                }
-                else
-                {
-                    ActorsItemsSource=new ObservableCollection<Actor>();
-                    ProducersItemsSource=new ObservableCollection<Producer>();
-                }
+                //if (CurrentActionDate != null && CurrentActionDate.Action.Actor != null)
+                //{
+                //    ActorsItemsSource = new ObservableCollection<Actor>(CurrentActionDate.Action.Actor);
+                //    ProducersItemsSource=new ObservableCollection<Producer>(CurrentActionDate.Action.Producer);
+                //}
+                //else
+                //{
+                //    ActorsItemsSource=new ObservableCollection<Actor>();
+                //    ProducersItemsSource=new ObservableCollection<Producer>();
+                //}
                 
                 OnPropertyChanged();
                 //OnPropertyChanged("ActorsItemsSource");
@@ -450,9 +452,9 @@ namespace Artis.ArtisDataFiller.ViewModels
         public ActionsViewModel()
         {
             InitCommands();
-            FromDate = ToDate = DateTime.Today;
-            InitDataSource();
+            FromDate = ToDate = DateTime.Today;            
             InitVariables();
+            InitDataSource();
         }
 
         /// <summary>
@@ -460,6 +462,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// </summary>
         private void InitVariables()
         {
+            _wcfAdminService=new WcfServiceCaller();
             _deletedImages = new List<long>();
             _addedImages = new List<DataImage>();
         }
@@ -470,9 +473,9 @@ namespace Artis.ArtisDataFiller.ViewModels
         private async void InitDataSource()
         {
             //FilterName = "Наименование мероприятия";
-            FilterAreasItemsSource = await DataRequestFactory.GetAreas();
+            FilterAreasItemsSource = await _wcfAdminService.GetAreas(-1);
             ActionsItemsSource = new ObservableCollection<ActionDate>();
-            GenresItemsSource = await DataRequestFactory.GetGenres();
+            GenresItemsSource = await _wcfAdminService.GetGenres();
             StatesItemsSource = new ObservableCollection<State>();
             ActorsItemsSource=new ObservableCollection<Actor>();
             ProducersItemsSource=new ObservableCollection<Producer>();
@@ -789,7 +792,10 @@ namespace Artis.ArtisDataFiller.ViewModels
             IsEdit = true; // не удалять
             IsNewOne = true;
 
-            Images =await ImageHelper.ConvertImages(CurrentActionDate.Action.Data);
+            ObservableCollection<Data.Data> images = await _wcfAdminService.GetActionImages(CurrentActionDate.Action.ID);
+            ActorsItemsSource = await _wcfAdminService.GetActionActors(CurrentActionDate.Action.ID);
+            ProducersItemsSource = await _wcfAdminService.GetActionProducers(CurrentActionDate.Action.ID);
+            Images = await ImageHelper.ConvertImages(images);
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
@@ -806,7 +812,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async void ExecuteSearchCommand(object parameters)
         {
-            ActionsItemsSource = await DataRequestFactory.GetActions(FilterName, FilterArea, FromDate, ToDate);
+            ActionsItemsSource = await _wcfAdminService.GetActions(FilterName, FilterArea, FromDate, ToDate);
         }
 
         private void ClearVariables()

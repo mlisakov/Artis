@@ -1,37 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
-using Artis.Data;
 using NLog;
 
 namespace Artis.Data
 {
-    public class AreasXmlProvider
+    public class GenreXmlProvider
     {
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
-        [XmlArray("Areas"), XmlArrayItem(typeof(Area), ElementName = "Area")]
-        public List<Area> Areas { get; set; }
+        [XmlArray("Genres"), XmlArrayItem(typeof(Genre), ElementName = "Genre")]
+        public List<Genre> Genres { get; set; }
 
-        public AreasXmlProvider()
+        public GenreXmlProvider()
         {
-            Areas=new List<Area>();
+            Genres=new List<Genre>();
         }
 
 
-        public AreasXmlProvider(IEnumerable<Area> areas)
+        public GenreXmlProvider(IEnumerable<Genre> areas)
         {
-            Areas=new List<Area>(areas);
+            Genres=new List<Genre>(areas);
         }
 
         public XmlDocument ToXml()
         {
             try
             {
-                XmlSerializer xmlserializer = new XmlSerializer(typeof(AreasXmlProvider));
+                XmlSerializer xmlserializer = new XmlSerializer(typeof(GenreXmlProvider));
                 StringWriter stringWriter = new StringWriter();
                 XmlWriter writer = XmlWriter.Create(stringWriter);
 
@@ -45,20 +46,20 @@ namespace Artis.Data
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Не удалось сериализовать площадки",ex);
-                throw new Exception("Не удалось сериализовать площадки");
+                _logger.ErrorException("Не удалось сериализовать жанры",ex);
+                throw new Exception("Не удалось сериализовать жанры");
             }
         }
 
-        public List<Area> FromXml(string doc)
+        public List<Genre> FromXml(string doc)
         {
-            XmlSerializer xmlserializer = new XmlSerializer(typeof(AreasXmlProvider));
+            XmlSerializer xmlserializer = new XmlSerializer(typeof(GenreXmlProvider));
             StringReader stringReader = new StringReader(doc);
             XmlReader reader = XmlReader.Create(stringReader);
 
-            AreasXmlProvider result = (AreasXmlProvider) xmlserializer.Deserialize(reader);
+            GenreXmlProvider result = (GenreXmlProvider)xmlserializer.Deserialize(reader);
             reader.Close();
-            return result.Areas;
+            return result.Genres;
         }
     }
 }

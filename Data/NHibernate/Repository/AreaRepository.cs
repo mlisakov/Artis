@@ -60,15 +60,16 @@ namespace Artis.Data
             return true;
         }
 
-        public async Task<bool> Add(Area area, List<Data> images)
+        public async Task<long> Add(Area area, List<string> images)
         {
             try
             {
 
                 if (images != null)
-                    foreach (Data data in images)
+                    foreach (string image in images)
                     {
                         DataRepository _dataRepository = new DataRepository();
+                        Data data = new Data() { Base64StringData = image };
                         _dataRepository.Add(data);
                         if (area.Data == null)
                             area.Data = new Collection<Data>();
@@ -79,22 +80,25 @@ namespace Artis.Data
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Ошибка записи изображения ", ex);
-                return false;
+                _logger.ErrorException("Ошибка добавления площадки ", ex);
+                return -1;
             }
-            return true;
+            return area.ID;
         }
 
-        public async Task<bool> Remove(Area area)
+        public async Task<bool> Remove(long id)
         {
             try
             {
+                Area toDelete;
                 using (ISession session = Domain.Session)
                 {
-                    if (session.Query<ActionDate>().Any(i => i.Area.ID == area.ID))
+                    //В случае, если площадка используется в мероприятиях не даем возможности удалить площадку.
+                    if (session.Query<ActionDate>().Any(i => i.Area.ID == id))
                         return false;
+                    toDelete = session.Query<Area>().First(i => i.ID == id);
                 }
-                _area.Delete(area);
+                _area.Delete(toDelete);
             }
             catch (Exception ex)
             {

@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.ServiceModel;
-using System.Text;
 using System.Threading.Tasks;
-using System.Xml;
-using Artis.Consts;
 using Artis.Service;
 using NLog;
 
@@ -58,6 +55,22 @@ namespace Artis.Data
 
         }
 
+        public async Task<ObservableCollection<Genre>> GetGenres()
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetGenresAsync();
+                GenreXmlProvider provider = new GenreXmlProvider();
+                return new ObservableCollection<Genre>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить площадки!", ex);
+                throw new Exception("Не удалось получить площадки!Проверьте правильность адрес административного сервиса!");
+            }
+
+        }
+
         public async Task<ObservableCollection<Area>> GetAreas(string filter)
         {
             try
@@ -95,7 +108,7 @@ namespace Artis.Data
         {
             try
             {
-                string result = await serviceAdminTool.GetAreaImages(idArea);
+                string result = await serviceAdminTool.GetAreaImagesAsync(idArea);
                 DataXmlProvider provider = new DataXmlProvider();
                 return new ObservableCollection<Data>(provider.FromXml(result));
             }
@@ -103,6 +116,109 @@ namespace Artis.Data
             {
                 _logger.ErrorException("Не удалось получить изображения!", ex);
                 throw new Exception("Не удалось получить изображения!");
+            }
+        }
+
+        public async Task<long> AddArea(Area currentArea, List<Data> images)
+        {
+            try
+            {
+                AreasXmlProvider areasXmlProvider = new AreasXmlProvider(new List<Area>() {currentArea});
+                return await
+                    serviceAdminTool.AddAreaAsync(areasXmlProvider.ToXml().InnerXml,
+                        images.Select(i => i.Base64StringData).ToList());
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось добавить площадку!", ex);
+                throw new Exception("Не удалось добавить площадку!");
+            }
+
+        }
+
+        public async Task<bool> RemoveArea(long id)
+        {
+            try
+            {
+                return await serviceAdminTool.RemoveAreaAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось удалить площадку!", ex);
+                throw new Exception("Не удалось удалить площадку!");
+            }
+
+        }
+
+        public async Task<ObservableCollection<ActionDate>> GetActions(string Name, Area Area, DateTime? fromDate, DateTime? toDate)
+        {
+            try
+            {
+                string filterName=string.Empty, filterArea=string.Empty;
+                DateTime filterStartDate = DateTime.MinValue, filterFinishDate = DateTime.MaxValue;
+                if (Name != null)
+                    filterName = Name;
+                if (Area != null)
+                    filterArea = Area.Name;
+                if (fromDate != null)
+                    filterStartDate = fromDate.Value;
+                if (toDate != null)
+                    filterFinishDate = toDate.Value;
+
+                string result = await serviceAdminTool.GetSearchActionsAsync(filterName, filterArea, filterStartDate, filterFinishDate);
+                ActionDateXmlProvider provider = new ActionDateXmlProvider();
+                return new ObservableCollection<ActionDate>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить мероприятия!", ex);
+                throw new Exception("Не удалось получить мероприятия!Проверьте правильность адрес административного сервиса!");
+            }
+
+        }
+
+        public async Task<ObservableCollection<Data>> GetActionImages(long idAction)
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetActionImagesAsync(idAction);
+                DataXmlProvider provider = new DataXmlProvider();
+                return new ObservableCollection<Data>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить изображения!", ex);
+                throw new Exception("Не удалось получить изображения!");
+            }
+        }
+
+        public async Task<ObservableCollection<Actor>> GetActionActors(long idAction)
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetActionActorsAsync(idAction);
+                ActorsXmlProvider provider = new ActorsXmlProvider();
+                return new ObservableCollection<Actor>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить актеров!", ex);
+                throw new Exception("Не удалось получить актеров!");
+            }
+        }
+
+        public async Task<ObservableCollection<Producer>> GetActionProducers(long idAction)
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetActionProducersAsync(idAction);
+                ProducersXmlProvider provider = new ProducersXmlProvider();
+                return new ObservableCollection<Producer>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить актеров!", ex);
+                throw new Exception("Не удалось получить актеров!");
             }
         }
     }
