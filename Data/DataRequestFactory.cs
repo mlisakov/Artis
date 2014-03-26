@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -91,22 +92,16 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
-                //IList<Action> act = session.QueryOver<Action>()
-                //    .Where(
-                //        i =>
-                //            i.DateStart >= startDate && i.DateStart <= finishDate)
-                //    .WhereStringIsNotNullOrEmpty(i => i.Name)
-                //    .WhereStringIsNotNullOrEmpty(i => i.Description)
-                //    .Take(count)
-                //    .List<Action>();
-                //IList<ShortAction> shortAction = act.Select(i => new ShortAction(i)).ToList();
+                Stopwatch stopwatch = Stopwatch.StartNew();
 
-                List<ShortAction> shortActions =
-                   session.Query<ActionDate>()
-                       .Where(i => i.Date >= startDate && i.Date <= finishDate).Take(count)
-                       .Select(i => new ShortAction(i)).ToList();
+                var shortActions =
+                    session.Query<ActionDate>()
+                        .Where(i => i.Date == startDate).Take(count)
+                        .Select(i => new ShortAction(i));
+
+                stopwatch.Stop();
+
                 return new JavaScriptSerializer().Serialize(shortActions);
-
             }
         }
         /// <summary>
@@ -215,6 +210,7 @@ namespace Artis.Data
                     count++;
 
                 KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
+
                 return new JavaScriptSerializer().Serialize(itemsKVP);
             }
         }
