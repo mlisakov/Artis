@@ -104,6 +104,69 @@ namespace Artis.Data
             }
         }
 
+        public async Task<bool> SaveActionDate(ActionDate currentActionDate, 
+            List<Data> addedImages, 
+            List<long> deletedImages,
+            List<Actor> actors,
+            List<Producer> producers)
+        {
+            try
+            {
+                ActionDateXmlProvider actionDateXmlProvider = new ActionDateXmlProvider(new List<ActionDate>() { currentActionDate });
+                ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider( actors );
+                ProducersXmlProvider producerXmlProvider = new ProducersXmlProvider(producers);
+                return
+                    await
+                        serviceAdminTool.SaveActionDateAsync(
+                        actionDateXmlProvider.ToXml().InnerXml,
+                        addedImages.Select(i => i.Base64StringData).ToList(),
+                        deletedImages, actorsXmlProvider.ToXml().InnerXml, producerXmlProvider.ToXml().InnerXml);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось сохранить площадкy!", ex);
+                throw new Exception("Не удалось сохранить площадкy!");
+            }
+        }
+
+        public async Task<bool> AddActionDate(ActionDate currentActionDate)
+        {
+            try
+            {
+                ActionDateXmlProvider actionDateXmlProvider =
+                    new ActionDateXmlProvider(new List<ActionDate>() {currentActionDate});
+                return
+                    await
+                        serviceAdminTool.AddActionDateAsync(
+                            actionDateXmlProvider.ToXml().InnerXml);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось сохранить мероприятие!", ex);
+                throw new Exception("Не удалось сохранить мероприятиеy!");
+            }
+        }
+
+        public async Task<bool> AddActionDate(ActionDate currentActionDate, List<string> images, List<Actor> actors,List<Producer> producers)
+        {
+            try
+            {
+                ActionDateXmlProvider actionDateXmlProvider =
+                    new ActionDateXmlProvider(new List<ActionDate>() { currentActionDate });
+                ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider(actors);
+                ProducersXmlProvider producerXmlProvider = new ProducersXmlProvider(producers);
+                return
+                    await
+                        serviceAdminTool.CreateActionDateAsync(
+                            actionDateXmlProvider.ToXml().InnerXml, images, actorsXmlProvider.ToXml().InnerXml, producerXmlProvider.ToXml().InnerXml);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось сохранить мероприятие!", ex);
+                throw new Exception("Не удалось сохранить мероприятиеy!");
+            }
+        }
+
         public async Task<ObservableCollection<Data>> GetAreaImages(long idArea)
         {
             try
@@ -221,5 +284,6 @@ namespace Artis.Data
                 throw new Exception("Не удалось получить актеров!");
             }
         }
+
     }
 }

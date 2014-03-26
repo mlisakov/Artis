@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Artis.Data;
+using Microsoft.SqlServer.Server;
 using NLog;
 
 namespace Artis.Service
@@ -61,13 +62,67 @@ namespace Artis.Service
         {
             try
             {
-            AreasXmlProvider xmlProvider=new AreasXmlProvider();
-            Area originalArea=xmlProvider.FromXml(area).First();
-            return await _areaRepository.Save(originalArea, addedImages, deletedImages);
+                AreasXmlProvider xmlProvider = new AreasXmlProvider();
+                Area originalArea = xmlProvider.FromXml(area).First();
+                return await _areaRepository.Save(originalArea, addedImages, deletedImages);
             }
             catch (Exception ex)
             {
                 _logger.ErrorException("Не удалось сохранить значения площадки!", ex);
+            }
+            return false;
+        }
+
+        public async Task<bool> SaveActionDateAsync(string actionDate, List<string> addedImages, List<long> deletedImages, string actors, string producers)
+        {
+            try
+            {
+                ActionDateXmlProvider xmlProvider = new ActionDateXmlProvider();
+                ActionDate originalactionDate = xmlProvider.FromXml(actionDate).First();
+                ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider();
+                ProducersXmlProvider producersXmlProvider = new ProducersXmlProvider();
+                return await ActionDateRepository.Save(originalactionDate,
+                       addedImages.Select(i => new Data.Data() { Base64StringData = i }).ToList(),
+                       deletedImages, actorsXmlProvider.FromXml(actors), producersXmlProvider.FromXml(producers));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось сохранить значения мероприятия!", ex);
+            }
+            return false;
+        }
+
+        public async Task<bool> AddActionDateAsync(string actionDate)
+        {
+            try
+            {
+                ActionDateXmlProvider xmlProvider = new ActionDateXmlProvider();
+                ActionDate originalactionDate = xmlProvider.FromXml(actionDate).First();
+
+                return await ActionDateRepository.AddActionDate(originalactionDate);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось сохранить значения мероприятия!", ex);
+            }
+            return false;
+        }
+
+        public async Task<bool> CreateActionDateAsync(string actionDate, List<string> Images, string actors, string producers)
+        {
+            try
+            {
+                ActionDateXmlProvider xmlProvider = new ActionDateXmlProvider();
+                ActionDate originalactionDate = xmlProvider.FromXml(actionDate).First();
+                ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider();
+                ProducersXmlProvider producersXmlProvider = new ProducersXmlProvider();
+                return await ActionDateRepository.Add(originalactionDate,
+                       Images.Select(i => new Data.Data() { Base64StringData = i }).ToList(),
+                       actorsXmlProvider.FromXml(actors), producersXmlProvider.FromXml(producers));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось сохранить значения мероприятия!", ex);
             }
             return false;
         }

@@ -45,6 +45,37 @@ namespace Artis.Service
         Task<bool> SaveAreaAsync(string area, List<string> addedImages, List<long> deletedImages);
 
         /// <summary>
+        /// Сохранение изменений по мероприятию
+        /// </summary>
+        /// <param name="actionDate">Мероприятие</param>
+        /// <param name="addedImages">Новые изображения</param>
+        /// <param name="deletedImages">Удаленные изображения</param>
+        /// <param name="actors">Сериализованный список актеров</param>
+        /// <param name="producers">Сериализованный список режисеров</param>
+        /// <returns></returns>
+        [OperationContract]
+        Task<bool> SaveActionDateAsync(string actionDate, List<string> addedImages, List<long> deletedImages, string actors,string producers);
+
+        /// <summary>
+        /// Добавление новой даты проведения мероприятия
+        /// </summary>
+        /// <param name="innerXml">Сереализованное мероприятие</param>
+        /// <returns>Результат добавления</returns>
+        [OperationContract]
+        Task<bool> AddActionDateAsync(string innerXml);
+
+        /// <summary>
+        /// Добавление нового мероприятия
+        /// </summary>
+        /// <param name="actionDate">Сереализованное мероприятие</param>
+        /// <param name="images">Изображения</param>
+        /// <param name="actors">Сериализованный список актеров</param>
+        /// <param name="producers">Сериализованный список режиссеров</param>
+        /// <returns>Результат добавления</returns>
+        [OperationContract]
+        Task<bool> CreateActionDateAsync(string actionDate, List<string> images, string actors, string producers);
+
+        /// <summary>
         /// Получение изображений для площадки
         /// </summary>
         /// <param name="idArea">Идентификатор площадки</param>
