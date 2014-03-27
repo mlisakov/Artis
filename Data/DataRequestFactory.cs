@@ -92,14 +92,10 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
-                Stopwatch stopwatch = Stopwatch.StartNew();
-
                 var shortActions =
                    session.Query<ActionDate>()
                         .Where(i => i.Date == startDate).Take(count)
                         .Select(i => new ShortAction(i));
-
-                stopwatch.Stop();
 
                 return new JavaScriptSerializer().Serialize(shortActions);
             }
