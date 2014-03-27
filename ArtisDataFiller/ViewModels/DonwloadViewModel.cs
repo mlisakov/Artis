@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using Artis.ActionParser;
 using Artis.Consts;
 
 namespace Artis.ArtisDataFiller.ViewModels
@@ -15,7 +16,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         private DateTime _toDate;
         private string _errorMessage;
         
-        private readonly ActionParser.DataFiller _dataFiller;
+        private readonly DataFiller _dataFiller;
         private string _currentLoadingAction;
         private bool _loadingFinished;
 

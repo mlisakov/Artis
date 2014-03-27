@@ -39,27 +39,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp" />
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.DynamicData" />
-    <Reference Include="System.Web.Entity" />
-    <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.EnterpriseServices" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceModel.Web" />
-    <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Web.Services" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ArtisAdminToolService.svc" />
@@ -69,7 +56,6 @@
     <Compile Include="ArtisAdminToolService.svc.cs">
       <DependentUpon>ArtisAdminToolService.svc</DependentUpon>
     </Compile>
-    <Compile Include="IArtisAdminTool.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -94,9 +80,9 @@
       <Project>{4BC0AB1E-0B81-4FBE-83E0-8FFAFA4A5EF5}</Project>
       <Name>DBConnector</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NHibernateMapping\NHibernateMapping.csproj">
-      <Project>{3351dbc8-ac9a-43fb-85c7-ce67e259c672}</Project>
-      <Name>NHibernateMapping</Name>
+    <ProjectReference Include="..\WebServiceContract\WebServiceContract.csproj">
+      <Project>{F5F3BD88-E1D3-4C28-88DF-224627423E2C}</Project>
+      <Name>WebServiceContract %28BusinessLogic\WebServiceContract\WebServiceContract%29</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

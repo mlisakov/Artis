@@ -70,8 +70,7 @@
       <HintPath>..\Data\Library\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions" />
-    <Reference Include="NHibernate, Version=3.3.1.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="NHibernate">
       <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
@@ -224,7 +223,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ActionParser\DataFiller.csproj">
-      <Project>{02e06a4d-c79f-408a-b5b3-0f363c647ae9}</Project>
+      <Project>{02E06A4D-C79F-408A-B5B3-0F363C647AE9}</Project>
       <Name>DataFiller</Name>
     </ProjectReference>
     <ProjectReference Include="..\Consts\Consts.csproj">
@@ -238,10 +237,6 @@
     <ProjectReference Include="..\Data\DBConnector.csproj">
       <Project>{4BC0AB1E-0B81-4FBE-83E0-8FFAFA4A5EF5}</Project>
       <Name>DBConnector</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\NHibernateMapping\NHibernateMapping.csproj">
-      <Project>{3351dbc8-ac9a-43fb-85c7-ce67e259c672}</Project>
-      <Name>NHibernateMapping</Name>
     </ProjectReference>
     <ProjectReference Include="..\WcfServiceCaller\WcfServiceCaller.csproj">
       <Project>{865C31D5-D601-4D3B-B0A8-1BE0B0EE5D1F}</Project>

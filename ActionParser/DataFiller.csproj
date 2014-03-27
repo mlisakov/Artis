@@ -39,7 +39,6 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataFiller.cs" />
@@ -54,10 +53,6 @@
     <ProjectReference Include="..\DataFiller\DataLoader.csproj">
       <Project>{6C8311FE-56B7-4C4E-AC85-1F5A7B065391}</Project>
       <Name>DataLoader</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Data\DBConnector.csproj">
-      <Project>{4bc0ab1e-0b81-4fbe-83e0-8ffafa4a5ef5}</Project>
-      <Name>DBConnector</Name>
     </ProjectReference>
     <ProjectReference Include="..\WcfServiceCaller\WcfServiceCaller.csproj">
       <Project>{865C31D5-D601-4D3B-B0A8-1BE0B0EE5D1F}</Project>

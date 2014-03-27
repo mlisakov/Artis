@@ -1,6 +1,6 @@
 using System;
-using NLog;
 using NHibernate;
+using NLog;
 
 namespace Artis.ArtisDataFiller
 {

@@ -71,8 +71,9 @@ namespace Artis.Data
                         properties.Add(NHibernate.Cfg.Environment.ConnectionProvider, "NHibernate.Connection.DriverConnectionProvider");
                         properties.Add(NHibernate.Cfg.Environment.ConnectionDriver, "NHibernate.Driver.SqlClientDriver");
                         properties.Add(NHibernate.Cfg.Environment.Dialect, "NHibernate.Dialect.MsSql2008Dialect");
-                        //properties.Add(NHibernate.Cfg.Environment.ConnectionString, "Server=KRAKOTSPC;Initial Catalog=ARTIS;User ID=Artis;Password=pass@optima1;");
-                        properties.Add(NHibernate.Cfg.Environment.ConnectionString, "Server=92.53.105.145;Initial Catalog=ARTIS;User ID=QueryBase;Password=pass@optima1;");
+
+                        properties.Add(NHibernate.Cfg.Environment.ConnectionString, "Server=KRAKOTSPC;Initial Catalog=ARTIS;User ID=Artis;Password=pass@optima1;");
+                        //properties.Add(NHibernate.Cfg.Environment.ConnectionString, "Server=92.53.105.145;Initial Catalog=ARTIS;User ID=QueryBase;Password=pass@optima1;");
                         //properties.Add(NHibernate.Cfg.Environment.ConnectionString, "Server=EPRUPETW0475;Initial Catalog=ARTIS;Integrated Security = true;");
 
                         //Set the config up using our dictionary of properties
