@@ -465,5 +465,10 @@ namespace Artis.Data
                 return action.Producer.ToList();
             }
         }
+
+        public static Task<Task<bool>> UpdateGuiSectionGenres(long idSection, List<Genre> fromXml)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

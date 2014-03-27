@@ -77,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <None Include="Properties\PublishProfiles\ArtisAdminWCF.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -85,6 +86,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Consts\Consts.csproj">
+      <Project>{8D331482-2207-4C27-92BA-F5676BF2A80A}</Project>
+      <Name>Consts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\DBConnector.csproj">
       <Project>{4BC0AB1E-0B81-4FBE-83E0-8FFAFA4A5EF5}</Project>
       <Name>DBConnector</Name>

@@ -14,25 +14,23 @@ namespace Artis.Data
         /// </summary>
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private static ActionDateRepository _actionDateRepository;
-        private static ActionRepository _actionRepository;
-        private static ActorRepository _actorRepository;
-        private static ProducerRepository _producerRepository;
+        private  ActionRepository _actionRepository;
+        private  ActorRepository _actorRepository;
+        private  ProducerRepository _producerRepository;
 
-        static ActionDateRepository()
+        public ActionDateRepository()
         {
-            _actionDateRepository=new ActionDateRepository();
             _actionRepository=new ActionRepository();
             _actorRepository=new ActorRepository();
             _producerRepository=new ProducerRepository();
         }
 
-        public static async Task<bool> Save(ActionDate action, List<Data> addedImages, List<long> deletedImages, List<Actor> actors, List<Producer> producers)
+        public async Task<bool> Save(ActionDate action, List<Data> addedImages, List<long> deletedImages, List<Actor> actors, List<Producer> producers)
         {
             try
             {
                 Action originalAction = _actionRepository.GetById(action.Action.ID);
-                ActionDate originalActionDate = _actionDateRepository.GetById(action.ID);
+                ActionDate originalActionDate = GetById(action.ID);
 
                 if (deletedImages != null)
                     foreach (long idImage in deletedImages)
@@ -53,7 +51,7 @@ namespace Artis.Data
                 CompareAction(originalAction, action.Action,actors,producers);
                 CompareActionDate(originalActionDate, action);
 
-                _actionDateRepository.Update(originalActionDate);
+                Update(originalActionDate);
                 _actionRepository.Update(originalAction);
             }
             catch (Exception ex)
@@ -69,7 +67,7 @@ namespace Artis.Data
         /// </summary>
         /// <param name="originalAction">Текущее мероприятие</param>
         /// <param name="action">Измененное мероприятие</param>
-        private static void CompareAction(Action originalAction, Action action, List<Actor> actors, List<Producer> producers)
+        private void CompareAction(Action originalAction, Action action, List<Actor> actors, List<Producer> producers)
         {
             if (!originalAction.Name.Equals(action.Name))
                 originalAction.Name = action.Name;
@@ -118,7 +116,7 @@ namespace Artis.Data
 
         }
 
-        private static void CompareActionDate(ActionDate originalActionDate, ActionDate actionDate)
+        private void CompareActionDate(ActionDate originalActionDate, ActionDate actionDate)
         {
             if (originalActionDate.Date != actionDate.Date)
                 originalActionDate.Date = actionDate.Date;
@@ -132,7 +130,7 @@ namespace Artis.Data
                 originalActionDate.MaxPrice = actionDate.MaxPrice;
         }
 
-        public static async Task<bool> Add(ActionDate actionDate, List<Data> images, List<Actor> actors, List<Producer> producers)
+        public async Task<bool> Add(ActionDate actionDate, List<Data> images, List<Actor> actors, List<Producer> producers)
         {
             try
             {
@@ -191,7 +189,7 @@ namespace Artis.Data
                     Area =  actionDate.Area,
                     Date = actionDate.Date,
                 };
-                _actionDateRepository.Add(actionDateNew);
+                Add(actionDateNew);
 
                 
                 //action.ActionDate=new Collection<ActionDate>(){actionDateNew};
@@ -205,11 +203,11 @@ namespace Artis.Data
             return true;
         }
 
-        public static async Task<bool> AddActionDate(ActionDate actionDate)
+        public async Task<bool> AddActionDate(ActionDate actionDate)
         {
             try
             {
-                _actionDateRepository.Add(actionDate);
+                Add(actionDate);
             }
             catch (Exception ex)
             {

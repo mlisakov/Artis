@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
+using Artis.Consts;
 using Artis.Service;
 using NLog;
 
@@ -12,6 +13,7 @@ namespace Artis.Data
     public class WcfServiceCaller
     {
         private IArtisAdminTool serviceAdminTool = null;
+        
         /// <summary>
         /// Логгер
         /// </summary>
@@ -19,7 +21,7 @@ namespace Artis.Data
         public WcfServiceCaller()
         {
             BasicHttpBinding myBinding = new BasicHttpBinding();
-            EndpointAddress myEndpoint = new EndpointAddress("http://localhost:55601/ArtisAdminToolService.svc");
+            EndpointAddress myEndpoint = new EndpointAddress(ServiceAddress.ArtisAdminServiceAddress+"ArtisAdminToolService.svc");
 
             myBinding.CloseTimeout = TimeSpan.FromSeconds(80000);
             myBinding.ReceiveTimeout = TimeSpan.FromSeconds(80000);
@@ -285,5 +287,62 @@ namespace Artis.Data
             }
         }
 
+        public async Task<ObservableCollection<Genre>> GetGuiSectionGenres(long idSection)
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetGuiSectionGenres(idSection);
+                GenreXmlProvider provider = new GenreXmlProvider();
+                return new ObservableCollection<Genre>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить список жанров для категории!"+idSection, ex);
+                throw new Exception("Не удалось получить список жанров для категории!");
+            }
+        }
+
+        public async Task<ObservableCollection<Genre>> GetGuiSectionRestGenres(long idSection)
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetGuiSectionRestGenres(idSection);
+                GenreXmlProvider provider = new GenreXmlProvider();
+                return new ObservableCollection<Genre>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить список жанров, не выбранных для категории!" + idSection, ex);
+                throw new Exception("Не удалось получить список жанров, не выбранных для категории!");
+            }
+        }
+
+        public async Task<bool> UpdateGuiSectionGenres(long idSection,ObservableCollection<Genre> usedGenres)
+        {
+            try
+            {
+                GenreXmlProvider provider = new GenreXmlProvider(usedGenres);
+                return await serviceAdminTool.UpdateGuiSectionGenres(idSection,provider.ToXml().InnerXml);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось сохранить список жанров!", ex);
+                throw new Exception("Не удалось сохранить список жанров!");
+            }
+        }
+
+        public async Task<int> ParseActionAsync(ActionWeb actionWeb)
+        {
+            try
+            {
+                ActionWebXmlProvider provider = new ActionWebXmlProvider(new List<ActionWeb>(){actionWeb});
+                return await serviceAdminTool.ParseAction(provider.ToXml().InnerXml);
+            }
+            catch (Exception ex )
+            {
+                _logger.ErrorException("Не удалось сохранить загруженное мероприятие!", ex);
+                throw new Exception("Не удалось сохранить загруженное мероприятие!");
+            }
+        }
     }
 }

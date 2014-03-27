@@ -53,6 +53,10 @@
       <Project>{2180938F-316F-4214-9B43-49806ABA0762}</Project>
       <Name>ArtisAdminTool</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Consts\Consts.csproj">
+      <Project>{8d331482-2207-4c27-92ba-f5676bf2a80a}</Project>
+      <Name>Consts</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Data\DBConnector.csproj">
       <Project>{4BC0AB1E-0B81-4FBE-83E0-8FFAFA4A5EF5}</Project>
       <Name>DBConnector</Name>

@@ -47,6 +47,7 @@
     <Compile Include="Convert.cs" />
     <Compile Include="Enums\UrlActionLoadingSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceAddress.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

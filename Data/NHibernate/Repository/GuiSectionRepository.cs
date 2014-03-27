@@ -15,7 +15,7 @@ namespace Artis.Data
         /// </summary>
         private  NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<bool> Save(long currentGuiSection, ObservableCollection<Genre> usedGenres)
+        public async Task<bool> Save(long currentGuiSection, List<Genre> usedGenres)
         {
             try
             {

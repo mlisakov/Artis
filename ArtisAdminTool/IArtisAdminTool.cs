@@ -4,6 +4,7 @@ using System.ServiceModel;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
+using Artis.Consts;
 using Artis.Data;
 
 namespace Artis.Service
@@ -134,5 +135,42 @@ namespace Artis.Service
         /// <returns>Сериализованный список режисеров</returns>
         [OperationContract]
         Task<string> GetActionProducersAsync(long idAction);
+
+        /// <summary>
+        /// Получение списка жанров для категории GUI
+        /// </summary>
+        /// <param name="idSection">Идентификатор категории GUI</param>
+        /// <returns>Сериализованный список жанров</returns>
+        [OperationContract]
+        Task<string> GetGuiSectionGenres(long idSection);
+
+        /// <summary>
+        /// Получение списка жанров, не выбранных для категории GUI
+        /// </summary>
+        /// <param name="idSection">Идентификатор категории GUI</param>
+        /// <returns>Сериализованный список жанров</returns>
+        [OperationContract]
+        Task<string> GetGuiSectionRestGenres(long idSection);
+
+        /// <summary>
+        /// Обновление списка жанров для категории
+        /// </summary>
+        /// <param name="idSection">Идентификатор секции</param>
+        /// <param name="innerXml">Список жанров для категории</param>
+        /// <returns>Результат обновления</returns>
+        [OperationContract]
+        Task<bool> UpdateGuiSectionGenres(long idSection,string innerXml);
+
+        /// <summary>
+        /// Запись загруженного мероприятия в БД
+        /// </summary>
+        /// <param name="actionWeb">Сериализованное мероприятие</param>
+        /// <returns>Результат записи
+        /// -1 - Фатальная ошибка
+        /// 0 - Не удалось записать мероприятие
+        /// 1 - Запись прошла успешно
+        /// </returns>
+        [OperationContract]
+        Task<int> ParseAction(string actionWeb);
     }
 }

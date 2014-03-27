@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Artis.Consts;
 using Artis.Data;
 using Microsoft.SqlServer.Server;
 using NLog;
@@ -12,12 +13,17 @@ namespace Artis.Service
     public class ArtisAdminToolService : IArtisAdminTool
     {
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
-
+        private DataParser _dataParser;
         private AreaRepository _areaRepository;
+        private ActionDateRepository _actionDateRepository;
+        private GuiSectionRepository _guiSectionRepository;
 
         public ArtisAdminToolService()
         {
             _areaRepository=new AreaRepository();
+            _actionDateRepository=new ActionDateRepository();
+            _guiSectionRepository=new GuiSectionRepository();
+            _dataParser=new DataParser();
         }
 
         public async Task<string> GetAreaAsync(long idArea)
@@ -81,7 +87,7 @@ namespace Artis.Service
                 ActionDate originalactionDate = xmlProvider.FromXml(actionDate).First();
                 ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider();
                 ProducersXmlProvider producersXmlProvider = new ProducersXmlProvider();
-                return await ActionDateRepository.Save(originalactionDate,
+                return await _actionDateRepository.Save(originalactionDate,
                        addedImages.Select(i => new Data.Data() { Base64StringData = i }).ToList(),
                        deletedImages, actorsXmlProvider.FromXml(actors), producersXmlProvider.FromXml(producers));
             }
@@ -99,7 +105,7 @@ namespace Artis.Service
                 ActionDateXmlProvider xmlProvider = new ActionDateXmlProvider();
                 ActionDate originalactionDate = xmlProvider.FromXml(actionDate).First();
 
-                return await ActionDateRepository.AddActionDate(originalactionDate);
+                return await _actionDateRepository.AddActionDate(originalactionDate);
             }
             catch (Exception ex)
             {
@@ -116,7 +122,7 @@ namespace Artis.Service
                 ActionDate originalactionDate = xmlProvider.FromXml(actionDate).First();
                 ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider();
                 ProducersXmlProvider producersXmlProvider = new ProducersXmlProvider();
-                return await ActionDateRepository.Add(originalactionDate,
+                return await _actionDateRepository.Add(originalactionDate,
                        Images.Select(i => new Data.Data() { Base64StringData = i }).ToList(),
                        actorsXmlProvider.FromXml(actors), producersXmlProvider.FromXml(producers));
             }
@@ -231,6 +237,64 @@ namespace Artis.Service
                 _logger.ErrorException("Не удалось загрузить режиссеров для мероприятия:" + idAction, ex);
             }
             return string.Empty;
+        }
+
+        public async Task<string> GetGuiSectionGenres(long idSection)
+        {
+            try
+            {
+                 GenreXmlProvider xmlGenreXmlProvider =
+                     new GenreXmlProvider(await DataRequestFactory.GetGuiSectionGenres(idSection));
+                 return xmlGenreXmlProvider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить жанры для секции GUI" + idSection, ex);
+            }
+            return string.Empty;
+        }
+
+        public async Task<string> GetGuiSectionRestGenres(long idSection)
+        {
+            try
+            {
+                GenreXmlProvider xmlGenreXmlProvider =
+                    new GenreXmlProvider(await DataRequestFactory.GetGuiSectionRestGenres(idSection));
+                return xmlGenreXmlProvider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить жанры для секции GUI" + idSection, ex);
+            }
+            return string.Empty;
+        }
+
+        public async Task<bool> UpdateGuiSectionGenres(long idSection, string innerXml)
+        {
+           try
+            {
+                GenreXmlProvider xmlGenreXmlProvider =new GenreXmlProvider();
+                return await _guiSectionRepository.Save(idSection, xmlGenreXmlProvider.FromXml(innerXml));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось обновить жанры для секции GUI" + idSection, ex);
+            }
+            return false;
+        }
+
+        public async Task<int> ParseAction(string actionWeb)
+        {
+            try
+            {
+                ActionWebXmlProvider provider=new ActionWebXmlProvider();
+                return await _dataParser.Parse(provider.FromXml(actionWeb).First());
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Ошибка записи загруженного мероприятия", ex);
+            }
+            return 0;
         }
 
         public async Task<string> GetGenresAsync()

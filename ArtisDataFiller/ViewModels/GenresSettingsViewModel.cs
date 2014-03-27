@@ -7,6 +7,9 @@ namespace Artis.ArtisDataFiller.ViewModels
 {
     public class GenresSettingsViewModel:ViewModel
     {
+
+        private WcfServiceCaller _wcfAdminService; 
+
         private ObservableCollection<GuiSection> _categories;
         private GuiSection _currentCategory;
         private ObservableCollection<Genre> _usedGenres;
@@ -104,6 +107,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         public GenresSettingsViewModel()
         {
             _guiSectionRepository=new GuiSectionRepository();
+            _wcfAdminService=new WcfServiceCaller();
             InitCommands();
             InitDataSource();
         }
@@ -118,8 +122,10 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async void InitGenres()
         {
-            UsedGenres = await DataRequestFactory.GetGuiSectionGenres(CurrentCategory.ID);
-            OthersGenres = await DataRequestFactory.GetGuiSectionRestGenres(CurrentCategory.ID);
+            UsedGenres = await _wcfAdminService.GetGuiSectionGenres(CurrentCategory.ID);
+            OthersGenres = await _wcfAdminService.GetGuiSectionRestGenres(CurrentCategory.ID);
+            //UsedGenres = await DataRequestFactory.GetGuiSectionGenres(CurrentCategory.ID);
+            //OthersGenres = await DataRequestFactory.GetGuiSectionRestGenres(CurrentCategory.ID);
         }
 
 
@@ -174,8 +180,9 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async Task<bool> SaveGuiSectionGenres(ObservableCollection<Genre> usedGenres)
         {
-            bool result = await
-                   _guiSectionRepository.Save(CurrentCategory.ID, usedGenres);
+            bool result = await _wcfAdminService.UpdateGuiSectionGenres(CurrentCategory.ID,usedGenres);
+            //bool result = await
+            //       _guiSectionRepository.Save(CurrentCategory.ID, usedGenres);
             return result;
         }
     }
