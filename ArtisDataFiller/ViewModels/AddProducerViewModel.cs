@@ -44,7 +44,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         public async override void ExecuteOkCommand(object parameter)
         {
             _producer = new Producer() {FIO = Name};
-            await ProducerRepository.AddProducer(_producer, _action);
+            //await ProducerRepository.AddProducer(_producer, _action);
         }
     }
 }

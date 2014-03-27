@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace Artis.Data
 {
@@ -27,7 +28,7 @@ namespace Artis.Data
         public virtual long ID
         {
             get { return _id; }
-            protected set { _id = value; }
+            set { _id = value; }
         }
 
         /// <summary>
@@ -88,6 +89,7 @@ namespace Artis.Data
         /// <summary>
         /// Площадки
         /// </summary>
+        [XmlIgnoreAttribute]
         public virtual ICollection<Area> Area
         {
             get { return _area; }
@@ -97,6 +99,7 @@ namespace Artis.Data
         /// <summary>
         /// Список актеров мероприятия
         /// </summary>
+        [XmlIgnoreAttribute]
         public virtual ICollection<ActionDate> ActionDate
         {
             get { return _date; }
@@ -105,6 +108,7 @@ namespace Artis.Data
         /// <summary>
         /// Список изображений мероприятия
         /// </summary>
+        [XmlIgnoreAttribute]
         public virtual ICollection<Data> Data
         {
             get { return _data; }
@@ -114,6 +118,7 @@ namespace Artis.Data
         /// <summary>
         /// Список актеров мероприятия
         /// </summary>
+        [XmlIgnoreAttribute]
         public virtual ICollection<Actor> Actor
         {
             get { return _actors; }
@@ -123,6 +128,7 @@ namespace Artis.Data
         /// <summary>
         /// Список актеров мероприятия
         /// </summary>
+        [XmlIgnoreAttribute]
         public virtual ICollection<Producer> Producer
         {
             get { return _producers; }

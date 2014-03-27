@@ -25,7 +25,7 @@ namespace Artis.Data
         public virtual long ID
         {
             get { return _id; }
-            protected set { _id = value; }
+            set { _id = value; }
         }
 
         /// <summary>
@@ -85,6 +85,7 @@ namespace Artis.Data
         /// <summary>
         /// Схема проезда
         /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute]
         public virtual string SchemaImage
         {
             get { return _schema; }
@@ -94,6 +95,7 @@ namespace Artis.Data
         /// <summary>
         /// Список изображений мероприятия
         /// </summary>
+        [System.Xml.Serialization.XmlIgnoreAttribute]
         public virtual ICollection<Data> Data
         {
             get { return _data; }

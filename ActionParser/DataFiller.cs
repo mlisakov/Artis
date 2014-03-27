@@ -10,6 +10,7 @@ namespace Artis.ActionParser
 {
     public class DataFiller
     {
+        private WcfServiceCaller _wcfAdminService; 
         private int _actionLoadersCompletedCount;
 
         /// <summary>
@@ -20,7 +21,7 @@ namespace Artis.ActionParser
         /// <summary>
         /// Класс для записи информации о мероприятия в БД
         /// </summary>
-        private DataParser _dataParser;
+        //private DataParser _dataParser;
 
         public delegate void ActionLoaded(ActionWeb action);
         public delegate void WorkDone(UrlActionLoadingSource source);
@@ -34,10 +35,11 @@ namespace Artis.ActionParser
 
         public DataFiller()
         {
+            _wcfAdminService=new WcfServiceCaller();
             _actionLoadersCompletedCount = 0;
             _urlDataLoaders=new List<IUrlDataLoader>(){new UrlBileterDataLoader(),new UrlMariinskyDataLoader(),new UrlMikhailovskyDataLoader()};
             //_urlDataLoaders = new List<IUrlDataLoader>() { new UrlMariinskyDataLoader(),new UrlMikhailovskyDataLoader() };
-            _dataParser=new DataParser();
+            //_dataParser=new DataParser();
             HandleEvents();
         }
 
@@ -79,9 +81,9 @@ namespace Artis.ActionParser
                 dataLoader.ActionLoadedEvent += dataLoader_ActionLoadedEvent;
                 dataLoader.WorkDoneEvent += dataLoader_WorkDoneEvent;
             }
-            _dataParser.ActionLoadedEvent += DataParserActionLoadedEvent;
-            _dataParser.ActionNotLoadedEvent += DataParserActionNotLoadedEvent;
-            _dataParser.FatalErrorEvent+=_dataParser_FatalErrorEvent;
+            //_dataParser.ActionLoadedEvent += DataParserActionLoadedEvent;
+            //_dataParser.ActionNotLoadedEvent += DataParserActionNotLoadedEvent;
+            //_dataParser.FatalErrorEvent+=_dataParser_FatalErrorEvent;
         }
 
         private void dataLoader_WorkDoneEvent(UrlActionLoadingSource source)
@@ -91,22 +93,22 @@ namespace Artis.ActionParser
                 InvokeWorkDone(source);
         }
 
-        void DataParserActionNotLoadedEvent(ActionWeb action)
-        {
-            InvokeActionNotLoaded(action);
-        }
+        //void DataParserActionNotLoadedEvent(ActionWeb action)
+        //{
+        //    InvokeActionNotLoaded(action);
+        //}
 
-        void DataParserActionLoadedEvent(ActionWeb action)
-        {
-            InvokeActionLoaded(action);
-        }
+        //void DataParserActionLoadedEvent(ActionWeb action)
+        //{
+        //    InvokeActionLoaded(action);
+        //}
 
-        private void _dataParser_FatalErrorEvent(string message)
-        {
-            //Прекращаем загрузку при возникновении критической ошибки
-            CancelParseData();
-            InvokeFatalError(message);
-        }
+        //private void _dataParser_FatalErrorEvent(string message)
+        //{
+        //    //Прекращаем загрузку при возникновении критической ошибки
+        //    CancelParseData();
+        //    InvokeFatalError(message);
+        //}
         private void UnHandleLoadersEvents()
         {
             foreach (IUrlDataLoader dataLoader in _urlDataLoaders)
@@ -114,15 +116,30 @@ namespace Artis.ActionParser
                 dataLoader.ActionLoadedEvent -= dataLoader_ActionLoadedEvent;
                 dataLoader.WorkDoneEvent -= dataLoader_WorkDoneEvent;
             }
-            _dataParser.ActionLoadedEvent -= DataParserActionLoadedEvent;
-            _dataParser.ActionNotLoadedEvent -= DataParserActionNotLoadedEvent;
+            //_dataParser.ActionLoadedEvent -= DataParserActionLoadedEvent;
+            //_dataParser.ActionNotLoadedEvent -= DataParserActionNotLoadedEvent;
         }
 
         private void dataLoader_ActionLoadedEvent(UrlActionLoadingSource source,ActionWeb action)
         {
             InvokeActionWebLoaded(source,action);
+            ParseDownloadedAction(action);
+            //_dataParser.Parse(action);
+        }
 
-            _dataParser.Parse(action);
+        private async void ParseDownloadedAction(ActionWeb action)
+        {
+            int result = await _wcfAdminService.ParseActionAsync(action);
+            if (result == 1)
+                InvokeActionLoaded(action);
+            else if (result == 0)
+                InvokeActionNotLoaded(action);
+            else
+            {
+                //Прекращаем загрузку при возникновении критической ошибки
+                CancelParseData();
+                InvokeFatalError("Ошибка записи загруженного мероприятия!");
+            }
         }
 
         private void InvokeWorkDone(UrlActionLoadingSource source)

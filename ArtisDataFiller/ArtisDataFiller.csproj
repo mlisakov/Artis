@@ -243,6 +243,10 @@
       <Project>{3351dbc8-ac9a-43fb-85c7-ce67e259c672}</Project>
       <Name>NHibernateMapping</Name>
     </ProjectReference>
+    <ProjectReference Include="..\WcfServiceCaller\WcfServiceCaller.csproj">
+      <Project>{865C31D5-D601-4D3B-B0A8-1BE0B0EE5D1F}</Project>
+      <Name>WcfServiceCaller</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

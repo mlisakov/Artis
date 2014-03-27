@@ -14,24 +14,29 @@ namespace Artis.Data
         /// </summary>
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private static ActionDateRepository _actionDateRepository;
-        private static ActionRepository _actionRepository;
+        private  ActionRepository _actionRepository;
+        private  ActorRepository _actorRepository;
+        private  ProducerRepository _producerRepository;
 
-        static ActionDateRepository()
+        public ActionDateRepository()
         {
-            _actionDateRepository=new ActionDateRepository();
             _actionRepository=new ActionRepository();
+            _actorRepository=new ActorRepository();
+            _producerRepository=new ProducerRepository();
         }
 
-        public static async Task<bool> Save(ActionDate actionDate, List<Data> addedImages, List<long> deletedImages)
+        public async Task<bool> Save(ActionDate action, List<Data> addedImages, List<long> deletedImages, List<Actor> actors, List<Producer> producers)
         {
             try
             {
+                Action originalAction = _actionRepository.GetById(action.Action.ID);
+                ActionDate originalActionDate = GetById(action.ID);
+
                 if (deletedImages != null)
                     foreach (long idImage in deletedImages)
                     {
-                        Data item = actionDate.Action.Data.First(i => i.ID == idImage);
-                        actionDate.Action.Data.Remove(item);
+                        Data item = originalAction.Data.First(i => i.ID == idImage);
+                        originalAction.Data.Remove(item);
                     }
 
                 if (addedImages != null)
@@ -39,13 +44,15 @@ namespace Artis.Data
                     {
                         DataRepository _dataRepository = new DataRepository();
                         _dataRepository.Add(data);
-                        if (actionDate.Action.Data == null)
-                            actionDate.Action.Data = new Collection<Data>();
-                        actionDate.Action.Data.Add(data);
+                        if (originalAction.Data == null)
+                            originalAction.Data = new Collection<Data>();
+                        originalAction.Data.Add(data);
                     }
+                CompareAction(originalAction, action.Action,actors,producers);
+                CompareActionDate(originalActionDate, action);
 
-                _actionDateRepository.Update(actionDate);
-                _actionRepository.Update(actionDate.Action);
+                Update(originalActionDate);
+                _actionRepository.Update(originalAction);
             }
             catch (Exception ex)
             {
@@ -55,24 +62,138 @@ namespace Artis.Data
             return true;
         }
 
-        public static async Task<bool> Add(ActionDate actionDate, List<Data> images)
+        /// <summary>
+        /// Сравнивает исходное мероприятие и мероприятия, полученное в ходу изменений от клиента
+        /// </summary>
+        /// <param name="originalAction">Текущее мероприятие</param>
+        /// <param name="action">Измененное мероприятие</param>
+        private void CompareAction(Action originalAction, Action action, List<Actor> actors, List<Producer> producers)
+        {
+            if (!originalAction.Name.Equals(action.Name))
+                originalAction.Name = action.Name;
+            if (originalAction.Rating != action.Rating)
+                originalAction.Rating = action.Rating;
+            if (!originalAction.Duration.Equals(action.Duration))
+                originalAction.Duration = action.Duration;
+            if (!originalAction.Description.Equals(action.Description))
+                originalAction.Description = action.Description;
+            if (originalAction.Genre.ID!=action.Genre.ID)
+                originalAction.Genre = action.Genre;
+
+            List<Actor> currentActors = originalAction.Actor.ToList();
+            List<Actor> deletedActors = currentActors.Except(actors, new ActorComparer()).ToList();
+            List<Actor> addedActors = actors.Except(currentActors, new ActorComparer()).ToList();
+            foreach (Actor actor in addedActors)
+            {
+                _actorRepository.Add(actor);
+                originalAction.Actor.Add(actor);
+            }
+
+
+            foreach (Actor actor in deletedActors)
+                originalAction.Actor.Remove(actor);
+
+            List<Producer> currentProducers = originalAction.Producer.ToList();
+            List<Producer> deletedProducers = currentProducers.Except(producers, new ProducerComparer()).ToList();
+            List<Producer> addedProducers = producers.Except(currentProducers, new ProducerComparer()).ToList();
+            foreach (Producer producer in addedProducers)
+            {
+                _producerRepository.Add(producer);
+                originalAction.Producer.Add(producer);
+            }
+
+            foreach (Producer producer in deletedProducers)
+                originalAction.Producer.Remove(producer);
+
+            //_actionRepository.Update(originalAction);
+
+            //foreach (Actor actor in deletedActors)
+            //     _actorRepository.Delete(actor);
+
+            //foreach (Producer producer in deletedProducers)
+            //    _producerRepository.Delete(producer);
+
+
+        }
+
+        private void CompareActionDate(ActionDate originalActionDate, ActionDate actionDate)
+        {
+            if (originalActionDate.Date != actionDate.Date)
+                originalActionDate.Date = actionDate.Date;
+            if (!originalActionDate.Time.Equals(actionDate.Time))
+                originalActionDate.Time = actionDate.Time;
+            if (originalActionDate.PriceRange != actionDate.PriceRange)
+                originalActionDate.PriceRange = actionDate.PriceRange;
+            if (originalActionDate.MinPrice != actionDate.MinPrice)
+                originalActionDate.MinPrice = actionDate.MinPrice;
+            if (originalActionDate.MaxPrice != actionDate.MaxPrice)
+                originalActionDate.MaxPrice = actionDate.MaxPrice;
+        }
+
+        public async Task<bool> Add(ActionDate actionDate, List<Data> images, List<Actor> actors, List<Producer> producers)
         {
             try
             {
-                Action action = actionDate.Action;
-                _actionRepository.Add(action);
+                Action action = new Action()
+                {
+                    Name = actionDate.Action.Name,
+                    Rating = actionDate.Action.Rating,
+                    Duration = actionDate.Action.Duration,
+                    Description = actionDate.Action.Description,
+                    Genre = actionDate.Action.Genre,
+                    
+                };
 
                 if (images != null)
+                {
+                    DataRepository _dataRepository = new DataRepository();
                     foreach (Data data in images)
                     {
-                        DataRepository _dataRepository = new DataRepository();
                         _dataRepository.Add(data);
                         if (action.Data == null)
                             action.Data = new Collection<Data>();
                         action.Data.Add(data);
                     }
-                _actionRepository.Update(action);
-                _actionDateRepository.Add(actionDate);
+                }
+                if (actors != null)
+                {
+                    foreach (Actor actor in actors)
+                    {
+
+                        _actorRepository.Add(actor);
+                        if (action.Actor == null)
+                            action.Actor = new Collection<Actor>();
+                        action.Actor.Add(actor);
+                    }
+                }
+
+                if (producers != null)
+                {
+                    foreach (Producer producer in producers)
+                    {
+
+                        _producerRepository.Add(producer);
+                        if (action.Producer == null)
+                            action.Producer = new Collection<Producer>();
+                        action.Producer.Add(producer);
+                    }
+                }
+
+                _actionRepository.Add(action);
+
+                ActionDate actionDateNew=new ActionDate()
+                {
+                    PriceRange = actionDate.PriceRange,
+                    Time=actionDate.Time,
+                    Action = action,
+                    Area =  actionDate.Area,
+                    Date = actionDate.Date,
+                };
+                Add(actionDateNew);
+
+                
+                //action.ActionDate=new Collection<ActionDate>(){actionDateNew};
+                //_actionRepository.Update(action);
             }
             catch (Exception ex)
             {
@@ -82,11 +203,11 @@ namespace Artis.Data
             return true;
         }
 
-        public static async Task<bool> AddActionDate(ActionDate actionDate)
+        public async Task<bool> AddActionDate(ActionDate actionDate)
         {
             try
             {
-                _actionDateRepository.Add(actionDate);
+                Add(actionDate);
             }
             catch (Exception ex)
             {

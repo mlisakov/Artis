@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Management.Instrumentation;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Documents;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
@@ -19,6 +17,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 {
     public sealed class ActionsViewModel : ViewModel
     {
+        private WcfServiceCaller _wcfAdminService; 
+
         private string _filterName;
         private DataImage _selectedImage;
         
@@ -274,16 +274,16 @@ namespace Artis.ArtisDataFiller.ViewModels
             set
             {
                 _currentActionDate = value;
-                if (CurrentActionDate != null && CurrentActionDate.Action.Actor != null)
-                {
-                    ActorsItemsSource = new ObservableCollection<Actor>(CurrentActionDate.Action.Actor);
-                    ProducersItemsSource=new ObservableCollection<Producer>(CurrentActionDate.Action.Producer);
-                }
-                else
-                {
-                    ActorsItemsSource=new ObservableCollection<Actor>();
-                    ProducersItemsSource=new ObservableCollection<Producer>();
-                }
+                //if (CurrentActionDate != null && CurrentActionDate.Action.Actor != null)
+                //{
+                //    ActorsItemsSource = new ObservableCollection<Actor>(CurrentActionDate.Action.Actor);
+                //    ProducersItemsSource=new ObservableCollection<Producer>(CurrentActionDate.Action.Producer);
+                //}
+                //else
+                //{
+                //    ActorsItemsSource=new ObservableCollection<Actor>();
+                //    ProducersItemsSource=new ObservableCollection<Producer>();
+                //}
                 
                 OnPropertyChanged();
                 //OnPropertyChanged("ActorsItemsSource");
@@ -450,9 +450,9 @@ namespace Artis.ArtisDataFiller.ViewModels
         public ActionsViewModel()
         {
             InitCommands();
-            FromDate = ToDate = DateTime.Today;
-            InitDataSource();
+            FromDate = ToDate = DateTime.Today;            
             InitVariables();
+            InitDataSource();
         }
 
         /// <summary>
@@ -460,6 +460,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// </summary>
         private void InitVariables()
         {
+            _wcfAdminService=new WcfServiceCaller();
             _deletedImages = new List<long>();
             _addedImages = new List<DataImage>();
         }
@@ -470,9 +471,9 @@ namespace Artis.ArtisDataFiller.ViewModels
         private async void InitDataSource()
         {
             //FilterName = "Наименование мероприятия";
-            FilterAreasItemsSource = await DataRequestFactory.GetAreas();
+            FilterAreasItemsSource = await _wcfAdminService.GetAreas(-1);
             ActionsItemsSource = new ObservableCollection<ActionDate>();
-            GenresItemsSource = await DataRequestFactory.GetGenres();
+            GenresItemsSource = await _wcfAdminService.GetGenres();
             StatesItemsSource = new ObservableCollection<State>();
             ActorsItemsSource=new ObservableCollection<Actor>();
             ProducersItemsSource=new ObservableCollection<Producer>();
@@ -719,13 +720,15 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async void ExecuteRemoveProducerCommand(object obj)
         {
-            await RemoveProducer();
+            //await RemoveProducer();
             ProducersItemsSource.Remove(SelectedProducer);
             OnPropertyChanged("ProducersItemsSource");
         }
 
         private void ExecuteAddProducerCommand(object obj)
         {
+            if (ProducersItemsSource==null)
+                ProducersItemsSource=new ObservableCollection<Producer>();
             var viewModel = new AddProducerViewModel(CurrentActionDate.Action) {Title = "Добавление нового продюсера"};
 
             var window = new AddActorDialogWindow { ViewModel = viewModel };
@@ -740,13 +743,15 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async void ExecuteRemoveActorCommand(object obj)
         {
-            await RemoveActor();
+            //await RemoveActor();
             ActorsItemsSource.Remove(SelectedActor);
             OnPropertyChanged("ActorsItemsSource");
         }
 
         private void ExecuteAddActorCommand(object obj)
         {
+            if (ActorsItemsSource==null)
+                ActorsItemsSource =new ObservableCollection<Actor>();
             var viewModel = new AddActorViewModel(CurrentActionDate.Action) { Title = "Добавление нового актера" };
 
             var window = new AddActorDialogWindow {ViewModel = viewModel};
@@ -757,7 +762,6 @@ namespace Artis.ArtisDataFiller.ViewModels
                 ActorsItemsSource.Add(viewModel.Actor);
                 OnPropertyChanged("ActorsItemsSource");
             }
-            
         }
 
         private void ExecuteRemoveActionCommand(object obj)
@@ -770,7 +774,8 @@ namespace Artis.ArtisDataFiller.ViewModels
             IsEdit = true;
             IsNewOne = false;
 
-            Images = await ImageHelper.ConvertImages(CurrentActionDate.Action.Data);
+            ObservableCollection<Data.Data> images = await _wcfAdminService.GetActionImages(CurrentActionDate.Action.ID);
+            Images = await ImageHelper.ConvertImages(images);
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
@@ -782,6 +787,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 
             CurrentActionDate=new ActionDate(){Date = DateTime.Today,Action=new Action()};
             Images=new ObservableCollection<DataImage>();
+            ActorsItemsSource = new ObservableCollection<Actor>();
+            ProducersItemsSource = new ObservableCollection<Producer>();
         }
 
         private async void ExecuteEditActionCommand(object obj)
@@ -789,7 +796,10 @@ namespace Artis.ArtisDataFiller.ViewModels
             IsEdit = true; // не удалять
             IsNewOne = true;
 
-            Images =await ImageHelper.ConvertImages(CurrentActionDate.Action.Data);
+            ObservableCollection<Data.Data> images = await _wcfAdminService.GetActionImages(CurrentActionDate.Action.ID);
+            ActorsItemsSource = await _wcfAdminService.GetActionActors(CurrentActionDate.Action.ID);
+            ProducersItemsSource = await _wcfAdminService.GetActionProducers(CurrentActionDate.Action.ID);
+            Images = await ImageHelper.ConvertImages(images);
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
@@ -806,12 +816,14 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async void ExecuteSearchCommand(object parameters)
         {
-            ActionsItemsSource = await DataRequestFactory.GetActions(FilterName, FilterArea, FromDate, ToDate);
+            ActionsItemsSource = await _wcfAdminService.GetActions(FilterName, FilterArea, FromDate, ToDate);
         }
 
         private void ClearVariables()
         {
             CurrentActionDate = null;
+            ActorsItemsSource = null;
+            ProducersItemsSource = null;
             SelectedImage = null;
             Images = null;
             _deletedImages = null;
@@ -824,10 +836,15 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <returns></returns>
         private async Task<bool> SaveActionDate()
         {
-            bool result = await
-                    ActionDateRepository.Save(CurrentActionDate,
+            //bool result = await
+            //        ActionDateRepository.Save(CurrentActionDate,
+            //            _addedImages.Select(i => new Data.Data() { Base64StringData = i.Base64String }).ToList(),
+            //            _deletedImages);
+            bool result =
+                await
+                    _wcfAdminService.SaveActionDate(CurrentActionDate,
                         _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList(),
-                        _deletedImages);
+                        _deletedImages,ActorsItemsSource.ToList(),ProducersItemsSource.ToList());
             return result;
 
         }
@@ -838,10 +855,16 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <returns></returns>
         private async Task<bool> AddActionDate()
         {
+            if (_addedImages==null)
+                _addedImages=new List<DataImage>();
             bool result =
                 await
-                    ActionDateRepository.Add(CurrentActionDate,
-                        _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList());
+                    _wcfAdminService.AddActionDate(CurrentActionDate,
+                        _addedImages.Select(i => i.Base64String).ToList(),ActorsItemsSource.ToList(),ProducersItemsSource.ToList());
+            //bool result =
+            //    await
+            //        ActionDateRepository.Add(CurrentActionDate,
+            //            _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList());
             if (result)
             {
                 //ActionsItemsSource.Add(CurrentActionDate);
@@ -856,9 +879,12 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <returns></returns>
         private async Task<bool> AddNewActionDate()
         {
+            //bool result =
+            //    await
+            //        ActionDateRepository.AddActionDate(CurrentActionDate);
             bool result =
                 await
-                    ActionDateRepository.AddActionDate(CurrentActionDate);
+                    _wcfAdminService.AddActionDate(CurrentActionDate);
             if (result)
             {
                 //ActionsItemsSource.Add(CurrentActionDate);

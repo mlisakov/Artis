@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -56,7 +56,7 @@ namespace Artis.Data
         /// <param name="finishDate">Конечная дата для фильтра</param>
       
         /// <returns></returns>
-        public static async Task<ObservableCollection<ActionDate>> GetActions(string actionName,Area area,DateTime? startDate, DateTime? finishDate)
+        public static async Task<ObservableCollection<ActionDate>> GetActions(string actionName,string areaName,DateTime? startDate, DateTime? finishDate)
         {
             using (ISession session = Domain.Session)
             {
@@ -71,10 +71,10 @@ namespace Artis.Data
                     criteria.Add(Restrictions.Like("Action.Name", "%" + actionName + "%").IgnoreCase());
                 }
 
-                if (area != null)
+                if (!string.IsNullOrEmpty(areaName))
                 {
                     criteria.CreateAlias("actionDate.Area", "Area");
-                    criteria.Add(Restrictions.Eq("Area.Name", area.Name).IgnoreCase());
+                    criteria.Add(Restrictions.Eq("Area.Name", areaName).IgnoreCase());
                 }
 
                 if (startDate != null && finishDate!=null)
@@ -95,7 +95,7 @@ namespace Artis.Data
                 Stopwatch stopwatch = Stopwatch.StartNew();
 
                 var shortActions =
-                    session.Query<ActionDate>()
+                   session.Query<ActionDate>()
                         .Where(i => i.Date == startDate).Take(count)
                         .Select(i => new ShortAction(i));
 
@@ -308,6 +308,46 @@ namespace Artis.Data
             }
         }
 
+        public static async Task<Area> GetOriginalArea(long ID)
+        {
+            using (ISession session = Domain.Session)
+            {
+                Area area = session.Query<Area>().First(i => i.ID == ID);
+                return area;
+            }
+        }
+
+        public static async Task<ObservableCollection<GuiSection>> GetGuiSections()
+        {
+            using (ISession session = await Domain.GetSession())
+            {
+                return new ObservableCollection<GuiSection>(session.Query<GuiSection>());
+            }
+        }
+
+        /// <summary>
+        /// Получение списка жанров для категории
+        /// </summary>
+        /// <param name="sectionGuid">Идентификатор категории</param>
+        /// <returns>Список жанров для указанной категории</returns>
+        public static async Task<ObservableCollection<Genre>> GetGuiSectionGenres(long sectionGuid)
+        {
+            using (ISession session = await Domain.GetSession())
+            {
+                return new ObservableCollection<Genre>(session.Query<GuiSection>().First(i => i.ID == sectionGuid).Genre);
+            }
+        }
+
+        public static async Task<ObservableCollection<Genre>> GetGuiSectionRestGenres(long sectionGuid)
+        {
+            using (ISession session = await Domain.GetSession())
+            {
+                ObservableCollection<Genre> guiSectionGenres=new ObservableCollection<Genre>(session.Query<GuiSection>().First(i => i.ID == sectionGuid).Genre);
+                ICriteria criteria = session.CreateCriteria<Genre>("genre").Add(Restrictions.Not(Restrictions.In("ID", guiSectionGenres.Select(i=>i.ID).ToList())));
+                return new ObservableCollection<Genre>(criteria.List<Genre>());
+            }
+        }
+
         /// <summary>
         /// Получение списка жанров
         /// </summary>
@@ -379,6 +419,51 @@ namespace Artis.Data
 
                 return new JavaScriptSerializer().Serialize(shortArea);
             }
+        }
+
+        public static async Task<List<Data>> GetImages(string source, long id)
+        {
+            switch (source)
+            {
+                case "Area":
+                    using (ISession session = Domain.Session)
+                    {
+                        Area area = session.Query<Area>().First(i => i.ID == id);
+                        return area.Data.ToList();
+                    }
+                    break;
+                case "Action":
+                    using (ISession session = Domain.Session)
+                    {
+                        Action action = session.Query<Action>().First(i => i.ID == id);
+                        return action.Data.ToList();
+                    }
+                    break;
+            }
+            return new List<Data>();
+        }
+
+        public static async Task<List<Actor>> GetActorsForAction(long idAction)
+        {
+            using (ISession session = Domain.Session)
+            {
+                Action action = session.Query<Action>().First(i => i.ID == idAction);
+                return action.Actor.ToList();
+            }
+        }
+
+        public static async Task<List<Producer>> GetProducersForAction(long idAction)
+        {
+            using (ISession session = Domain.Session)
+            {
+                Action action = session.Query<Action>().First(i => i.ID == idAction);
+                return action.Producer.ToList();
+            }
+        }
+
+        public static Task<Task<bool>> UpdateGuiSectionGenres(long idSection, List<Genre> fromXml)
+        {
+            throw new NotImplementedException();
         }
     }
 }

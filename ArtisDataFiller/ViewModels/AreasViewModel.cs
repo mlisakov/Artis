@@ -15,6 +15,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 {
     public sealed class AreasViewModel: ViewModel
     {
+        private WcfServiceCaller _wcfAdminService;
+        //private AreaRepository _areaRepository;
         /// <summary>
         /// Логгер
         /// </summary>
@@ -156,8 +158,9 @@ namespace Artis.ArtisDataFiller.ViewModels
         public AreasViewModel()
         {
             InitCommands();
-            InitDataSource();
             InitVariables();
+            InitDataSource();
+           
 
             #region
 
@@ -205,11 +208,15 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// </summary>
         private async void InitDataSource()
         {
-            Areas = await DataRequestFactory.GetAreas();
+            Areas = await _wcfAdminService.GetAreas(-1);
+            //Areas = await DataRequestFactory.GetAreas();
         }
 
         private void InitVariables()
         {
+            _wcfAdminService = new WcfServiceCaller();
+            //_areaRepository = new AreaRepository();
+
             _deletedImages=new List<long>();
             _addedImages=new List<DataImage>();
         }
@@ -233,7 +240,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async void ExecuteSearchCommand(object parameters)
         {
-            Areas = await DataRequestFactory.GetAreas(FilterName);
+            Areas = await _wcfAdminService.GetAreas(FilterName);
+            //Areas = await DataRequestFactory.GetAreas(FilterName);
         }
 
         private void ExecuteNewAreaCommand(object parameter)
@@ -249,19 +257,19 @@ namespace Artis.ArtisDataFiller.ViewModels
             ClearVariables();
         }
 
-        private void ExecuteSaveCommand(object parameter)
+        private async void ExecuteSaveCommand(object parameter)
         {
             if (IsEdit)
-                SaveArea();
+                await SaveArea();
             else
-                AddArea();
+                await AddArea();
 
             ClearVariables();
         }
 
-        private void ExecuteRemoveCommand(object parameter)
+        private async void ExecuteRemoveCommand(object parameter)
         {
-            RemoveArea();
+            await RemoveArea();
         }
 
         private void ExecuteAddImagesCommand(object parameter)
@@ -292,8 +300,12 @@ namespace Artis.ArtisDataFiller.ViewModels
                     if (!string.IsNullOrEmpty(base64String))
                     {
                         DataImage image = new DataImage() { Base64String = base64String, Image = bitMapImage };
+                        if (_addedImages==null)
+                            _addedImages=new List<DataImage>();
                         _addedImages.Add(image);
 
+                        if (Images == null)
+                            Images = new ObservableCollection<DataImage>();
                         Images.Add(image);
                         OnPropertyChanged("Images");
                     }
@@ -304,6 +316,19 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteRemoveImagesCommand(object parameter)
         {
+            if (_addedImages == null)
+                _addedImages = new List<DataImage>();
+            if (_deletedImages == null)
+                _deletedImages =new List<long>();
+            if (Images == null)
+                Images = new ObservableCollection<DataImage>();       
+
+            if (_addedImages.Any(i => i.Base64String.Equals(SelectedImage.Base64String)))
+            {
+                DataImage image = _addedImages.First(i => i.ID == SelectedImage.ID);
+                _addedImages.Remove(image);
+            }  
+            
             if (SelectedImage.ID != 0)
             {
                 _deletedImages.Add(SelectedImage.ID);
@@ -312,19 +337,14 @@ namespace Artis.ArtisDataFiller.ViewModels
             else
                 Images.Remove(Images.First(i => i.Base64String.Equals(SelectedImage.Base64String)));
 
-            if (_addedImages.Any(i => i.Base64String.Equals(SelectedImage.Base64String)))
-            {
-                DataImage image = _addedImages.First(i => i.ID == SelectedImage.ID);
-                _addedImages.Remove(image);
-            }
-
             OnPropertyChanged("Images");
         }
 
         private async void ExecuteEditCommand(object parameter)
         {
+            ObservableCollection<Data.Data> images=await _wcfAdminService.GetAreaImages(CurrentArea.ID);
             IsEdit = true; // устанавливаем флаг
-            Images = await ImageHelper.ConvertImages(CurrentArea.Data);
+            Images = await ImageHelper.ConvertImages(images);
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
@@ -340,31 +360,30 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async Task<bool> SaveArea()
         {
-            return
-                await
-                    AreaRepository.Save(CurrentArea,
-                        _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList(),
-                        _deletedImages);
+            return await _wcfAdminService.SaveArea(CurrentArea,
+                _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList(),
+                _deletedImages);
         }
 
         private async Task<bool> AddArea()
         {
-            bool result =
+            long result =
                 await
-                    AreaRepository.Add(CurrentArea,
+                    _wcfAdminService.AddArea(CurrentArea,
                         _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList());
-            if (result)
+            if (result!=-1)
             {
+                CurrentArea.ID = result;
                 Areas.Add(CurrentArea);
                 OnPropertyChanged("Areas");
             }
-            return result;
+            return result==-1;
 
         }
 
         private async Task<bool> RemoveArea()
         {
-            bool result = await AreaRepository.Remove(CurrentArea);
+            bool result = await _wcfAdminService.RemoveArea(CurrentArea.ID);
             if (result)
             {
                 Areas.Remove(CurrentArea);

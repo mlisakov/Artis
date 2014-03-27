@@ -30,10 +30,10 @@ namespace Artis.Data
         private DataRepository _dataRepository;
         private MetroRepository _metroRepository;
 
-        public event DataLoaderActionLoaded ActionLoadedEvent;
-        public event DataLoaderActionNotLoaded ActionNotLoadedEvent;
+        //public event DataLoaderActionLoaded ActionLoadedEvent;
+        //public event DataLoaderActionNotLoaded ActionNotLoadedEvent;
 
-        public event FatalError FatalErrorEvent;
+        //public event FatalError FatalErrorEvent;
 
         public DataParser()
         {
@@ -45,9 +45,9 @@ namespace Artis.Data
         /// </summary>
         /// <param name="actionWeb">Информация о мероприятии</param>
         /// <returns></returns>
-        public async Task Parse(ActionWeb actionWeb)
+        public async Task<int> Parse(ActionWeb actionWeb)
         {
-            ParseAction(actionWeb);
+            return await ParseAction(actionWeb);
         }
 
         private void Init()
@@ -62,27 +62,28 @@ namespace Artis.Data
             _metroRepository = new MetroRepository();
         }
 
-        private void InvokeActionLoadedEvent(ActionWeb action)
-        {
-            DataLoaderActionLoaded handler = ActionLoadedEvent;
-            if (handler != null)
-                handler(action);
-        }
+        //private void InvokeActionLoadedEvent(ActionWeb action)
+        //{
+        //    DataLoaderActionLoaded handler = ActionLoadedEvent;
+        //    if (handler != null)
+        //        handler(action);
+        //}
 
-        private void InvokeActionNotLoadedEvent(ActionWeb action)
-        {
-            DataLoaderActionNotLoaded handler = ActionNotLoadedEvent;
-            if (handler != null)
-                handler(action);
-        }
+        //private void InvokeActionNotLoadedEvent(ActionWeb action)
+        //{
+        //    DataLoaderActionNotLoaded handler = ActionNotLoadedEvent;
+        //    if (handler != null)
+        //        handler(action);
+        //}
 
-        private void InvokeFatalErrorEvent(string message)
-        {
-            FatalError handler = FatalErrorEvent;
-            if (handler != null)
-                handler(message);
-        }
-        private void ParseAction(ActionWeb actionWeb)
+        //private void InvokeFatalErrorEvent(string message)
+        //{
+        //    FatalError handler = FatalErrorEvent;
+        //    if (handler != null)
+        //        handler(message);
+        //}
+
+        private async Task<int> ParseAction(ActionWeb actionWeb)
         {
             try
             {
@@ -95,7 +96,7 @@ namespace Artis.Data
                     foreach (string producerItem in actionWeb.Producer.Split(','))
                     {
                         Producer producer = CreateProducer(producerItem);
-                        if (producer!=null && producers.All(i => i.ID != producer.ID))
+                        if (producer != null && producers.All(i => i.ID != producer.ID))
                             producers.Add(producer);
                     }
 
@@ -115,24 +116,28 @@ namespace Artis.Data
                     actionWeb.PriceRange, actionWeb.Description, actionWeb.Duration, actionWeb.Image, area, genre, actors, producers);
                 if (action != null)
                 {
-                    InvokeActionLoadedEvent(actionWeb);
+                    //InvokeActionLoadedEvent(actionWeb);
+                    return 1;
                 }
                 else
                 {
-                    InvokeActionNotLoadedEvent(actionWeb);
+                    return 0;
+                    //InvokeActionNotLoadedEvent(actionWeb);
                 }
             }
             catch (DBAccessFailedException dbAccessExp)
             {
                 _logger.Fatal("Не удалось подключение к базе данных.Проверьте параметры подключения.Работа приложения остановлена!");
-                InvokeFatalErrorEvent(dbAccessExp.Message);
-                throw new DBAccessFailedException("Ошибка доступа к Базе данных \"Артис\".Текущая директория:" + AppDomain.CurrentDomain.BaseDirectory);
-                
+                return -1;
+                //InvokeFatalErrorEvent(dbAccessExp.Message);
+                //throw new DBAccessFailedException("Ошибка доступа к Базе данных \"Артис\".Текущая директория:" + AppDomain.CurrentDomain.BaseDirectory);
+
             }
             catch (Exception ex)
             {
-                InvokeActionNotLoadedEvent(actionWeb);
+                //InvokeActionNotLoadedEvent(actionWeb);
                 _logger.ErrorException("Ошибка записи мероприятия " + actionWeb.Name, ex);
+                return -1;
             }
         }
 
@@ -164,6 +169,7 @@ namespace Artis.Data
             _logger.Info("Пустое метро!");
             return null;
         }
+        
 
         private Data CreateData(string Data)
         {

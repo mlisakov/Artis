@@ -41,10 +41,10 @@ namespace Artis.ArtisDataFiller.ViewModels
             return !string.IsNullOrEmpty(Name);            
         }
 
-        public async override void ExecuteOkCommand(object parameter)
+        public override void ExecuteOkCommand(object parameter)
         {
             _actor = new Actor() {FIO = Name};
-            await ActorRepository.AddActor(_actor, _action);
+            //await ActorRepository.AddActor(_actor, _action);
         }
     }
 }
