@@ -317,7 +317,7 @@
 				  Grid.Column="1" 
 				  Grid.Row="3" 
 				  VerticalAlignment="Top" 
-				  MinHeight="500" 
+				  Height="500"				  
 				  Margin="0,10,0,0" 
 				  ItemsSource="{Binding ActionsItemsSource}" 
 				  SelectedItem="{Binding CurrentActionDate}"				  
@@ -391,19 +391,19 @@
 		</StackPanel>
 	</Grid>
 	
-	<ScrollViewer x:Name="EditScrollViewer"
+	<Grid x:Name="EditScrollViewer"
 				  Grid.Row="1" 
-				  VerticalScrollBarVisibility="Auto" 
+				  
 				  RenderTransformOrigin="0.5,0.5" Opacity="0" Visibility="Collapsed">
 		
-		<ScrollViewer.RenderTransform>
+		<Grid.RenderTransform>
 			<TransformGroup>
 				<ScaleTransform/>
 				<SkewTransform/>
 				<RotateTransform/>
 				<TranslateTransform X="1000"/>
 			</TransformGroup>
-		</ScrollViewer.RenderTransform>
+		</Grid.RenderTransform>
 		
 		<Grid x:Name="EditGrid" 
 			  Background="#00000000" >
@@ -648,7 +648,7 @@
 			
 		</Grid>
 		
-	</ScrollViewer>
+	</Grid>
 
 	<Grid x:Name="EditImageGrid" RenderTransformOrigin="0.5,0.5" Background="#FF001B23" Grid.Row="1" Margin="0,0,6,0" Visibility="Collapsed">
 		<Grid.RenderTransform>

@@ -197,7 +197,10 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="34"/>
 			<RowDefinition Height="34"/>
+			<RowDefinition Height="34"/>
+			<RowDefinition Height="34"/>
             <RowDefinition Height="150" />
+			<RowDefinition Height="150" />
             <RowDefinition Height="34"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
@@ -227,11 +230,26 @@
 				</Style>
 			</controls:WatermarkedTextBox.Style>
 		</controls:WatermarkedTextBox>
+
+				<controls:WatermarkedTextBox 
+									 TextWrapping="Wrap" 
+									 VerticalAlignment="Center"
+									 Watermark="Наименование новой площадки на английском" 
+									 Margin="40,0,0,0"			
+									 Text="{Binding CurrentArea.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
+		</controls:WatermarkedTextBox>
         
         <controls:WatermarkedTextBox 
             TextWrapping="Wrap" 
             Watermark="Адрес" 
-            Grid.Row="1"
+            Grid.Row="2"
+            Margin="40,0,0,0"
+            Text="{Binding CurrentArea.Addres}" VerticalAlignment="Center"/>
+
+        <controls:WatermarkedTextBox 
+            TextWrapping="Wrap" 
+            Watermark="Адрес на английском" 
+            Grid.Row="3"
             Margin="40,0,0,0"
             Text="{Binding CurrentArea.Addres}" VerticalAlignment="Center"/>
 
@@ -239,16 +257,24 @@
             TextWrapping="Wrap" 
 			ScrollViewer.VerticalScrollBarVisibility="auto"
             Watermark="Описание" 
-            Grid.Row="2"
+            Grid.Row="4"
+            Margin="40,6.02,0,6.02"
+            Text="{Binding CurrentArea.Description}"/>
+
+		<controls:WatermarkedTextBox 
+            TextWrapping="Wrap" 
+			ScrollViewer.VerticalScrollBarVisibility="auto"
+            Watermark="Описание на английском" 
+            Grid.Row="5"
             Margin="40,6.02,0,6.02"
             Text="{Binding CurrentArea.Description}"/>
         
-        <TextBlock  Grid.Row="3" 
+        <TextBlock  Grid.Row="6" 
 					Text="Картинки" 
 					Style="{DynamicResource SimpleTextStyle}" 
 					Margin="40,0,0,0" VerticalAlignment="Center"/>
 
-		<ListBox Grid.Row="5" 
+		<ListBox Grid.Row="7" 
 				 MinWidth="800" 
 				 Margin="40,0,0,20" 
                  SelectedItem="{Binding SelectedImage}"
@@ -263,7 +289,7 @@
 
 		<Button x:Name="AddNewImageButton" 
 				Content="Добавить…" 
-				Grid.Row="6" 
+				Grid.Row="7" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
 				Margin="10,0,0,0" 
@@ -273,7 +299,7 @@
 
 		<Button x:Name="RemoveImageButton" 
 				Content="Удалить" 
-				Grid.Row="6" 
+				Grid.Row="7" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
 				Margin="10,40.96,0,0" 
@@ -294,7 +320,7 @@
 
 		<Button x:Name="SaveButton" 
 				Content="Сохранить" 
-				Grid.Row="6" 
+				Grid.Row="7" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
 				Command="{Binding SaveCommand}"
@@ -303,7 +329,7 @@
 
 		<Button x:Name="BackButton" 
 				Content="Назад" 
-				Grid.Row="6" 
+				Grid.Row="7" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
 				Command="{Binding BackCommand}"
