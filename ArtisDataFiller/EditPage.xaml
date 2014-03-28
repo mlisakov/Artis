@@ -21,5 +21,13 @@
 	</Grid>
 
 	<ContentControl Grid.Column="1" 
-					Content="{Binding ViewContent}" />
+					Content="{Binding ViewContent}" ContentTemplate="{DynamicResource DataTemplate1}" >
+		<ContentControl.Resources>
+			<DataTemplate x:Key="DataTemplate1">
+				<ScrollViewer VerticalScrollBarVisibility="Auto" Content="{Binding}">
+					
+				</ScrollViewer>
+			</DataTemplate>
+		</ContentControl.Resources>
+	</ContentControl>
 </Grid>
