@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Fragment>
+    <DirectoryRef Id="INSTALLLOCATION" FileSource="C:\Work\ArtisDataFiller\ArtisDataFiller\bin\Debug">
+      <Component Id="ProductComponent" Guid="b11556a2-e066-4393-af5c-9c9210187eb2">
+        <File Id='ArtisDataFiller' DiskId='1' Name="Artis.ArtisDataFiller.exe"/>
+        <File Id='ActionParser' DiskId='1' Name="Artis.ActionParser.dll"/>
+        <File Id='Consts' DiskId='1' Name="Artis.Consts.dll"/>
+        <File Id='Data' DiskId='1' Name="Artis.Data.dll"/>
+        <File Id='DataLoader' DiskId='1' Name="Artis.DataLoader.dll"/>
+        <File Id='HtmlAgilityPack' DiskId='1' Name="HtmlAgilityPack.dll"/>
+        <File Id='Iesi.Collections' DiskId='1' Name="Iesi.Collections.dll"/>
+        <File Id='Artis.WcfServiceCaller' DiskId='1' Name="Artis.WcfServiceCaller.dll"/>
+        <File Id='Microsoft.Expression.Interactions' DiskId='1' Name="Microsoft.Expression.Interactions.dll"/>
+        <File Id='NHibernate' DiskId='1' Name="NHibernate.dll"/>
+        <File Id='NLog' DiskId='1' Name="NLog.dll"/>
+        <File Id='System.Windows.Interactivity' DiskId='1' Name="System.Windows.Interactivity.dll"/>
+        <File Id='WPFToolkit' DiskId='1' Name="WPFToolkit.dll"/>
+        <File Id='Mapping' DiskId='1' Name="Mapping.hbm.xml"/>
+      </Component>
+    </DirectoryRef>
+	</Fragment>
+</Wix>
