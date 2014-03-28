@@ -97,6 +97,9 @@
     <Compile Include="ActionsPage.xaml.cs">
       <DependentUpon>ActionsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddActorFromListDialogWindow.xaml.cs">
+      <DependentUpon>AddActorFromListDialogWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AreasPage.xaml.cs">
       <DependentUpon>AreasPage.xaml</DependentUpon>
     </Compile>
@@ -119,6 +122,7 @@
     </Compile>
     <Compile Include="NLog-NHibernate.cs" />
     <Compile Include="ViewModels\ActionsViewModel.cs" />
+    <Compile Include="ViewModels\AddActorFromListViewModel.cs" />
     <Compile Include="ViewModels\AddActorViewModel.cs" />
     <Compile Include="ViewModels\AddProducerViewModel.cs" />
     <Compile Include="ViewModels\AreasViewModel.cs" />
@@ -127,6 +131,10 @@
     <Compile Include="ViewModels\GenresSettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Page Include="ActionsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AddActorFromListDialogWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

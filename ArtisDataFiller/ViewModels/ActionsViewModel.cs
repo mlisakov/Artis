@@ -87,7 +87,12 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Команда добавления актера для мероприятия
         /// </summary>
-        public ArtisCommand AddActorCommand { get; private set; }
+        public ArtisCommand AddNewActorCommand { get; private set; }
+
+        /// <summary>
+        /// Команда добавления актера для мероприятия из списка всех актеров 
+        /// </summary>
+        public ArtisCommand AddActorFromListCommand { get; private set; }
 
         /// <summary>
         /// Команда удаления актера для мероприятия
@@ -487,7 +492,8 @@ namespace Artis.ArtisDataFiller.ViewModels
             EditActionCommand = new ArtisCommand(CanExecute, ExecuteEditActionCommand);
             RemoveActionCommand = new ArtisCommand(CanExecute, ExecuteRemoveActionCommand);
 
-            AddActorCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddActorCommand);
+            AddNewActorCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddActorCommand);
+            AddActorFromListCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddActorFromListCommand);
             RemoveActorCommand = new ArtisCommand(CanExecute, ExecuteRemoveActorCommand);
 
             AddProducerCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddProducerCommand);
@@ -724,13 +730,15 @@ namespace Artis.ArtisDataFiller.ViewModels
             OnPropertyChanged("ProducersItemsSource");
         }
 
+
+
         private void ExecuteAddProducerCommand(object obj)
         {
             if (ProducersItemsSource==null)
                 ProducersItemsSource=new ObservableCollection<Producer>();
             var viewModel = new AddProducerViewModel(CurrentActionDate.Action) {Title = "Добавление нового продюсера"};
 
-            var window = new AddActorDialogWindow { ViewModel = viewModel };
+            var window = new AddActorDialogWindow {ViewModel = viewModel};
 
             var dialogResult = window.ShowDialog();
             if (dialogResult.HasValue && dialogResult.Value)
@@ -747,11 +755,54 @@ namespace Artis.ArtisDataFiller.ViewModels
             OnPropertyChanged("ActorsItemsSource");
         }
 
+        private void ExecuteAddActorFromListCommand(object obj)
+        {
+            if (obj != null)
+            {
+                bool producers = Convert.ToBoolean(obj);
+
+                AddActorFromListViewModel viewModel;
+                if (producers)
+                {
+                    if (ProducersItemsSource == null)
+                        ProducersItemsSource = new ObservableCollection<Producer>();
+                }
+                else
+                {
+                    if (ActorsItemsSource == null)
+                        ActorsItemsSource = new ObservableCollection<Actor>();
+                }
+
+                viewModel = new AddActorFromListViewModel(producers);
+
+                var window = new AddActorFromListDialogWindow {ViewModel = viewModel};
+
+                var dialogResult = window.ShowDialog();
+                if (dialogResult.HasValue && dialogResult.Value)
+                {
+
+                    if (producers)
+                    {
+                        //todo добавляем продюсера 
+                        OnPropertyChanged("ProducersItemsSource");
+                    }
+                    else
+                    {
+                        //todo добавляем актера
+                        OnPropertyChanged("ActorsItemsSource");
+                    }
+
+                    
+                }
+            }
+        }
+
+
         private void ExecuteAddActorCommand(object obj)
         {
-            if (ActorsItemsSource==null)
-                ActorsItemsSource =new ObservableCollection<Actor>();
-            var viewModel = new AddActorViewModel(CurrentActionDate.Action) { Title = "Добавление нового актера" };
+            if (ActorsItemsSource == null)
+                ActorsItemsSource = new ObservableCollection<Actor>();
+            var viewModel = new AddActorViewModel(CurrentActionDate.Action) {Title = "Добавление нового актера"};
 
             var window = new AddActorDialogWindow {ViewModel = viewModel};
 

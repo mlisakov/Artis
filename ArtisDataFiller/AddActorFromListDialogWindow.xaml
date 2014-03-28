@@ -1,0 +1,41 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:Controls="clr-namespace:Artis.ArtisDataFiller.Controls" x:Class="Artis.ArtisDataFiller.AddActorFromListDialogWindow"
+        Height="500" Width="600" WindowStartupLocation="CenterOwner" Style="{DynamicResource DialogWindowStyle}"	
+		FocusManager.FocusedElement="{Binding ElementName=NameBox}" ShowInTaskbar="False" WindowStyle="ToolWindow"
+		>
+	<Window.Resources>
+
+	</Window.Resources>
+
+		<Grid>
+			
+			<Grid.RowDefinitions>
+				<RowDefinition Height="34"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			
+			<Controls:WatermarkedTextBox x:Name="NameBox" TextWrapping="Wrap" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,0,0,0" Watermark="ФИО"/>	
+
+
+					<ListBox x:Name="ListBox"
+				 Grid.Row="1" 
+				 Margin="10,0,0,10" 
+				 ItemsSource="{Binding PeopleItemsSource}"
+				 SelectedItem="{Binding SelectedPeople}"
+				 VirtualizingPanel.VirtualizationMode="Recycling"
+				 DisplayMemberPath="FIO" />
+
+				             <Button Content="Поиск" 
+                    Template="{DynamicResource SimpleButtonTemplate}" 
+                    Width="110" 
+                    HorizontalAlignment="Left" 
+                    VerticalAlignment="Top"
+                    Command="{Binding SearchCommand}" Grid.Column="1" Margin="10,0" Grid.Row="1"/>
+		</Grid>		
+</Window>
