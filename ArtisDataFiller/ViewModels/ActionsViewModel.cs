@@ -11,7 +11,6 @@ using Artis.Consts;
 using Artis.Data;
 using Microsoft.Win32;
 using NLog;
-using Action = Artis.Data.Action;
 
 namespace Artis.ArtisDataFiller.ViewModels
 {
@@ -785,7 +784,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             IsEdit = false; // не удалять
             IsNewOne = true; // не удалять
 
-            CurrentActionDate=new ActionDate(){Date = DateTime.Today,Action=new Action()};
+            CurrentActionDate=new ActionDate(){Date = DateTime.Today,Action=new Data.Action()};
             Images=new ObservableCollection<DataImage>();
             ActorsItemsSource = new ObservableCollection<Actor>();
             ProducersItemsSource = new ObservableCollection<Producer>();

@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using Artis.Consts;
 using Artis.Data;
-using Microsoft.SqlServer.Server;
 using NLog;
 
 namespace Artis.Service

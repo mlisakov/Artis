@@ -344,5 +344,6 @@ namespace Artis.Data
                 throw new Exception("Не удалось сохранить загруженное мероприятие!");
             }
         }
+
     }
 }

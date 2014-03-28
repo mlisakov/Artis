@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ServiceModel;
 using System.Threading.Tasks;
-using System.Xml;
-using System.Xml.Linq;
-using Artis.Consts;
-using Artis.Data;
+using System.ServiceModel;
 
 namespace Artis.Service
 {

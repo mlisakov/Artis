@@ -38,10 +38,6 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -49,17 +45,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ArtisAdminTool\ArtisAdminTool.csproj">
-      <Project>{2180938F-316F-4214-9B43-49806ABA0762}</Project>
-      <Name>ArtisAdminTool</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Consts\Consts.csproj">
       <Project>{8d331482-2207-4c27-92ba-f5676bf2a80a}</Project>
       <Name>Consts</Name>
     </ProjectReference>
     <ProjectReference Include="..\Data\DBConnector.csproj">
-      <Project>{4BC0AB1E-0B81-4FBE-83E0-8FFAFA4A5EF5}</Project>
+      <Project>{4bc0ab1e-0b81-4fbe-83e0-8ffafa4a5ef5}</Project>
       <Name>DBConnector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WebServiceContract\WebServiceContract.csproj">
+      <Project>{f5f3bd88-e1d3-4c28-88df-224627423e2c}</Project>
+      <Name>WebServiceContract %28BusinessLogic\WebServiceContract\WebServiceContract%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
