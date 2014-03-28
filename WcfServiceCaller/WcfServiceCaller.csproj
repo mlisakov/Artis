@@ -7,8 +7,8 @@
     <ProjectGuid>{865C31D5-D601-4D3B-B0A8-1BE0B0EE5D1F}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WcfServiceCaller</RootNamespace>
-    <AssemblyName>WcfServiceCaller</AssemblyName>
+    <RootNamespace>Artis.WcfServiceCaller</RootNamespace>
+    <AssemblyName>Artis.WcfServiceCaller</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
