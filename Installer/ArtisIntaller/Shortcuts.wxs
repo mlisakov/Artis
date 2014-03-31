@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
   <?include Variables.wxi?>
 	<Fragment>
     <DirectoryRef Id="ApplicationProgramsFolder">
@@ -10,6 +11,13 @@
              Description="$(var.ProductName)"
              Target="[INSTALLLOCATION]Artis.ArtisDataFiller.exe"
              WorkingDirectory="INSTALLLOCATION"/>
+        <util:XmlFile Id="UpdateBaseAddress"
+              Action="setValue"
+              File="[INSTALLLOCATION]Artis.ArtisDataFiller.exe.config"
+              SelectionLanguage="XPath"
+              Permanent="yes"
+              ElementPath="/configuration/userSettings/Artis.ArtisDataFiller.Properties.Settings/setting/value"
+              Value="[WCFADDRESSSERVICEPROPERY]" />
         
         <RemoveFolder Id="ApplicationProgramsFolder" Directory='ApplicationProgramsFolder' On="uninstall"/>
         

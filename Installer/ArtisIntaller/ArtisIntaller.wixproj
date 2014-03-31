@@ -31,6 +31,7 @@
     <Compile Include="WixUI_Wizard.wxs" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="UtilExtension_ru-ru.wxl" />
     <EmbeddedResource Include="WixUI_ru-ru.wxl" />
   </ItemGroup>
   <ItemGroup>

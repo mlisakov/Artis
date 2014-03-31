@@ -4,6 +4,7 @@
     <DirectoryRef Id="INSTALLLOCATION" FileSource="C:\Work\ArtisDataFiller\ArtisDataFiller\bin\Debug">
       <Component Id="ProductComponent" Guid="b11556a2-e066-4393-af5c-9c9210187eb2">
         <File Id='ArtisDataFiller' DiskId='1' Name="Artis.ArtisDataFiller.exe"/>
+        <File Id='ArtisDataFiller.config' DiskId='1' Name="Artis.ArtisDataFiller.exe.config"/>
         <File Id='ActionParser' DiskId='1' Name="Artis.ActionParser.dll"/>
         <File Id='Consts' DiskId='1' Name="Artis.Consts.dll"/>
         <File Id='Data' DiskId='1' Name="Artis.Data.dll"/>
