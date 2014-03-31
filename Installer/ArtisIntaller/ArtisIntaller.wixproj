@@ -26,11 +26,18 @@
     <Compile Include="Files.wxs" />
     <Compile Include="Product.wxs" />
     <Compile Include="Shortcuts.wxs" />
+    <Compile Include="WixUI_Shortcuts.wxs" />
+    <Compile Include="WixUI_WCFServiceAddress.wxs" />
+    <Compile Include="WixUI_Wizard.wxs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="WixUI_ru-ru.wxl" />
   </ItemGroup>
   <ItemGroup>
+    <WixExtension Include="WixUIExtension">
+      <HintPath>$(WixExtDir)\WixUIExtension.dll</HintPath>
+      <Name>WixUIExtension</Name>
+    </WixExtension>
     <WixExtension Include="WixUtilExtension">
       <HintPath>$(WixExtDir)\WixUtilExtension.dll</HintPath>
       <Name>WixUtilExtension</Name>

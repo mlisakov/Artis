@@ -4,6 +4,7 @@
     <Feature Id="ProductFeature" Title="Artis Admnistrative Tool"  ConfigurableDirectory="INSTALLLOCATION" Level="1">
       <ComponentRef Id="ProductComponent" />
       <ComponentRef Id="ApplicationShortcutAAT" />
+      <ComponentRef Id="DesktopShortcutAAT" />
     </Feature>
 	</Fragment>
 </Wix>

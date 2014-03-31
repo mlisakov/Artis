@@ -11,6 +11,10 @@
 
     <Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
 
+    <Property Id="SHORTCUT_PROGRAMMENU">1</Property>
+    <Property Id="SHORTCUT_DESKTOP">1</Property>
+    <Property Id="WCFADDRESSSERVICEPROPERY" Secure="yes" >http://92.53.105.145:8110/</Property>
+
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">
         <Directory Id="INSTALLLOCATION" Name="$(var.ProductName)"/>
@@ -18,12 +22,14 @@
       <Directory Id="ProgramMenuFolder">
         <Directory Id="ApplicationProgramsFolder" Name="$(var.ProductName)"/>
       </Directory>
+      
+      <Directory Id="DesktopFolder" Name="Desktop" />
     </Directory>
 
     <FeatureRef Id="ProductFeature"/>
 
     <Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION" ></Property>
-    <!--<UIRef Id="WixUI_Mondo"/>-->
-    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.rtf"/>
+    <UIRef Id="WixUI_Wizard"/>
+    <!--<WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.rtf"/>-->
   </Product>
 </Wix>
