@@ -1,8 +1,7 @@
 ﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
 	  xmlns:controls="clr-namespace:Artis.ArtisDataFiller.Controls"
-	  xmlns:system="clr-namespace:System;assembly=mscorlib"
-	  xmlns:artisDataFiller="clr-namespace:Artis.ArtisDataFiller"
+	  xmlns:system="clr-namespace:System;assembly=mscorlib"	  
 	  x:Class="Artis.ArtisDataFiller.AreasPage"
       Background="#FF001B23" 
 	  MinWidth="1024"
@@ -213,7 +212,7 @@
 		<controls:WatermarkedTextBox 
 									 TextWrapping="Wrap" 
 									 VerticalAlignment="Center"
-									 Watermark="Наименование новой площадки" 
+									 Watermark="Наименование площадки" 
 									 Margin="40,0,0,0"			
 									 Text="{Binding CurrentArea.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 			<controls:WatermarkedTextBox.Style>
@@ -234,9 +233,9 @@
 				<controls:WatermarkedTextBox 
 									 TextWrapping="Wrap" 
 									 VerticalAlignment="Center"
-									 Watermark="Наименование новой площадки на английском" 
+									 Watermark="Наименование площадки на английском" 
 									 Margin="40,0,0,0"			
-									 Text="{Binding CurrentArea.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
+									 Text="{Binding CurrentArea.EnglishName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
 		</controls:WatermarkedTextBox>
         
         <controls:WatermarkedTextBox 
@@ -251,7 +250,7 @@
             Watermark="Адрес на английском" 
             Grid.Row="3"
             Margin="40,0,0,0"
-            Text="{Binding CurrentArea.Addres}" VerticalAlignment="Center"/>
+            Text="{Binding CurrentArea.EnglishAddres}" VerticalAlignment="Center"/>
 
         <controls:WatermarkedTextBox 
             TextWrapping="Wrap" 
@@ -267,7 +266,7 @@
             Watermark="Описание на английском" 
             Grid.Row="5"
             Margin="40,6.02,0,6.02"
-            Text="{Binding CurrentArea.Description}"/>
+            Text="{Binding CurrentArea.EnglishDescription}"/>
         
         <TextBlock  Grid.Row="6" 
 					Text="Картинки" 

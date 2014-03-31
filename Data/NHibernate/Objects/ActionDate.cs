@@ -10,6 +10,7 @@ namespace Artis.Data
         private int _minPrice;
         private int _maxPrice;
         private string _priceRange;
+        private string _englishPriceRange;
 
         private Action _action;
         private Area _area;
@@ -65,6 +66,15 @@ namespace Artis.Data
         {
             get { return _priceRange; }
             set { _priceRange = value; }
+        }
+
+        /// <summary>
+        /// Диапозон цен на билеты в иностранной валюте
+        /// </summary>
+        public virtual string EnglishPriceRange
+        {
+            get { return _englishPriceRange; }
+            set { _englishPriceRange = value; }
         }
 
         /// <summary>

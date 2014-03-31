@@ -6,7 +6,9 @@ namespace Artis.Data
     {
         private long _id;
         private string _FIO;
+        private string _englishFIO;
         private string _description;
+        private string _englishDescription;
 
         /// <summary>
         /// Идентификатор
@@ -27,12 +29,30 @@ namespace Artis.Data
         }
 
         /// <summary>
+        /// ФИО на инглише
+        /// </summary>
+        public virtual string EnglishFIO
+        {
+            get { return _englishFIO; }
+            set { _englishFIO = value; }
+        }
+
+        /// <summary>
         /// Описание
         /// </summary>
         public virtual string Description
         {
             get { return _description; }
             set { _description = value; }
+        }
+
+        /// <summary>
+        /// Описание на инглише
+        /// </summary>
+        public virtual string EnglishDescription
+        {
+            get { return _englishDescription; }
+            set { _englishDescription = value; }
         }
     }
 }

@@ -8,9 +8,11 @@
       <generator class="identity" />
     </id>
     <property name="Name" />
+    <property name="EnglishName" />
     <property name="Description" length="10000" />
+    <property name="EnglishDescription" length="10000" />
     <property name="Rating" />
-    <property name="Duration" />
+    <property name="Duration" />	
 
     <!--<many-to-one name="Area" class="Area" column="idArea" lazy="false" />-->
     <many-to-one name="Genre" class="Genre" column="idGenre" lazy="false"/>
@@ -48,9 +50,12 @@
       <generator class="identity" />
     </id>
     <property name="Name" />
+    <property name="EnglishName" />
     <property name="AreaIndex" />
     <property name="Addres" />
+    <property name="EnglishAddress" />
     <property name="Description" length="10000" />
+    <property name="EnglishDescription" length="10000" />
     <property name="SchemaImage" length="10000" />
 
     <many-to-one name="Metro" class="Metro" column="idMetro" lazy="false"/>
@@ -71,6 +76,7 @@
     <property name="MinPrice" />
     <property name="MaxPrice" />
     <property name="PriceRange" />
+    <property name="EnglishPriceRange" />
     
     <many-to-one name="Action" class="Action" column="idAction" lazy="false"/>
     <many-to-one name="Area" class="Area" column="idArea" lazy="false"/>
@@ -81,6 +87,7 @@
       <generator class="identity" />
     </id>
     <property name="Name" />
+    <property name="EnglishName" />
   </class>
 
   <class name="GuiSection" table="GuiSection">
@@ -106,7 +113,9 @@
       <generator class="identity" />
     </id>
     <property name="FIO" />
+    <property name="EnglishFIO" />
     <property name="Description" />
+    <property name="EnglishDescription" />
   </class>
 
   <class name="Actor" table="Actor">
@@ -114,7 +123,9 @@
       <generator class="identity" />
     </id>
     <property name="FIO" />
+    <property name="EnglishFIO" />
     <property name="Description" />
+    <property name="EnglishDescription" />
   </class>
 
   <class name="Data" table="Data">

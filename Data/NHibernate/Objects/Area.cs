@@ -9,9 +9,12 @@ namespace Artis.Data
     {
         private long _id;
         private string _name;
+        private string _englishName;
         private int _areaIndex;
         private string _address;
+        private string _englishAddress;
         private string _description;
+        private string _englishDescription;
         private string _schema;
         
         private Metro _metro;
@@ -38,6 +41,15 @@ namespace Artis.Data
         }
 
         /// <summary>
+        /// Наименование на инглише
+        /// </summary>
+        public virtual string EnglishName
+        {
+            get { return _englishName; }
+            set { _englishName = value; }
+        }
+
+        /// <summary>
         /// Индекс
         /// </summary>
         public virtual int AreaIndex
@@ -47,12 +59,21 @@ namespace Artis.Data
         }
 
         /// <summary>
-        /// Индекс
+        /// Адрес
         /// </summary>
         public virtual string Addres
         {
             get { return _address; }
             set { _address = value; }
+        }
+
+        /// <summary>
+        /// Адрес на инглише
+        /// </summary>
+        public virtual string EnglishAddress
+        {
+            get { return _englishAddress; }
+            set { _englishAddress = value; }
         }
 
         /// <summary>
@@ -71,6 +92,15 @@ namespace Artis.Data
         {
             get { return _description; }
             set { _description = value; }
+        }
+
+        /// <summary>
+        /// Описание на инглише
+        /// </summary>
+        public virtual string EnglishDescription
+        {
+            get { return _englishDescription; }
+            set { _englishDescription = value; }
         }
 
         /// <summary>

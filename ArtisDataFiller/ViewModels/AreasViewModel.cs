@@ -196,7 +196,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             SearchCommand = new ArtisCommand(CanExecuteSearchCommand, ExecuteSearchCommand);
             EditCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteEditCommand);
             AddImagesCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteAddImagesCommand);
-            RemoveImagesCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteRemoveImagesCommand);
+            RemoveImagesCommand = new ArtisCommand(CanExecuteRemoveImageCommand, ExecuteRemoveImagesCommand);
             SaveCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteSaveCommand);
             RemoveCommand = new ArtisCommand(CanExecuteRemoveCommand, ExecuteRemoveCommand);
             BackCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteBackCommand);
@@ -229,6 +229,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         private bool CanExecuteEditCommand(object parameter)
         {
             return true;
+        }
+
+        private bool CanExecuteRemoveImageCommand(object parameter)
+        {
+            return SelectedImage != null;
         }
 
         private bool CanExecuteRemoveCommand(object parameter)

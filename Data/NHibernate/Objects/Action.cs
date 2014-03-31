@@ -11,7 +11,9 @@ namespace Artis.Data
     {
         private long _id;
         private string _name;
+        private string _englishName;
         private string _description;
+        private string _englishDescription;
         private int _rating;
         private string _duration;
 
@@ -41,6 +43,15 @@ namespace Artis.Data
         }
 
         /// <summary>
+        /// Наименование на инглише
+        /// </summary>
+        public virtual string EnglishName
+        {
+            get { return _englishName; }
+            set { _englishName = value; }
+        }
+
+        /// <summary>
         /// Наименование
         /// </summary>
         public virtual int Rating
@@ -66,6 +77,15 @@ namespace Artis.Data
         {
             get { return _description; }
             set { _description = value; }
+        }
+
+        /// <summary>
+        /// Описание на инглише
+        /// </summary>
+        public virtual string EnglishDescription
+        {
+            get { return _englishDescription; }
+            set { _englishDescription = value; }
         }
 
         /// <summary>

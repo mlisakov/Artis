@@ -17,6 +17,7 @@
 
         private long _id;
         private string _name;
+        private string _englishName;
 
         /// <summary>
         /// Идентификатор
@@ -34,6 +35,15 @@
         {
             get { return _name; }
             set { _name = value; }
+        }
+
+        /// <summary>
+        /// Наименование на инглише
+        /// </summary>
+        public virtual string EnglishName
+        {
+            get { return _englishName; }
+            set { _englishName = value; }
         }
 
 
