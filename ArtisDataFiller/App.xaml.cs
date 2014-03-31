@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
+using Artis.ArtisDataFiller.Properties;
+using Artis.Consts;
 
 namespace ArtisDataFiller
 {
@@ -12,6 +14,15 @@ namespace ArtisDataFiller
         private void Application_Startup(object sender, StartupEventArgs e)
         {
            // AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
+
+            ServiceAddress.SetConnectionString(Settings.Default.ConnectionString);
+        }
+
+        protected override void OnExit(ExitEventArgs e)
+        {
+            Settings.Default.ConnectionString = ServiceAddress.ArtisConnectionString;
+            Settings.Default.Save();
+            base.OnExit(e);
         }
 
         //void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

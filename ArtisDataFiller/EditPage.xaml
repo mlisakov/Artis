@@ -14,6 +14,9 @@
 			<RadioButton x:Name="Actions" IsChecked="{Binding IsActionPageOpened}" ToolTip="Мероприятия"  Style="{DynamicResource RadioButtonStyle}">
 				<Image Source="Images/actions.png" Stretch="Fill" />
 			</RadioButton>
+			<RadioButton Style="{DynamicResource RadioButtonStyle}" IsChecked="{Binding IsGenresOpened}" ToolTip="Жанры">
+				<Image Source="Images/genres.png" ></Image>
+			</RadioButton>
 			<RadioButton Style="{DynamicResource RadioButtonStyle}" IsChecked="{Binding IsGenresSettingsOpened}" ToolTip="Настройка категорий мероприятий">
 				<Image Source="Images/genresSettings.png" ></Image>
 			</RadioButton>

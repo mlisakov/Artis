@@ -21,7 +21,7 @@ namespace Artis.Data
         public WcfServiceCaller()
         {
             BasicHttpBinding myBinding = new BasicHttpBinding();
-            EndpointAddress myEndpoint = new EndpointAddress(ServiceAddress.ArtisAdminServiceAddress+"ArtisAdminToolService.svc");
+            EndpointAddress myEndpoint = new EndpointAddress(ServiceAddress.ArtisConnectionString+"ArtisAdminToolService.svc");            
 
             myBinding.CloseTimeout = TimeSpan.FromSeconds(80000);
             myBinding.ReceiveTimeout = TimeSpan.FromSeconds(80000);

@@ -17,15 +17,44 @@
 		<Grid Width="100" 
 			  Background="#FF3293C3">
 			<StackPanel VerticalAlignment="Center">
-				<ToggleButton x:Name="Home" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsHomePageOpened}" ToolTip="Стартовая страница">
+				<RadioButton x:Name="Home" 
+							 Style="{DynamicResource RadioButtonStyle}"
+							 IsChecked="{Binding IsHomePageOpened}"
+							 ToolTip="Стартовая страница"
+							 GroupName="MainMenu">
 					<Image Source="Images/home.png" Stretch="Fill" />
-				</ToggleButton>
-				<ToggleButton x:Name="DownloadingPage"  Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsDownloadingPageOpened}" ToolTip="Загрузка данных">
-					<Image Source="Images/download.png" Stretch="Fill"  />	
-				</ToggleButton>
-				<ToggleButton x:Name="EditPage" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsEditPageOpened}" ToolTip="Редактирование данных">
+				</RadioButton>
+				<RadioButton x:Name="DownloadingPage" 
+							 Style="{DynamicResource RadioButtonStyle}"
+							 IsChecked="{Binding IsDownloadingPageOpened}"
+							 ToolTip="Загрузка данных"
+							 GroupName="MainMenu">
+					<Image Source="Images/download.png" Stretch="Fill" />
+				</RadioButton>
+				<RadioButton x:Name="EditPage" 
+							 Style="{DynamicResource RadioButtonStyle}"
+							 IsChecked="{Binding IsEditPageOpened}"
+							 ToolTip="Редактирование данных"
+							 GroupName="MainMenu">
 					<Image Source="Images/edit.png" Stretch="Fill" />
-				</ToggleButton>
+				</RadioButton>
+				<RadioButton x:Name="SettingsPage" 
+							 Style="{DynamicResource RadioButtonStyle}"
+							 IsChecked="{Binding IsSettingPageOpened}"
+							 ToolTip="Настройки программы"
+							 GroupName="MainMenu">
+					<Image Source="Images/settings.png" Stretch="Fill" />
+				</RadioButton>
+				<!--				<ToggleButton x:Name="Home" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsHomePageOpened}" ToolTip="Стартовая страница">-->
+<!--					<Image Source="Images/home.png" Stretch="Fill" />-->
+<!--				</ToggleButton>-->
+<!--				<ToggleButton x:Name="DownloadingPage"  Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsDownloadingPageOpened}" ToolTip="Загрузка данных">-->
+<!--					<Image Source="Images/download.png" Stretch="Fill"  />	-->
+<!--				</ToggleButton>-->
+<!--				<ToggleButton x:Name="EditPage" Style="{DynamicResource ToggleButtonStyle}" IsChecked="{Binding IsEditPageOpened}" ToolTip="Редактирование данных">-->
+<!--					<Image Source="Images/edit.png" Stretch="Fill" />-->
+<!--				</ToggleButton>-->
+
 			</StackPanel>
 		</Grid>
 	</Grid>

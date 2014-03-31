@@ -1,0 +1,28 @@
+﻿<Grid x:Class="Artis.ArtisDataFiller.InformationPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="clr-namespace:Artis.ArtisDataFiller.Controls"
+      >
+	
+	<Grid x:Name="EditGrid">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="34"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		
+		<TextBlock Text="Настройки программы"
+				   Style="{DynamicResource HeaderTextBlockStyle}"
+				   Margin="40,12,0,0"></TextBlock>
+
+		<controls:WatermarkedTextBox 
+									 TextWrapping="Wrap" 
+									 VerticalAlignment="Center"
+									 Watermark="Строка подключения к базе данных" 
+									 Margin="40,0,40,0"			
+			Grid.Row="1"
+									 Text="{Binding ConnectionString, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">			
+		</controls:WatermarkedTextBox>		
+		
+	</Grid>
+</Grid>

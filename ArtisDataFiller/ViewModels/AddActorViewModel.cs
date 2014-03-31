@@ -29,6 +29,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         public Actor Actor
         {
             get { return _actor; }
+            set
+            {
+                _actor = value;
+                OnPropertyChanged();
+            }
         }
 
         public AddActorViewModel(Action action)

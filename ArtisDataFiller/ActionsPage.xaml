@@ -613,6 +613,16 @@
 					Template="{DynamicResource SimpleButtonTemplate}" 
 					Command="{Binding AddActorFromListCommand}"
 					CommandParameter="False"/>
+
+			<Button Content="Редактировать…" 
+					Grid.Column="4" 
+					Grid.Row="10" 
+					Width="110" 
+					HorizontalAlignment="Left" 
+					VerticalAlignment="Top" 
+					Margin="10,122,0,0" 
+					Style="{DynamicResource SelectedActorItemButton}" 
+					Command="{Binding EditActorCommand}"/>
 			
 			<Button Content="Удалить" 
 					Grid.Column="4" 
@@ -620,7 +630,7 @@
 					Width="110" 
 					HorizontalAlignment="Left" 
 					VerticalAlignment="Top" 
-					Margin="10,122,0,0" 
+					Margin="10,168,0,0" 
 					Style="{DynamicResource SelectedActorItemButton}" 
 					Command="{Binding RemoveActorCommand}"/>
 			
@@ -644,6 +654,16 @@
 					Template="{DynamicResource SimpleButtonTemplate}" 
 					Command="{Binding AddActorFromListCommand}"
 					CommandParameter="True"/>
+
+			<Button Content="Редактировать…" 
+					Grid.Column="4"
+					Grid.Row="11" 
+					Width="110" 
+					HorizontalAlignment="Left" 
+					VerticalAlignment="Top" 
+					Margin="10,122,0,0" 
+					Style="{DynamicResource SelectedProducerItemButton}" 
+					Command="{Binding EditProducerCommand}"/>
 			
 			<Button Content="Удалить" 
 					Grid.Column="4"
@@ -651,7 +671,7 @@
 					Width="110" 
 					HorizontalAlignment="Left" 
 					VerticalAlignment="Top" 
-					Margin="10,122,0,0" 
+					Margin="10,168,0,0" 
 					Style="{DynamicResource SelectedProducerItemButton}" 
 					Command="{Binding RemoveProducerCommand}"/>
 			

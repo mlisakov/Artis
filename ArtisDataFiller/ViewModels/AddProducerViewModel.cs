@@ -29,6 +29,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         public Producer Producer
         {
             get { return _producer; }
+            set
+            {
+                _producer = value;
+                OnPropertyChanged();
+            }
         }
 
         public AddProducerViewModel(Action action)

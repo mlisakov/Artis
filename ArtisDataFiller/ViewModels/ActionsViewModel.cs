@@ -100,9 +100,19 @@ namespace Artis.ArtisDataFiller.ViewModels
         public ArtisCommand RemoveActorCommand { get; private set; }
 
         /// <summary>
+        /// Команда редактирования актера
+        /// </summary>
+        public ArtisCommand EditActorCommand { get; private set; }
+
+        /// <summary>
         /// Команда добавления продюсера для мероприятия
         /// </summary>
         public ArtisCommand AddProducerCommand { get; private set; }
+
+        /// <summary>
+        /// Команда редактирования продюсера
+        /// </summary>
+        public ArtisCommand EditProducerCommand { get; private set; }
 
         /// <summary>
         /// Команда удаления продюсера для мероприятия
@@ -492,11 +502,13 @@ namespace Artis.ArtisDataFiller.ViewModels
             EditActionCommand = new ArtisCommand(CanExecute, ExecuteEditActionCommand);
             RemoveActionCommand = new ArtisCommand(CanExecute, ExecuteRemoveActionCommand);
 
-            AddNewActorCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddActorCommand);
+            AddNewActorCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddNewActorCommand);
             AddActorFromListCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddActorFromListCommand);
+            EditActorCommand = new ArtisCommand(CanExecute, ExecuteEditActorCommand);
             RemoveActorCommand = new ArtisCommand(CanExecute, ExecuteRemoveActorCommand);
 
             AddProducerCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddProducerCommand);
+            EditProducerCommand = new ArtisCommand(CanExecute, ExecuteEditProducerCommand);
             RemoveProducerCommand = new ArtisCommand(CanExecute, ExecuteRemoveProducerCommand);
 
             AddImageCommand = new ArtisCommand(CanExecuteAddCommands, ExecuteAddImageCommand);
@@ -730,7 +742,26 @@ namespace Artis.ArtisDataFiller.ViewModels
             OnPropertyChanged("ProducersItemsSource");
         }
 
+        private void ExecuteEditProducerCommand(object obj)
+        {
+            if (ProducersItemsSource == null)
+                ProducersItemsSource = new ObservableCollection<Producer>();
+            var viewModel = new AddProducerViewModel(CurrentActionDate.Action)
+            {
+                Title = "Добавление нового продюсера",
+                Producer = SelectedProducer
+            };
 
+            var window = new AddActorDialogWindow { ViewModel = viewModel };
+
+            var dialogResult = window.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                //todo сохранить изменения в описании продюсера
+//                ProducersItemsSource.Add(viewModel.Producer);
+//                OnPropertyChanged("ProducersItemsSource");
+            }
+        }
 
         private void ExecuteAddProducerCommand(object obj)
         {
@@ -745,6 +776,28 @@ namespace Artis.ArtisDataFiller.ViewModels
             {
                 ProducersItemsSource.Add(viewModel.Producer);
                 OnPropertyChanged("ProducersItemsSource");
+            }
+        }
+
+        private void ExecuteEditActorCommand(object obj)
+        {
+            if (ActorsItemsSource == null)
+                ActorsItemsSource = new ObservableCollection<Actor>();
+
+            var viewModel = new AddActorViewModel(CurrentActionDate.Action)
+            {
+                Title = "Добавление нового актера",
+                Actor = SelectedActor
+            };
+
+            var window = new AddActorDialogWindow { ViewModel = viewModel };
+
+            var dialogResult = window.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                //todo сохранить измененного актера
+//                ActorsItemsSource.Add(viewModel.Actor);
+//                OnPropertyChanged("ActorsItemsSource");
             }
         }
 
@@ -798,7 +851,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         }
 
 
-        private void ExecuteAddActorCommand(object obj)
+        private void ExecuteAddNewActorCommand(object obj)
         {
             if (ActorsItemsSource == null)
                 ActorsItemsSource = new ObservableCollection<Actor>();

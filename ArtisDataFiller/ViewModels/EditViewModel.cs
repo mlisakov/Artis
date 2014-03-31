@@ -8,6 +8,7 @@
         private bool _isAreasPageOpened;
         private bool _isActionsPageOpened;
         private bool _isGenresSettingsOpened;
+        private bool _isGenresOpened;
 
         public EditViewModel()
         {
@@ -63,6 +64,20 @@
                 {
                     DisposeViewContent();
                     ViewContent = new GenresSettingsPage();
+                }
+            }
+        }
+
+        public bool IsGenresOpened
+        {
+            get { return _isGenresOpened; }
+            set
+            {
+                _isGenresOpened = value;
+                if (_isGenresOpened)
+                {
+                    DisposeViewContent();
+                    ViewContent = new GenresPage();
                 }
             }
         }

@@ -115,10 +115,16 @@
     <Compile Include="AddActorDialogWindow.xaml.cs">
       <DependentUpon>AddActorDialogWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GenresPage.xaml.cs">
+      <DependentUpon>GenresPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\DataImage.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="GenresSettingsPage.xaml.cs">
       <DependentUpon>GenresSettingsPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="InformationPage.xaml.cs">
+      <DependentUpon>InformationPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="NLog-NHibernate.cs" />
     <Compile Include="ViewModels\ActionsViewModel.cs" />
@@ -128,7 +134,9 @@
     <Compile Include="ViewModels\AreasViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
+    <Compile Include="ViewModels\GenresViewModel.cs" />
     <Compile Include="ViewModels\GenresSettingsViewModel.cs" />
+    <Compile Include="ViewModels\InformationViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Page Include="ActionsPage.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -173,7 +181,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="GenresPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="GenresSettingsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="InformationPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -284,6 +300,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\genresSettings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\genres.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
