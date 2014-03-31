@@ -4,7 +4,8 @@
     {
         private bool _isDownloadingPageOpened;
         private bool _isEditPageOpened;
-        private bool _isHomePageOpened;        
+        private bool _isHomePageOpened;
+        private bool _isSettingPageOpened;
 
         public MainViewModel()
         {
@@ -22,13 +23,6 @@
                 _isHomePageOpened = value;
                 if (_isHomePageOpened)
                 {
-                    IsEditPageOpened = false;
-                    IsDownloadingPageOpened = false;
-// ReSharper disable ExplicitCallerInfoArgument
-                    OnPropertyChanged("IsEditPageOpened");
-                    OnPropertyChanged("IsDownloadingPageOpened");
-// ReSharper restore ExplicitCallerInfoArgument
-
                     DisposeViewContent();
 
                     ViewContent = new HomePage();
@@ -47,14 +41,6 @@
                 _isDownloadingPageOpened = value;
                 if (_isDownloadingPageOpened)
                 {
-                    IsEditPageOpened = false;
-                    IsHomePageOpened = false;
-
-// ReSharper disable ExplicitCallerInfoArgument
-                    OnPropertyChanged("IsEditPageOpened");
-                    OnPropertyChanged("IsHomePageOpened");
-// ReSharper restore ExplicitCallerInfoArgument
-
                     DisposeViewContent();
 
                     var page = new DownloadPage();
@@ -77,19 +63,30 @@
                 _isEditPageOpened = value;
                 if (_isEditPageOpened)
                 {
-                    IsDownloadingPageOpened = false;
-                    IsHomePageOpened = false;
-
-// ReSharper disable ExplicitCallerInfoArgument
-                    OnPropertyChanged("IsDownloadingPageOpened");
-                    OnPropertyChanged("IsHomePageOpened");
-// ReSharper restore ExplicitCallerInfoArgument
-                    
                     DisposeViewContent();
-
 
                     var page = new EditPage();
 
+                    ViewContent = page;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Открыта ли сейчас страница "Настройки программы"
+        /// </summary>
+        public bool IsSettingPageOpened
+        {
+            get { return _isSettingPageOpened; }
+            set
+            {
+                _isSettingPageOpened = value;
+
+                if (value)
+                {
+                    DisposeViewContent();
+
+                    var page = new InformationPage();
                     ViewContent = page;
                 }
             }

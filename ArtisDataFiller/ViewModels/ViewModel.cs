@@ -19,9 +19,17 @@ namespace Artis.ArtisDataFiller.ViewModels
             if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void Dispose()
+        /// <summary>
+        /// Срабатывает при Dispose
+        /// </summary>
+        public virtual void OnDispose()
         {
             
+        }
+
+        public void Dispose()
+        {
+            OnDispose();
         }
     }
 }
