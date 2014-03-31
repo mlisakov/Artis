@@ -1,22 +1,12 @@
-﻿<Grid xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-	  xmlns:controls="clr-namespace:Artis.ArtisDataFiller.Controls"
-	  xmlns:system="clr-namespace:System;assembly=mscorlib"
-	  xmlns:artisDataFiller="clr-namespace:Artis.ArtisDataFiller"
-	  x:Class="Artis.ArtisDataFiller.AreasPage"
-      Background="#FF001B23" 
-	  MinWidth="1024"
-	  MinHeight="500">
+﻿<Grid
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"	   
+	  xmlns:controls="clr-namespace:Artis.ArtisDataFiller.Controls"	  
+	xmlns:system="clr-namespace:System;assembly=mscorlib"
+	x:Class="Artis.ArtisDataFiller.GenresPage"
+	  MinWidth="1024" MinHeight="500">
+
 	<Grid.Resources>
-		<Style x:Key="selectedItemButton" TargetType="{x:Type Button}">
-			<Setter Property="IsEnabled" Value="True"/>
-			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
-			<Style.Triggers>
-				<DataTrigger Binding="{Binding CurrentArea}" Value="{x:Null}">
-					<Setter Property="IsEnabled" Value="False"/>
-				</DataTrigger>
-			</Style.Triggers>
-		</Style>
 
 		<Storyboard x:Key="OnClick1">
 			<ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)" Storyboard.TargetName="SeachGrid">
@@ -97,7 +87,7 @@
 
 	<TextBlock HorizontalAlignment="Left" 
 			   TextWrapping="Wrap"
-			   Text="Площадки" 
+			   Text="Жанры" 
 			   VerticalAlignment="Top" 
 			   Style="{DynamicResource HeaderTextBlockStyle}"
 			   Margin="20,12.526,0,0"/>
@@ -137,8 +127,8 @@
 				 Grid.Row="1" 
 				 VerticalAlignment="Top" 
 				 Margin="40,0,0,0" 
-				 ItemsSource="{Binding Areas}"
-				 SelectedItem="{Binding CurrentArea}"
+				 ItemsSource="{Binding Genres}"
+				 SelectedItem="{Binding CurrentGenre}"
 				 VirtualizingPanel.VirtualizationMode="Recycling"
 				 DisplayMemberPath="Name" />
 
@@ -148,8 +138,8 @@
 					HorizontalAlignment="Left"
 					Height="500" 
 					VerticalAlignment="Top">
-            
-            <Button Content="Поиск" 
+
+			<Button Content="Поиск" 
                     Template="{DynamicResource SimpleButtonTemplate}" 
                     Width="110" 
                     HorizontalAlignment="Left" 
@@ -160,7 +150,7 @@
                     Content="Добавить…" 					
 					Margin="0,10,0,0" 
 					Template="{DynamicResource SimpleButtonTemplate}" 
-					Command="{Binding NewAreaCommand}"				
+					Command="{Binding NewGenreCommand}"				
 					Width="110" 
 					VerticalAlignment="Top"/>
 
@@ -170,13 +160,13 @@
 					Command="{Binding EditCommand}"					
 					Width="110" 
 					VerticalAlignment="Top" 
-					Style="{DynamicResource selectedItemButton}"/>
+					Template="{DynamicResource SimpleButtonTemplate}"/>
 
 			<Button Content="Удалить…" 					
 					Margin="0,10,0,0" 					
 					Width="110" 
 					VerticalAlignment="Top" 
-					Style="{DynamicResource selectedItemButton}"
+					Template="{DynamicResource SimpleButtonTemplate}"
                     Command="{Binding RemoveCommand}"/>
 		</StackPanel>
 	</Grid>
@@ -197,11 +187,6 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="34"/>
 			<RowDefinition Height="34"/>
-			<RowDefinition Height="34"/>
-			<RowDefinition Height="34"/>
-            <RowDefinition Height="150" />
-			<RowDefinition Height="150" />
-            <RowDefinition Height="34"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 
@@ -213,9 +198,9 @@
 		<controls:WatermarkedTextBox 
 									 TextWrapping="Wrap" 
 									 VerticalAlignment="Center"
-									 Watermark="Наименование новой площадки" 
+									 Watermark="Наименование нового жанра" 
 									 Margin="40,0,0,0"			
-									 Text="{Binding CurrentArea.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+									 Text="{Binding CurrentGenre.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 			<controls:WatermarkedTextBox.Style>
 				<Style BasedOn="{StaticResource {x:Type controls:WatermarkedTextBox}}" TargetType="{x:Type controls:WatermarkedTextBox}">
 					<Setter Property="IsReadOnly" Value="False"/>
@@ -231,96 +216,17 @@
 			</controls:WatermarkedTextBox.Style>
 		</controls:WatermarkedTextBox>
 
-				<controls:WatermarkedTextBox 
+		<controls:WatermarkedTextBox 
 									 TextWrapping="Wrap" 
 									 VerticalAlignment="Center"
-									 Watermark="Наименование новой площадки на английском" 
+									 Watermark="Наименование нового жанра на английском" 
 									 Margin="40,0,0,0"			
-									 Text="{Binding CurrentArea.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
+									 Text="{Binding CurrentGenre.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
 		</controls:WatermarkedTextBox>
-        
-        <controls:WatermarkedTextBox 
-            TextWrapping="Wrap" 
-            Watermark="Адрес" 
-            Grid.Row="2"
-            Margin="40,0,0,0"
-            Text="{Binding CurrentArea.Addres}" VerticalAlignment="Center"/>
-
-        <controls:WatermarkedTextBox 
-            TextWrapping="Wrap" 
-            Watermark="Адрес на английском" 
-            Grid.Row="3"
-            Margin="40,0,0,0"
-            Text="{Binding CurrentArea.Addres}" VerticalAlignment="Center"/>
-
-        <controls:WatermarkedTextBox 
-            TextWrapping="Wrap" 
-			ScrollViewer.VerticalScrollBarVisibility="auto"
-            Watermark="Описание" 
-            Grid.Row="4"
-            Margin="40,6.02,0,6.02"
-            Text="{Binding CurrentArea.Description}"/>
-
-		<controls:WatermarkedTextBox 
-            TextWrapping="Wrap" 
-			ScrollViewer.VerticalScrollBarVisibility="auto"
-            Watermark="Описание на английском" 
-            Grid.Row="5"
-            Margin="40,6.02,0,6.02"
-            Text="{Binding CurrentArea.Description}"/>
-        
-        <TextBlock  Grid.Row="6" 
-					Text="Картинки" 
-					Style="{DynamicResource SimpleTextStyle}" 
-					Margin="40,0,0,0" VerticalAlignment="Center"/>
-
-		<ListBox Grid.Row="7" 
-				 MinWidth="800" 
-				 Margin="40,0,0,20" 
-                 SelectedItem="{Binding SelectedImage}"
-                 ItemsSource="{Binding Images}" 				 
-				 ItemsPanel="{DynamicResource ImageListBoxItemsPanelTemplate}" 
-				 ItemContainerStyle="{DynamicResource ImageListBoxItemContainerStyle}" 
-				 ItemTemplate="{DynamicResource ImageListBoxItemTemplate}"				 
-				 VirtualizingPanel.VirtualizationMode="Recycling"
-				 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
-		</ListBox>
-
-
-		<Button x:Name="AddNewImageButton" 
-				Content="Добавить…" 
-				Grid.Row="7" 
-				Grid.Column="1"
-				HorizontalAlignment="Left" 
-				Margin="10,0,0,0" 
-				Command="{Binding AddImagesCommand}"
-				Template="{DynamicResource SimpleButtonTemplate}" 					
-				Width="80" VerticalAlignment="Top"/>
-
-		<Button x:Name="RemoveImageButton" 
-				Content="Удалить" 
-				Grid.Row="7" 
-				Grid.Column="1"
-				HorizontalAlignment="Left" 
-				Margin="10,40.96,0,0" 
-				Command="{Binding RemoveImagesCommand}"
-				Template="{DynamicResource SimpleButtonTemplate}" 					
-				Width="80" VerticalAlignment="Top">
-			<Button.Style>
-				<Style TargetType="{x:Type Button}">
-					<Setter Property="IsEnabled" Value="true"/>
-					<Style.Triggers>
-						<DataTrigger Binding="{Binding Images.Count}" Value="0">
-							<Setter Property="IsEnabled" Value="False"/>
-						</DataTrigger>
-					</Style.Triggers>
-				</Style>
-			</Button.Style>
-		</Button>
 
 		<Button x:Name="SaveButton" 
 				Content="Сохранить" 
-				Grid.Row="7" 
+				Grid.Row="2" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
 				Command="{Binding SaveCommand}"
@@ -329,13 +235,11 @@
 
 		<Button x:Name="BackButton" 
 				Content="Назад" 
-				Grid.Row="7" 
+				Grid.Row="2" 
 				Grid.Column="1"
 				HorizontalAlignment="Left" 
 				Command="{Binding BackCommand}"
 				Template="{DynamicResource BadSimpleButtonTemplate}" 					
 				Width="80" VerticalAlignment="Bottom" Margin="100,0,0,20"/>
 	</Grid>
-
-	<Grid x:Name="PictureGrid"/>
 </Grid>

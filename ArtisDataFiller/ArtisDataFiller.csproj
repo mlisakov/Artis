@@ -115,6 +115,9 @@
     <Compile Include="AddActorDialogWindow.xaml.cs">
       <DependentUpon>AddActorDialogWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GenresPage.xaml.cs">
+      <DependentUpon>GenresPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\DataImage.cs" />
     <Compile Include="Helpers\ImageHelper.cs" />
     <Compile Include="GenresSettingsPage.xaml.cs">
@@ -128,6 +131,7 @@
     <Compile Include="ViewModels\AreasViewModel.cs" />
     <Compile Include="ViewModels\ContentViewModel.cs" />
     <Compile Include="ViewModels\DialogViewModel.cs" />
+    <Compile Include="ViewModels\GenresViewModel.cs" />
     <Compile Include="ViewModels\GenresSettingsViewModel.cs" />
     <Compile Include="ViewModels\ViewModel.cs" />
     <Page Include="ActionsPage.xaml">
@@ -170,6 +174,10 @@
       <DependentUpon>DownloadPage.xaml</DependentUpon>
     </Compile>
     <Page Include="EditPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="GenresPage.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -284,6 +292,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\genresSettings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\genres.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
