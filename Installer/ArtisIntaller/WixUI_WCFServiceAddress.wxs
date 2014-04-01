@@ -20,7 +20,6 @@
                Width="220" 
                Height="20" 
                Property="WCFADDRESSSERVICEPROPERY" />
-
       <Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="!(loc.CustomizeDlgBannerBitmap)" />
       <Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="2" />
       <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="2" />

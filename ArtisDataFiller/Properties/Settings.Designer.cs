@@ -25,7 +25,8 @@ namespace Artis.ArtisDataFiller.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("http://92.53.105.145:8110/")]
+        //[global::System.Configuration.DefaultSettingValueAttribute("http://92.53.105.145:8110/")]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://localhost:55601/")]
         public string ConnectionString {
             get {
                 return ((string)(this["ConnectionString"]));
