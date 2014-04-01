@@ -45,7 +45,11 @@
     </WixExtension>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Icons\AdminUtilIcon.ico" />
     <Content Include="Variables.wxi" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Icons" />
   </ItemGroup>
   <Import Project="$(WixTargetsPath)" />
   <!--

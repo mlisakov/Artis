@@ -10,14 +10,15 @@
         <File Id='Data' DiskId='1' Name="Artis.Data.dll"/>
         <File Id='DataLoader' DiskId='1' Name="Artis.DataLoader.dll"/>
         <File Id='HtmlAgilityPack' DiskId='1' Name="HtmlAgilityPack.dll"/>
-        <File Id='Iesi.Collections' DiskId='1' Name="Iesi.Collections.dll"/>
+        <!--<File Id='Iesi.Collections' DiskId='1' Name="Iesi.Collections.dll"/>-->
         <File Id='Artis.WcfServiceCaller' DiskId='1' Name="Artis.WcfServiceCaller.dll"/>
+        <File Id='Artis.WebServiceContract' DiskId='1' Name="Artis.WebServiceContract.dll"/>
         <File Id='Microsoft.Expression.Interactions' DiskId='1' Name="Microsoft.Expression.Interactions.dll"/>
-        <File Id='NHibernate' DiskId='1' Name="NHibernate.dll"/>
+        <!--<File Id='NHibernate' DiskId='1' Name="NHibernate.dll"/>-->
         <File Id='NLog' DiskId='1' Name="NLog.dll"/>
         <File Id='System.Windows.Interactivity' DiskId='1' Name="System.Windows.Interactivity.dll"/>
         <File Id='WPFToolkit' DiskId='1' Name="WPFToolkit.dll"/>
-        <File Id='Mapping' DiskId='1' Name="Mapping.hbm.xml"/>
+        <!--<File Id='Mapping' DiskId='1' Name="Mapping.hbm.xml"/>-->
       </Component>
     </DirectoryRef>
 	</Fragment>

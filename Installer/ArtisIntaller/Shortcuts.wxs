@@ -5,12 +5,15 @@
 	<Fragment>
     <DirectoryRef Id="ApplicationProgramsFolder">
       <Component Id="ApplicationShortcutAAT" Guid="4CEBD68F-E933-47f9-B02C-A4FC69FDB551">
-        
+
         <Shortcut Id="ShortcutArtisAdministrativeTool"
              Name="ArtisAdministrativeTool"
              Description="$(var.ProductName)"
              Target="[INSTALLLOCATION]Artis.ArtisDataFiller.exe"
-             WorkingDirectory="INSTALLLOCATION"/>
+             WorkingDirectory="INSTALLLOCATION">
+          <Icon Id="Icon" SourceFile="Icons\AdminUtilIcon.ico"/>
+        
+        </Shortcut>
         <util:XmlFile Id="UpdateBaseAddress"
               Action="setValue"
               File="[INSTALLLOCATION]Artis.ArtisDataFiller.exe.config"
@@ -32,7 +35,9 @@
           <RegistryValue Name="$(var.ProductName)" Value="1" Type="integer" KeyPath="yes"/>
         </RegistryKey>
         <RemoveFolder Id="DesktopFolder" Directory='DesktopFolder' On="uninstall"/>
-        <Shortcut Id="DesktopShortcutAAT" Directory="DesktopFolder" Name="Утилита администрирования" Target="[INSTALLLOCATION]Artis.ArtisDataFiller.exe"/>
+        <Shortcut Id="DesktopShortcutAAT" Directory="DesktopFolder" Name="Утилита администрирования" Target="[INSTALLLOCATION]Artis.ArtisDataFiller.exe">
+        <Icon Id="IconDF" SourceFile="Icons\AdminUtilIcon.ico"/>
+        </Shortcut>
         <Condition>SHORTCUT_DESKTOP</Condition>
       </Component>
     </DirectoryRef>
