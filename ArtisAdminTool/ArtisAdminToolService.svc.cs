@@ -13,15 +13,17 @@ namespace Artis.Service
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
         private DataParser _dataParser;
         private AreaRepository _areaRepository;
+        private GenreRepository _genreRepository;
         private ActionDateRepository _actionDateRepository;
         private GuiSectionRepository _guiSectionRepository;
 
         public ArtisAdminToolService()
         {
-            _areaRepository=new AreaRepository();
-            _actionDateRepository=new ActionDateRepository();
-            _guiSectionRepository=new GuiSectionRepository();
-            _dataParser=new DataParser();
+            _areaRepository = new AreaRepository();
+            _genreRepository = new GenreRepository();
+            _actionDateRepository = new ActionDateRepository();
+            _guiSectionRepository = new GuiSectionRepository();
+            _dataParser = new DataParser();
         }
 
         public async Task<string> GetAreaAsync(long idArea)
@@ -174,6 +176,52 @@ namespace Artis.Service
             return false;
         }
 
+        public async Task<long> AddGenreAsync(string genre)
+        {
+            try
+            {
+                var xmlProvider = new GenreXmlProvider();
+                Genre originalGenre = xmlProvider.FromXml(genre).First();
+
+                _genreRepository.Add(originalGenre);
+                return originalGenre.ID;                
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось создать площадку", ex);
+            }
+            return -1;
+        }
+
+        public async Task<bool> SaveGenreAsync(string genre)
+        {
+            try
+            {
+                var xmlProvider = new GenreXmlProvider();
+                var originalArea = xmlProvider.FromXml(genre).First();
+
+                return await _genreRepository.Save(originalArea);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось сохранить значения площадки!", ex);
+            }
+            return false;
+        }
+
+        public async Task<bool> RemoveGenreAsync(long id)
+        {
+            try
+            {
+                return await _genreRepository.Remove(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось удалить жанр", ex);
+            }
+            return false;
+        }
+
         public async Task<string> GetSearchActionsAsync(string filterName, string filterAreaName, DateTime fromDate, DateTime toDate)
         {
             try
@@ -305,6 +353,22 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("Не удалось загрузить жанры", ex);
+            }
+            return string.Empty;
+        }
+
+        public async Task<string> GetSearchGenreAsync(string filter)
+        {
+            try
+            {
+                ObservableCollection<Genre> originalGenres = await DataRequestFactory.GetGenres(filter);
+                GenreXmlProvider provider = new GenreXmlProvider(originalGenres);
+
+                return provider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить жанры по имени:" + filter, ex);
             }
             return string.Empty;
         }

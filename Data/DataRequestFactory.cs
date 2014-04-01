@@ -361,12 +361,17 @@ namespace Artis.Data
         /// Получение списка жанров
         /// </summary>
         /// <returns>Список всех жанров</returns>
-        public static async Task<ObservableCollection<Genre>> GetGenres()
+        public static async Task<ObservableCollection<Genre>> GetGenres(string genreName="")
         {
             using (ISession session = await Domain.GetSession())
             {
-                IEnumerable<Genre> genres = session.Query<Genre>();
-                return new ObservableCollection<Genre>(genres);
+                if (string.IsNullOrEmpty(genreName))
+                    return new ObservableCollection<Genre>(session.Query<Genre>());
+
+                ICriteria criteria = session.CreateCriteria(typeof (Genre));
+                Genre f;
+                criteria.Add(Restrictions.Like("Name", "%" + genreName + "%").IgnoreCase());
+                return new ObservableCollection<Genre>(criteria.List<Genre>().OrderBy(i => i.Name));
             }
         }
 

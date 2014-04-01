@@ -201,19 +201,19 @@
 									 Watermark="Наименование жанра" 
 									 Margin="40,0,0,0"			
 									 Text="{Binding CurrentGenre.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-			<controls:WatermarkedTextBox.Style>
-				<Style BasedOn="{StaticResource {x:Type controls:WatermarkedTextBox}}" TargetType="{x:Type controls:WatermarkedTextBox}">
-					<Setter Property="IsReadOnly" Value="False"/>
-					<Style.Triggers>
-						<DataTrigger Binding="{Binding IsEdit}">
-							<DataTrigger.Value>
-								<system:Boolean>True</system:Boolean>
-							</DataTrigger.Value>
-							<Setter Property="IsReadOnly" Value="True"/>
-						</DataTrigger>
-					</Style.Triggers>
-				</Style>
-			</controls:WatermarkedTextBox.Style>
+<!--			<controls:WatermarkedTextBox.Style>-->
+<!--				<Style BasedOn="{StaticResource {x:Type controls:WatermarkedTextBox}}" TargetType="{x:Type controls:WatermarkedTextBox}">-->
+<!--					<Setter Property="IsReadOnly" Value="False"/>-->
+<!--					<Style.Triggers>-->
+<!--						<DataTrigger Binding="{Binding IsEdit}">-->
+<!--							<DataTrigger.Value>-->
+<!--								<system:Boolean>True</system:Boolean>-->
+<!--							</DataTrigger.Value>-->
+<!--							<Setter Property="IsReadOnly" Value="True"/>-->
+<!--						</DataTrigger>-->
+<!--					</Style.Triggers>-->
+<!--				</Style>-->
+<!--			</controls:WatermarkedTextBox.Style>-->
 		</controls:WatermarkedTextBox>
 
 		<controls:WatermarkedTextBox 

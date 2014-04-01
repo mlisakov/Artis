@@ -52,7 +52,7 @@ namespace Artis.Data
             catch (Exception ex)
             {
                 _logger.ErrorException("Не удалось получить площадки!",ex);
-                throw new Exception("Не удалось получить площадки!Проверьте правильность адрес административного сервиса!");
+                throw new Exception("Не удалось получить площадки!Проверьте правильность адреса административного сервиса!");
             }
 
         }
@@ -67,8 +67,25 @@ namespace Artis.Data
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Не удалось получить площадки!", ex);
-                throw new Exception("Не удалось получить площадки!Проверьте правильность адрес административного сервиса!");
+                _logger.ErrorException("Не удалось получить данры!", ex);
+                throw new Exception("Не удалось получить площадки! Проверьте правильность адреса административного сервиса!");
+            }
+
+        }
+
+        public async Task<ObservableCollection<Genre>> GetGenres(string filter)
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetSearchGenreAsync(filter);
+                GenreXmlProvider provider = new GenreXmlProvider();
+                
+                return new ObservableCollection<Genre>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить жанры!", ex);
+                throw new Exception("Не удалось получить площадки! Проверьте правильность адреса административного сервиса!");
             }
 
         }
@@ -98,6 +115,22 @@ namespace Artis.Data
                 await
                     serviceAdminTool.SaveAreaAsync(areasXmlProvider.ToXml().InnerXml, addedImages.Select(i => i.Base64StringData).ToList(),
                         deletedImages);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось сохранить площадкy!", ex);
+                throw new Exception("Не удалось сохранить площадкy!");
+            }
+        }
+
+        public async Task<bool> SaveGenre(Genre currentArea)
+        {
+            try
+            {
+                var provider = new GenreXmlProvider(new List<Genre>() { currentArea });
+                return
+                    await
+                        serviceAdminTool.SaveGenreAsync(provider.ToXml().InnerXml);
             }
             catch (Exception ex)
             {
@@ -213,6 +246,35 @@ namespace Artis.Data
                 throw new Exception("Не удалось удалить площадку!");
             }
 
+        }
+
+        public async Task<long> AddGenre(Genre currentGenre)
+        {
+            try
+            {
+                var areasXmlProvider = new GenreXmlProvider(new List<Genre> { currentGenre });
+                return await
+                    serviceAdminTool.AddGenreAsync(areasXmlProvider.ToXml().InnerXml);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось добавить жанр!", ex);
+                throw new Exception("Не удалось добавить жанр!");
+            }
+
+        }
+
+        public async Task<bool> RemoveGenre(long id)
+        {
+            try
+            {
+                return await serviceAdminTool.RemoveGenreAsync(id);
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось удалить жанр!", ex);
+                throw new Exception("Не удалось удалить жанр!");
+            }
         }
 
         public async Task<ObservableCollection<ActionDate>> GetActions(string Name, Area Area, DateTime? fromDate, DateTime? toDate)

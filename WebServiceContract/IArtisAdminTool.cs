@@ -24,6 +24,14 @@ namespace Artis.Service
         Task<string> GetGenresAsync();
 
         /// <summary>
+        /// Поиск жанра по имени
+        /// </summary>
+        /// <param name="filter">Параметр фильтра</param>
+        /// <returns>Сериализованное описание площадок</returns>
+        [OperationContract]
+        Task<string> GetSearchGenreAsync(string filter);
+
+        /// <summary>
         /// Поиск площадки по имени
         /// </summary>
         /// <param name="filter">Параметр фильтра</param>
@@ -40,6 +48,14 @@ namespace Artis.Service
         /// <returns></returns>
         [OperationContract]
         Task<bool> SaveAreaAsync(string area, List<string> addedImages, List<long> deletedImages);
+
+        /// <summary>
+        /// Сохранение изменений в жанре
+        /// </summary>
+        /// <param name="genre">xml описание жанра</param>
+        /// <returns></returns>
+        [OperationContract]
+        Task<bool> SaveGenreAsync(string genre);
 
         /// <summary>
         /// Сохранение изменений по мероприятию
@@ -96,6 +112,22 @@ namespace Artis.Service
         /// <returns></returns>
         [OperationContract]
         Task<bool> RemoveAreaAsync(long id);
+
+        /// <summary>
+        /// Добавление новой жанра
+        /// </summary>
+        /// <param name="genre">xml описание жанра</param>
+        /// <returns></returns>
+        [OperationContract]
+        Task<long> AddGenreAsync(string genre);
+
+        /// <summary>
+        /// Удаление жанра
+        /// </summary>
+        /// <param name="id">Идентификатор жанра</param>
+        /// <returns></returns>
+        [OperationContract]
+        Task<bool> RemoveGenreAsync(long id);
 
         /// <summary>
         /// Поиск мероприятий

@@ -1,6 +1,7 @@
-﻿using Artis.Consts;
+﻿using System.Collections.ObjectModel;
+using System.Threading.Tasks;
+using Artis.Consts;
 using Artis.Data;
-using Remotion.Linq.Collections;
 
 namespace Artis.ArtisDataFiller.ViewModels
 {
@@ -99,6 +100,8 @@ namespace Artis.ArtisDataFiller.ViewModels
             InitCommands();
 
             _wcfAdminService = new WcfServiceCaller();
+
+            InitDataSource();
         }
 
         /// <summary>
@@ -110,8 +113,16 @@ namespace Artis.ArtisDataFiller.ViewModels
             NewGenreCommand = new ArtisCommand(CanExecuteSearchCommand, ExecuteNewGenreCommand);
             EditCommand = new ArtisCommand(CanExecuteEditCommand, ExecuteEditCommand);
             RemoveCommand = new ArtisCommand(CanExecuteRemoveCommand, ExecuteRemoveCommand);
-            SaveCommand = new ArtisCommand(CanExecuteSearchCommand, ExecuteSaveCommand);
+            SaveCommand = new ArtisCommand(CanExecuteSaveCommand, ExecuteSaveCommand);
             BackCommand = new ArtisCommand(CanExecuteSearchCommand, ExecuteBackCommand);
+        }
+
+        /// <summary>
+        /// Загрузка списка жанров
+        /// </summary>
+        private async void InitDataSource()
+        {
+            Genres = await _wcfAdminService.GetGenres();
         }
 
         private void ExecuteBackCommand(object obj)
@@ -120,14 +131,19 @@ namespace Artis.ArtisDataFiller.ViewModels
             CurrentGenre = null;
         }
 
-        private void ExecuteSaveCommand(object obj)
+        private async void ExecuteSaveCommand(object obj)
         {
-            //todo сохранить изменения/создать новый жанр
+            if (IsEdit)
+                await SaveGenre();
+            else
+                await AddGenre();
+
+            ClearVariables();
         }
 
-        private void ExecuteRemoveCommand(object obj)
+        private async void ExecuteRemoveCommand(object obj)
         {
-            //todo удалить CurrentGenre
+            await RemoveGenre();
         }
 
         private void ExecuteEditCommand(object obj)
@@ -139,12 +155,12 @@ namespace Artis.ArtisDataFiller.ViewModels
         {
             IsEdit = false; // устанавливаем флаг
             //Создаем новый жанр
-            CurrentGenre = new Genre();            
+            CurrentGenre = new Genre();
         }
 
-        private void ExecuteSearchCommand(object obj)
+        private async void ExecuteSearchCommand(object obj)
         {
-//            Genres = await _wcfAdminService.GetGenres();
+            Genres = await _wcfAdminService.GetGenres(FilterName);
         }
 
         private bool CanExecuteRemoveCommand(object obj)
@@ -160,6 +176,49 @@ namespace Artis.ArtisDataFiller.ViewModels
         private bool CanExecuteSearchCommand(object obj)
         {
             return true;
+        }
+
+        private bool CanExecuteSaveCommand(object obj)
+        {
+            if (CurrentGenre != null && !string.IsNullOrEmpty(CurrentGenre.Name))
+                return true;
+            return false;
+        }
+
+        private async Task<bool> RemoveGenre()
+        {
+            bool result = await _wcfAdminService.RemoveGenre(CurrentGenre.ID);
+            if (result)
+            {
+                Genres.Remove(CurrentGenre);
+                OnPropertyChanged("Genres");
+            }
+            return result;
+
+        }
+
+        private async Task<bool> AddGenre()
+        {
+            long result =
+                await
+                    _wcfAdminService.AddGenre(CurrentGenre);
+            if (result != -1)
+            {
+                CurrentGenre.ID = result;
+                Genres.Add(CurrentGenre);
+                OnPropertyChanged("Genres");
+            }
+            return result == -1;
+        }
+
+        private async Task<bool> SaveGenre()
+        {
+            return await _wcfAdminService.SaveGenre(CurrentGenre);
+        }
+
+        private void ClearVariables()
+        {
+            CurrentGenre = null;
         }
     }
 }
