@@ -31,10 +31,10 @@
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 			
-			<Controls:WatermarkedTextBox x:Name="NameBox" TextWrapping="Wrap" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,0,0,0" Watermark="ФИО"/>	
-			<Controls:WatermarkedTextBox  TextWrapping="Wrap" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,0,0,0" Watermark="ФИО на английском" Grid.Row="1"/>	
-			<Controls:WatermarkedTextBox  TextWrapping="Wrap" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,6,0,0" Watermark="Описание" Grid.Row="2" Height="100"/>	
-			<Controls:WatermarkedTextBox  TextWrapping="Wrap" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,12,0,0" Watermark="Описание на английском" Grid.Row="3" Height="100"/>	
+			<Controls:WatermarkedTextBox x:Name="NameBox" TextWrapping="Wrap" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,0,0,0" Watermark="ФИО"/>
+		<Controls:WatermarkedTextBox  TextWrapping="Wrap" Text="{Binding EnglishName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,0,0,0" Watermark="ФИО на английском" Grid.Row="1"/>
+		<Controls:WatermarkedTextBox  TextWrapping="Wrap" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,6,0,0" Watermark="Описание" Grid.Row="2" Height="100"/>
+		<Controls:WatermarkedTextBox  TextWrapping="Wrap" Text="{Binding EnglishDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" Margin="10,12,0,0" Watermark="Описание на английском" Grid.Row="3" Height="100"/>	
 
 						<TextBlock Grid.Row="12" 
                        TextWrapping="Wrap" 

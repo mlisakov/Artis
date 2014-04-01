@@ -198,7 +198,7 @@
 		<controls:WatermarkedTextBox 
 									 TextWrapping="Wrap" 
 									 VerticalAlignment="Center"
-									 Watermark="Наименование нового жанра" 
+									 Watermark="Наименование жанра" 
 									 Margin="40,0,0,0"			
 									 Text="{Binding CurrentGenre.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 			<controls:WatermarkedTextBox.Style>
@@ -219,9 +219,9 @@
 		<controls:WatermarkedTextBox 
 									 TextWrapping="Wrap" 
 									 VerticalAlignment="Center"
-									 Watermark="Наименование нового жанра на английском" 
+									 Watermark="Наименование жанра на английском" 
 									 Margin="40,0,0,0"			
-									 Text="{Binding CurrentGenre.Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
+									 Text="{Binding CurrentGenre.EnglishName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="1">
 		</controls:WatermarkedTextBox>
 
 		<Button x:Name="SaveButton" 

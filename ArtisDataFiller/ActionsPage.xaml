@@ -447,7 +447,7 @@
 										 VerticalAlignment="Center" 
 										 Margin="0,6.02" 
 										 Grid.Column="1" 
-										 Text="{Binding CurrentActionDate.Action.Name}"
+										 Text="{Binding CurrentActionDate.Action.EnglishName}"
 										 IsEnabled="{Binding IsNewOne}" Grid.Row="1"/>
 			
             <DatePicker Grid.Row="2" 
@@ -479,7 +479,7 @@
 										 Watermark="Ценовой диапазон в иностранной валюте" 
 										 Grid.Column="1" 
 										 VerticalAlignment="Center" 
-										 Text="{Binding CurrentActionDate.PriceRange}"
+										 Text="{Binding CurrentActionDate.EnglishPriceRange}"
 										 IsEnabled="{Binding IsNewOne}"/>
 			
 			<TextBlock Text="Рейтинг" Style="{DynamicResource SimpleTextStyle}" Grid.Row="5" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left"/>
@@ -531,7 +531,7 @@
 										 Grid.Row="9" 
 										 Grid.Column="1" 
 										 Height="100" 
-										 Text="{Binding CurrentActionDate.Action.Description}"
+										 Text="{Binding CurrentActionDate.Action.EnglishDescription}"
 										 ScrollViewer.VerticalScrollBarVisibility="auto"
 										 IsEnabled="{Binding IsNewOne}" Margin="0,12,0,0"/>
 

@@ -746,7 +746,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         {
             if (ProducersItemsSource == null)
                 ProducersItemsSource = new ObservableCollection<Producer>();
-            var viewModel = new AddProducerViewModel(CurrentActionDate.Action)
+            var viewModel = new AddProducerViewModel()
             {
                 Title = "Добавление нового продюсера",
                 Producer = SelectedProducer
@@ -767,7 +767,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         {
             if (ProducersItemsSource==null)
                 ProducersItemsSource=new ObservableCollection<Producer>();
-            var viewModel = new AddProducerViewModel(CurrentActionDate.Action) {Title = "Добавление нового продюсера"};
+            var viewModel = new AddProducerViewModel() {Title = "Добавление нового продюсера"};
 
             var window = new AddActorDialogWindow {ViewModel = viewModel};
 
@@ -784,7 +784,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             if (ActorsItemsSource == null)
                 ActorsItemsSource = new ObservableCollection<Actor>();
 
-            var viewModel = new AddActorViewModel(CurrentActionDate.Action)
+            var viewModel = new AddActorViewModel()
             {
                 Title = "Добавление нового актера",
                 Actor = SelectedActor
@@ -855,7 +855,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         {
             if (ActorsItemsSource == null)
                 ActorsItemsSource = new ObservableCollection<Actor>();
-            var viewModel = new AddActorViewModel(CurrentActionDate.Action) {Title = "Добавление нового актера"};
+            var viewModel = new AddActorViewModel() {Title = "Добавление нового актера"};
 
             var window = new AddActorDialogWindow {ViewModel = viewModel};
 

@@ -250,7 +250,7 @@
             Watermark="Адрес на английском" 
             Grid.Row="3"
             Margin="40,0,0,0"
-            Text="{Binding CurrentArea.EnglishAddres}" VerticalAlignment="Center"/>
+            Text="{Binding CurrentArea.EnglishAddress}" VerticalAlignment="Center"/>
 
         <controls:WatermarkedTextBox 
             TextWrapping="Wrap" 

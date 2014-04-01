@@ -1,27 +1,58 @@
 ﻿using Artis.Data;
-using NLog;
 
 namespace Artis.ArtisDataFiller.ViewModels
 {
     public class AddProducerViewModel : DialogViewModel
     {
-        /// <summary>
-        /// Логгер
-        /// </summary>
-        private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
-
-        private string _name;
-        private Action _action;
         private Producer _producer;
         /// <summary>
         /// ФИО режисера
         /// </summary>
         public string Name
         {
-            get { return _name; }
+            get { return _producer.FIO; }
             set
             {
-                _name = value;
+                _producer.FIO = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Наименование на инглише
+        /// </summary>
+        public string EnglishName
+        {
+            get { return _producer.EnglishFIO; }
+            set
+            {
+                _producer.EnglishFIO = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Описание
+        /// </summary>
+        public string Description
+        {
+            get { return _producer.Description; }
+            set
+            {
+                _producer.Description = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Описание на инглише
+        /// </summary>
+        public string EnglishDescription
+        {
+            get { return _producer.EnglishDescription; }
+            set
+            {
+                _producer.EnglishDescription = value;
                 OnPropertyChanged();
             }
         }
@@ -36,9 +67,9 @@ namespace Artis.ArtisDataFiller.ViewModels
             }
         }
 
-        public AddProducerViewModel(Action action)
+        public AddProducerViewModel()
         {
-            _action = action;
+            _producer = new Producer();
         }
 
         public override bool CanExecuteOkCommand(object parameter)
@@ -48,7 +79,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         public async override void ExecuteOkCommand(object parameter)
         {
-            _producer = new Producer() {FIO = Name};
+//            _producer = new Producer() {FIO = Name};
             //await ProducerRepository.AddProducer(_producer, _action);
         }
     }
