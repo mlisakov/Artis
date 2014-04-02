@@ -17,12 +17,14 @@ namespace Artis.Data
         private  ActionRepository _actionRepository;
         private  ActorRepository _actorRepository;
         private  ProducerRepository _producerRepository;
+        private DataRepository _dataRepository;
 
         public ActionDateRepository()
         {
             _actionRepository=new ActionRepository();
             _actorRepository=new ActorRepository();
             _producerRepository=new ProducerRepository();
+            _dataRepository=new DataRepository();
         }
 
         public async Task<bool> Save(ActionDate action, List<Data> addedImages, List<long> deletedImages, List<Actor> actors, List<Producer> producers)
@@ -69,24 +71,69 @@ namespace Artis.Data
         /// <param name="action">Измененное мероприятие</param>
         private void CompareAction(Action originalAction, Action action, List<Actor> actors, List<Producer> producers)
         {
-            if (!originalAction.Name.Equals(action.Name))
+            if (originalAction.Name==null || !originalAction.Name.Equals(action.Name))
                 originalAction.Name = action.Name;
-            if (originalAction.Rating != action.Rating)
+
+            if (originalAction.EnglishName==null || !originalAction.EnglishName.Equals(action.EnglishName))
+                originalAction.EnglishName = action.EnglishName;
+
+            if (originalAction.Rating==null || originalAction.Rating != action.Rating)
                 originalAction.Rating = action.Rating;
-            if (!originalAction.Duration.Equals(action.Duration))
+
+            if (originalAction.Duration==null || !originalAction.Duration.Equals(action.Duration))
                 originalAction.Duration = action.Duration;
-            if (!originalAction.Description.Equals(action.Description))
+
+            if (originalAction.Description==null || !originalAction.Description.Equals(action.Description))
                 originalAction.Description = action.Description;
+
+            if (originalAction.EnglishDescription==null || !originalAction.EnglishDescription.Equals(action.EnglishDescription))
+                originalAction.EnglishDescription = action.EnglishDescription;
+
             if (originalAction.Genre.ID!=action.Genre.ID)
                 originalAction.Genre = action.Genre;
 
             List<Actor> currentActors = originalAction.Actor.ToList();
             List<Actor> deletedActors = currentActors.Except(actors, new ActorComparer()).ToList();
             List<Actor> addedActors = actors.Except(currentActors, new ActorComparer()).ToList();
+            List<Actor> restActors = currentActors.Except(deletedActors, new ActorComparer()).ToList();
+
             foreach (Actor actor in addedActors)
             {
+                foreach (Data image in actor.Data)
+                    _dataRepository.Add(image);
                 _actorRepository.Add(actor);
                 originalAction.Actor.Add(actor);
+            }
+
+            foreach (Actor actor in restActors)
+            {                 
+                Actor changedActor = actors.First(i => i.ID == actor.ID);
+
+                if (actor.FIO != changedActor.FIO)
+                    actor.FIO = changedActor.FIO;
+                if (actor.EnglishFIO != changedActor.EnglishFIO)
+                    actor.EnglishFIO = changedActor.EnglishFIO;
+                if (actor.Description != changedActor.Description)
+                    actor.Description = changedActor.Description;
+                if (actor.EnglishDescription != changedActor.EnglishDescription)
+                    actor.EnglishDescription = changedActor.EnglishDescription;
+                
+                //_actorRepository.Update(actor);
+                List<Data> currentImages = actor.Data.ToList();
+                List<Data> deletedImages = currentImages.Except(changedActor.Data.ToList(), new DataComparer()).ToList();
+                List<Data> addedImages = changedActor.Data.Where(i => i.ID <= 0).ToList();
+                foreach (Data image in deletedImages)
+                {
+                    actor.Data.Remove(image);
+                }
+                foreach (Data image in addedImages)
+                {
+                    Data data=new Data(){Base64StringData = image.Base64StringData};
+                    _dataRepository.Add(data);
+                    actor.Data.Add(data);
+                    
+                }
+                _actorRepository.Update(actor);
             }
 
 
@@ -124,6 +171,8 @@ namespace Artis.Data
                 originalActionDate.Time = actionDate.Time;
             if (originalActionDate.PriceRange != actionDate.PriceRange)
                 originalActionDate.PriceRange = actionDate.PriceRange;
+            if (originalActionDate.EnglishPriceRange != actionDate.EnglishPriceRange)
+                originalActionDate.EnglishPriceRange = actionDate.EnglishPriceRange;
             if (originalActionDate.MinPrice != actionDate.MinPrice)
                 originalActionDate.MinPrice = actionDate.MinPrice;
             if (originalActionDate.MaxPrice != actionDate.MaxPrice)

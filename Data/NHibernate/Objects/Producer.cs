@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace Artis.Data
 {
@@ -9,6 +11,7 @@ namespace Artis.Data
         private string _englishFIO;
         private string _description;
         private string _englishDescription;
+        private ICollection<Data> _data;
 
         /// <summary>
         /// Идентификатор
@@ -53,6 +56,16 @@ namespace Artis.Data
         {
             get { return _englishDescription; }
             set { _englishDescription = value; }
+        }
+
+        /// <summary>
+        /// Список изображений продюсера
+        /// </summary>
+        [XmlIgnore]
+        public virtual ICollection<Data> Data
+        {
+            get { return _data; }
+            set { _data = value; }
         }
     }
 }

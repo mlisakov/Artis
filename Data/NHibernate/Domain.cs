@@ -88,7 +88,7 @@ namespace Artis.Data
             {
                 MessageBox.Show(ex.Message,"Error", MessageBoxButtons.OK);
                 _logger.ErrorException("Ошибка инициализации NHibernate",ex);
-                throw new DBAccessFailedException("Ошибка доступа к Базе данных \"Артис\".Текущая директория:" + AppDomain.CurrentDomain.BaseDirectory);
+                throw new DBAccessFailedException("Ошибка доступа к Базе данных \"Артис\"."+ex.Message);
             }
         }
     }

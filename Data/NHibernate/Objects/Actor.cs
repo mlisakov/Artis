@@ -1,4 +1,7 @@
-﻿namespace Artis.Data
+﻿using System.Collections.Generic;
+using System.Xml.Serialization;
+
+namespace Artis.Data
 {
     public class Actor
     {
@@ -7,6 +10,7 @@
         private string _englishFIO;
         private string _description;
         private string _englishDescription;
+        private ICollection<Data> _data;
 
         /// <summary>
         /// Идентификатор
@@ -51,6 +55,16 @@
         {
             get { return _englishDescription; }
             set { _englishDescription = value; }
+        }
+
+        /// <summary>
+        /// Список изображений актера
+        /// </summary>
+        [XmlIgnore]
+        public virtual ICollection<Data> Data
+        {
+            get { return _data; }
+            set { _data = value; }
         }
     }
 }

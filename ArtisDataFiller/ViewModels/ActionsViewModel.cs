@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
+using Artis.Data.XmlObjects;
 using Microsoft.Win32;
 using NLog;
 
@@ -796,8 +797,9 @@ namespace Artis.ArtisDataFiller.ViewModels
             if (dialogResult.HasValue && dialogResult.Value)
             {
                 //todo сохранить измененного актера
-//                ActorsItemsSource.Add(viewModel.Actor);
-//                OnPropertyChanged("ActorsItemsSource");
+                //if(ChangedActors.Any(i=>i.ID==viewModel.Actor.ID))
+                //ActorsItemsSource.Add(viewModel.Actor);
+                //OnPropertyChanged("ActorsItemsSource");
             }
         }
 

@@ -117,7 +117,8 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// </summary>
         private async void InitDataSource()
         {
-            Categories = await DataRequestFactory.GetGuiSections();
+            //Categories = await DataRequestFactory.GetGuiSections();
+            Categories = await _wcfAdminService.GetGuiSections();
         }
 
         private async void InitGenres()

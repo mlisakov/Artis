@@ -253,6 +253,36 @@ namespace Artis.Service
             return string.Empty;
         }
 
+        public async Task<string> GetActorImagesAsync(long idActor)
+        {
+            try
+            {
+                List<Data.Data> images = await DataRequestFactory.GetImages("Actor", idActor);
+                DataXmlProvider xmlProvider = new DataXmlProvider(images);
+                return xmlProvider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить изображения для актера с идентификатором:" + idActor, ex);
+            }
+            return string.Empty;
+        }
+
+        public async Task<string> GetProducerImagesAsync(long idProducer)
+        {
+            try
+            {
+                List<Data.Data> images = await DataRequestFactory.GetImages("Producer", idProducer);
+                DataXmlProvider xmlProvider = new DataXmlProvider(images);
+                return xmlProvider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить изображения для продюсера с идентификатором:" + idProducer, ex);
+            }
+            return string.Empty;
+        }
+
         public async Task<string> GetActionActorsAsync(long idAction)
         {
             try
@@ -311,6 +341,21 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("Не удалось загрузить жанры для секции GUI" + idSection, ex);
+            }
+            return string.Empty;
+        }
+
+        public async Task<string> GetGuiSectios()
+        {
+            try
+            {
+                GuiSectionXmlProvider guiSectionXmlProvider =
+                    new GuiSectionXmlProvider(await DataRequestFactory.GetGuiSections());
+                return guiSectionXmlProvider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить категории GUI", ex);
             }
             return string.Empty;
         }

@@ -200,5 +200,28 @@ namespace Artis.Service
         /// </returns>
         [OperationContract]
         Task<int> ParseAction(string actionWeb);
+
+        /// <summary>
+        /// Получение списка категорий GUI(Театр, Цирк, Экскурсия....)
+        /// </summary>
+        /// <returns></returns>
+        [OperationContract]
+        Task<string> GetGuiSectios();
+
+        /// <summary>
+        /// Получение списка изображений для актера
+        /// </summary>
+        /// <param name="idActor">Идентификатор актера</param>
+        /// <returns></returns>
+        [OperationContract]
+        Task<string> GetActorImagesAsync(long idActor);
+
+        /// <summary>
+        /// Получение списка изображений для продюсера
+        /// </summary>
+        /// <param name="idProducer">Идентификатор продюсера</param>
+        /// <returns></returns>
+        [OperationContract]
+        Task<string> GetProducerImagesAsync(long idProducer);
     }
 }

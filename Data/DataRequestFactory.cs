@@ -440,6 +440,20 @@ namespace Artis.Data
                         return action.Data.ToList();
                     }
                     break;
+                case "Actor":
+                    using (ISession session = Domain.Session)
+                    {
+                        Actor actor = session.Query<Actor>().First(i => i.ID == id);
+                        return actor.Data.ToList();
+                    }
+                    break;
+                case "Producer":
+                    using (ISession session = Domain.Session)
+                    {
+                        Producer producer = session.Query<Producer>().First(i => i.ID == id);
+                        return producer.Data.ToList();
+                    }
+                    break;
             }
             return new List<Data>();
         }

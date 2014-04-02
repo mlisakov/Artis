@@ -17,11 +17,11 @@ namespace Artis.Data
         /// </summary>
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private static AreaRepository _area;
+        //private static AreaRepository _area;
 
         static AreaRepository()
         {
-            _area=new AreaRepository();
+           // _area=new AreaRepository();
         }
 
         public async Task<bool> Save(Area area, List<string> addedImages, List<long> deletedImages)
@@ -50,7 +50,7 @@ namespace Artis.Data
                         area.Data.Add(data);
                     }
 
-                _area.Update(area);
+                Update(area);
             }
             catch (Exception ex)
             {
@@ -76,7 +76,7 @@ namespace Artis.Data
                         area.Data.Add(data);
                     }
 
-                _area.Add(area);
+                Add(area);
             }
             catch (Exception ex)
             {
@@ -98,7 +98,7 @@ namespace Artis.Data
                         return false;
                     toDelete = session.Query<Area>().First(i => i.ID == id);
                 }
-                _area.Delete(toDelete);
+                Delete(toDelete);
             }
             catch (Exception ex)
             {

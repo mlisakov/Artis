@@ -116,6 +116,11 @@
     <property name="EnglishFIO" />
     <property name="Description" />
     <property name="EnglishDescription" />
+    
+     <set name="Data" table="ProducerData" lazy="false">
+      <key column="idProducer" />
+      <many-to-many class="Data" column="idData" />
+    </set>
   </class>
 
   <class name="Actor" table="Actor">
@@ -126,6 +131,11 @@
     <property name="EnglishFIO" />
     <property name="Description" />
     <property name="EnglishDescription" />
+
+    <set name="Data" table="ActorData" lazy="false">
+      <key column="idActor" />
+      <many-to-many class="Data" column="idData" />
+    </set>
   </class>
 
   <class name="Data" table="Data">

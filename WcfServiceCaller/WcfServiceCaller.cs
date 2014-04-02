@@ -123,6 +123,23 @@ namespace Artis.Data
             }
         }
 
+        //public async Task<bool> SaveActor(Actor currentActor, List<Data> addedImages, List<long> deletedImages)
+        //{
+        //    try
+        //    {
+        //        ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider(new List<Actor>() { currentActor });
+        //        return
+        //             await
+        //                 serviceAdminTool.SaveActorAsync(actorsXmlProvider.ToXml().InnerXml, addedImages.Select(i => i.Base64StringData).ToList(),
+        //                     deletedImages);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.ErrorException("Не удалось сохранить площадкy!", ex);
+        //        throw new Exception("Не удалось сохранить площадкy!");
+        //    }
+        //}
+
         public async Task<bool> SaveGenre(Genre currentArea)
         {
             try
@@ -319,11 +336,28 @@ namespace Artis.Data
             }
         }
 
+        public async Task<ObservableCollection<Data>> GetActorImages(long idActor)
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetActorImagesAsync(idActor);
+                DataXmlProvider provider = new DataXmlProvider();
+                return new ObservableCollection<Data>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить изображения!", ex);
+                throw new Exception("Не удалось получить изображения!");
+            }
+        }
+
         public async Task<ObservableCollection<Actor>> GetActionActors(long idAction)
         {
             try
             {
                 string result = await serviceAdminTool.GetActionActorsAsync(idAction);
+                if (string.IsNullOrEmpty(result))
+                    return new ObservableCollection<Actor>();
                 ActorsXmlProvider provider = new ActorsXmlProvider();
                 return new ObservableCollection<Actor>(provider.FromXml(result));
             }
@@ -379,6 +413,21 @@ namespace Artis.Data
             }
         }
 
+        public async Task<ObservableCollection<GuiSection>> GetGuiSections()
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetGuiSectios();
+                GuiSectionXmlProvider provider = new GuiSectionXmlProvider();
+                return new ObservableCollection<GuiSection>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить список категорий GUI!", ex);
+                throw new Exception("Не удалось получить список  категорий GUI!");
+            }
+        }
+
         public async Task<bool> UpdateGuiSectionGenres(long idSection,ObservableCollection<Genre> usedGenres)
         {
             try
@@ -406,6 +455,5 @@ namespace Artis.Data
                 throw new Exception("Не удалось сохранить загруженное мероприятие!");
             }
         }
-
     }
 }

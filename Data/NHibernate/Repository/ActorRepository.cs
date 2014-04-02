@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 using NLog;
 
@@ -51,5 +54,41 @@ namespace Artis.Data
             }
             return true;
         }
+
+        //public async Task<bool> Save(Actor actor, List<string> addedImages, List<long> deletedImages)
+        //{
+        //    try
+        //    {
+        //        if (deletedImages != null)
+        //        {
+        //            Actor currentActor = GetById(actor.ID);
+        //            actor.Data = new Collection<Data>(currentActor.Data.ToList());
+        //            foreach (long idImage in deletedImages)
+        //            {
+        //                Data item = actor.Data.First(i => i.ID == idImage);
+        //                actor.Data.Remove(item);
+        //            }
+        //        }
+
+        //        if (addedImages != null)
+        //            foreach (string image in addedImages)
+        //            {
+        //                DataRepository _dataRepository = new DataRepository();
+        //                Data data = new Data() { Base64StringData = image };
+        //                _dataRepository.Add(data);
+        //                if (actor.Data == null)
+        //                    actor.Data = new Collection<Data>();
+        //                actor.Data.Add(data);
+        //            }
+
+        //        Update(actor);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.ErrorException("Ошибка записи изображения ", ex);
+        //        return false;
+        //    }
+        //    return true;
+        //}
     }
 }

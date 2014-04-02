@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace Artis.Data
 {
@@ -15,7 +16,7 @@ namespace Artis.Data
         public virtual long ID
         {
             get { return _id; }
-            protected set { _id = value; }
+            set { _id = value; }
         }
 
         /// <summary>
@@ -30,6 +31,7 @@ namespace Artis.Data
         /// <summary>
         /// Связанные с секцией жанры
         /// </summary>
+        [XmlIgnoreAttribute]
         public virtual ICollection<Genre> Genre
         {
             get { return _genre; }
