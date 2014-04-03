@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 
 namespace Artis.Data
 {
-    public class Actor
+    public class Actor:IPeople
     {
         private long _id;
         private string _FIO;

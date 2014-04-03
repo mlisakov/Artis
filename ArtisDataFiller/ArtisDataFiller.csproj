@@ -70,9 +70,6 @@
       <HintPath>..\Data\Library\Iesi.Collections.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Expression.Interactions" />
-    <Reference Include="NHibernate">
-      <HintPath>..\packages\NHibernate.3.3.3.4001\lib\Net35\NHibernate.dll</HintPath>
-    </Reference>
     <Reference Include="NLog">
       <HintPath>..\packages\NLog.2.1.0\lib\net45\NLog.dll</HintPath>
     </Reference>
@@ -126,7 +123,6 @@
     <Compile Include="InformationPage.xaml.cs">
       <DependentUpon>InformationPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="NLog-NHibernate.cs" />
     <Compile Include="ViewModels\ActionsViewModel.cs" />
     <Compile Include="ViewModels\AddActorFromListViewModel.cs" />
     <Compile Include="ViewModels\AddActorViewModel.cs" />
@@ -237,7 +233,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -2,7 +2,7 @@ using System;
 using NHibernate;
 using NLog;
 
-namespace Artis.ArtisDataFiller
+namespace Artis.Service
 {
 	///Add <add key="nhibernate-logger" value="MyNamespace.NLogFactory, MyAssemblyName"/>
     

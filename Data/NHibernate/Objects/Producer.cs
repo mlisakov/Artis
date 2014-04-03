@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 
 namespace Artis.Data
 {
-    public class Producer
+    public class Producer:IPeople
     {
         private long _id;
         private string _FIO;

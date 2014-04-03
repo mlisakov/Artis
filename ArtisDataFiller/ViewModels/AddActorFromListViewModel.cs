@@ -11,18 +11,20 @@ namespace Artis.ArtisDataFiller.ViewModels
 {
     public class AddActorFromListViewModel: ViewModel
     {
+        private WcfServiceCaller _wcfServiceCaller;
         /// <summary>
         /// true - если нужно грузить инфу о продюсерах, false - об актерах
         /// </summary>
         private readonly bool _isProducers;
 
         private string _title;
-        private ObservableCollection<Producer> _producersItemsSource;
+        private string _name;
+        private ObservableCollection<IPeople> _producersItemsSource;
 
         /// <summary>
         /// Команда поиска людей
         /// </summary>
-        public ArtisCommand SearchPeople { get; private set; }
+        public ArtisCommand SearchCommand { get; private set; }
 
         /// <summary>
         /// Заголовок диалогового окна
@@ -37,11 +39,22 @@ namespace Artis.ArtisDataFiller.ViewModels
             }
         }
 
+        public string Name
+        {
+            get { return _name; }
+            set
+            {
+                _name = value;
+                OnPropertyChanged();
+            }
+        }
+
+
 
         /// <summary>
         /// Список актеров/продюсеров
         /// </summary>
-        public ObservableCollection<Producer> PeopleItemsSource
+        public ObservableCollection<IPeople> PeopleItemsSource
         {
             get { return _producersItemsSource; }
             set
@@ -54,16 +67,16 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// <summary>
         /// Выделенный актер
         /// </summary>
-        /// todo раскоментишь и поправишь, когда создашь интерфейс
-//        public IPeople SelectedPeople { get; set; }
+        public IPeople SelectedPeople { get; set; }
 
         public AddActorFromListViewModel(bool isProducers = false)
         {
+            _wcfServiceCaller=new WcfServiceCaller();
             _isProducers = isProducers;
 
             LoadPeople();
 
-            SearchPeople = new ArtisCommand(CanExecute, ExecuteSearchPeople);
+            SearchCommand = new ArtisCommand(CanExecute, ExecuteSearchPeople);
         }
 
         private bool CanExecute(object param)
@@ -71,13 +84,20 @@ namespace Artis.ArtisDataFiller.ViewModels
             return true;
         }
 
-        private void ExecuteSearchPeople(object obj)
+        private async void ExecuteSearchPeople(object obj)
         {
             //todo поиск
+            await LoadPeople(Name);
         }
 
-        private void LoadPeople()
+        private async Task LoadPeople(string filter="")
         {
+            PeopleItemsSource = _isProducers
+                ? new ObservableCollection<IPeople>(
+                    (await _wcfServiceCaller.GetProducersAsync(filter)).Select(i => (IPeople)i))
+                : new ObservableCollection<IPeople>(
+                    (await _wcfServiceCaller.GetActorsAsync(filter)).Select(i => (IPeople)i));
+
             //todo асинхронный метод загрузки либо актеров, либо продюсеров (см. _isProducers)
             //todo PeopleItemsSource - список людей. Надо продюсеров и Актеров привести к одному интерфейсу IPeople и положить их в это поле после загрузки
         }

@@ -839,11 +839,13 @@ namespace Artis.ArtisDataFiller.ViewModels
                     if (producers)
                     {
                         //todo добавляем продюсера 
+                        ProducersItemsSource.Add((Producer)viewModel.SelectedPeople);
                         OnPropertyChanged("ProducersItemsSource");
                     }
                     else
                     {
                         //todo добавляем актера
+                        ActorsItemsSource.Add((Actor)viewModel.SelectedPeople);
                         OnPropertyChanged("ActorsItemsSource");
                     }
 

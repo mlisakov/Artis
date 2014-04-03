@@ -455,5 +455,35 @@ namespace Artis.Data
                 throw new Exception("Не удалось сохранить загруженное мероприятие!");
             }
         }
+
+        public async Task<ObservableCollection<Producer>> GetProducersAsync(string filter="")
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetProducers(filter);
+                ProducersXmlProvider provider = new ProducersXmlProvider();
+                return new ObservableCollection<Producer>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить список продюсеров!", ex);
+                throw new Exception("Не удалось получить список продюсеров!");
+            }
+        }
+
+        public async Task<ObservableCollection<Actor>> GetActorsAsync(string filter = "")
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetActors(filter);
+                ActorsXmlProvider provider = new ActorsXmlProvider();
+                return new ObservableCollection<Actor>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить список продюсеров!", ex);
+                throw new Exception("Не удалось получить список продюсеров!");
+            }
+        }
     }
 }

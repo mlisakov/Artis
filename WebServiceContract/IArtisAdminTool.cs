@@ -223,5 +223,21 @@ namespace Artis.Service
         /// <returns></returns>
         [OperationContract]
         Task<string> GetProducerImagesAsync(long idProducer);
+
+        /// <summary>
+        /// Поиск продюсеров
+        /// </summary>
+        /// <param name="filter">Фильтрующий параметр для ФИО</param>
+        /// <returns></returns>
+        [OperationContract]
+        Task<string> GetProducers(string filter);
+
+        /// <summary>
+        /// Поиск актеров
+        /// </summary>
+        /// <param name="filter">Фильтрующий параметр для ФИО</param>
+        /// <returns></returns>
+        [OperationContract]
+        Task<string> GetActors(string filter);
     }
 }

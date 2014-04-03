@@ -130,8 +130,11 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async Task InitImagesDataSource()
         {
-            ObservableCollection<Data.Data> images = await _wcfAdminService.GetActorImages(Actor.ID);
-            Images = await ImageHelper.ConvertImages(images);
+            //ObservableCollection<Data.Data> images = await _wcfAdminService.GetActorImages(Actor.ID);
+            //Images = await ImageHelper.ConvertImages(images);
+
+            if (Actor.Data != null)
+                Images = await ImageHelper.ConvertImages(Actor.Data);
         }
 
         public override bool CanExecuteOkCommand(object parameter)

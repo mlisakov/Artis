@@ -413,7 +413,17 @@ namespace Artis.DataLoader
                     {
                         foreach (string url in imageUrlList.OrderBy(i => i.Value).Take(5).Select(i => i.Key))
                         {
-                            byte[] image = client.DownloadData(url);
+                            byte[] image;
+                            try
+                            {
+                               image = client.DownloadData(url);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.ErrorException("Bileter.Ошибка загрузки изображения...", ex);
+                                continue;
+                            }
+                            
                             string base64String = Convert.ToBase64String(image, 0, image.Length);
                             stringImages.Add(base64String);
                         }

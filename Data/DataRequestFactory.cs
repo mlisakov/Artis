@@ -476,9 +476,30 @@ namespace Artis.Data
             }
         }
 
-        public static Task<Task<bool>> UpdateGuiSectionGenres(long idSection, List<Genre> fromXml)
+        public static async Task<ObservableCollection<Producer>> GetProducers(string FIO)
         {
-            throw new NotImplementedException();
+            using (ISession session = await Domain.GetSession())
+            {
+                if (string.IsNullOrEmpty(FIO))
+                    return new ObservableCollection<Producer>(session.Query<Producer>().Select(i => i).OrderBy(i => i.FIO));
+
+                ICriteria criteria = session.CreateCriteria(typeof(Producer));
+                criteria.Add(Restrictions.Like("FIO", "%" + FIO + "%").IgnoreCase());
+                return new ObservableCollection<Producer>(criteria.List<Producer>().OrderBy(i => i.FIO));
+            }
+        }
+
+        public static async Task<ObservableCollection<Actor>> GetActors(string FIO)
+        {
+            using (ISession session = await Domain.GetSession())
+            {
+                if (string.IsNullOrEmpty(FIO))
+                    return new ObservableCollection<Actor>(session.Query<Actor>().Select(i => i).OrderBy(i => i.FIO));
+
+                ICriteria criteria = session.CreateCriteria(typeof(Actor));
+                criteria.Add(Restrictions.Like("FIO", "%" + FIO + "%").IgnoreCase());
+                return new ObservableCollection<Actor>(criteria.List<Actor>().OrderBy(i => i.FIO));
+            }
         }
     }
 }

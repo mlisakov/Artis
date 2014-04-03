@@ -283,6 +283,38 @@ namespace Artis.Service
             return string.Empty;
         }
 
+        public async Task<string> GetProducers(string filter)
+        {
+            try
+            {
+                ObservableCollection<Producer> originalProducers = await DataRequestFactory.GetProducers(filter);
+
+                ProducersXmlProvider producersXmlProvider = new ProducersXmlProvider(originalProducers);
+                return producersXmlProvider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить продюсеров по имени:" + filter, ex);
+            }
+            return string.Empty;
+        }
+
+        public async Task<string> GetActors(string filter)
+        {
+            try
+            {
+                ObservableCollection<Actor> originalProducers = await DataRequestFactory.GetActors(filter);
+
+                ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider(originalProducers);
+                return actorsXmlProvider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить актеров по имени:" + filter, ex);
+            }
+            return string.Empty;
+        }
+
         public async Task<string> GetActionActorsAsync(long idAction)
         {
             try
