@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
-using Artis.Data.XmlObjects;
 using NLog;
 
 namespace Artis.Data
@@ -46,8 +45,8 @@ namespace Artis.Data
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Не удалось сериализовать мероприятия",ex);
-                throw new Exception("Не удалось сериализовать мероприятия");
+                _logger.ErrorException("Не удалось сериализовать актеров",ex);
+                throw new Exception("Не удалось сериализовать актеров");
             }
         }
 

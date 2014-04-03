@@ -57,7 +57,8 @@
     <Compile Include="NHibernate\Extentions\DataComparer.cs" />
     <Compile Include="NHibernate\Extentions\ProducerComparer.cs" />
     <Compile Include="NHibernate\Objects\Interfaces\IPeople.cs" />
-    <Compile Include="XmlObjects\Actor.cs" />
+    <Compile Include="XmlObjects\XmlActor.cs" />
+    <Compile Include="XmlObjects\XmlProducer.cs" />
     <Compile Include="XmlProviders\ActionDateXmlProvider.cs" />
     <Compile Include="XmlProviders\ActionWebXmlProvider.cs" />
     <Compile Include="XmlProviders\ActionXmlProvider.cs" />

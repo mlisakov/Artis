@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using NLog;
@@ -11,18 +12,20 @@ namespace Artis.Data
     {
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
-        [XmlArray("Producers"), XmlArrayItem(typeof(Producer), ElementName = "Producer")]
-        public List<Producer> Producers { get; set; }
+        [XmlArray("Producers"), XmlArrayItem(typeof(XmlProducer), ElementName = "Producer")]
+        public List<XmlProducer> Producers { get; set; }
 
         public ProducersXmlProvider()
         {
-            Producers = new List<Producer>();
+            Producers = new List<XmlProducer>();
         }
 
 
-        public ProducersXmlProvider(IEnumerable<Producer> producers)
+        public ProducersXmlProvider(IEnumerable<Producer> producers):this()
         {
-            Producers = new List<Producer>(producers);
+            foreach (Producer producer in producers)
+                Producers.Add(new XmlProducer(producer));
+           // Producers = new List<XmlProducer>(producers);
         }
 
         public XmlDocument ToXml()
@@ -56,7 +59,7 @@ namespace Artis.Data
 
             ProducersXmlProvider result = (ProducersXmlProvider)xmlserializer.Deserialize(reader);
             reader.Close();
-            return result.Producers;
+            return result.Producers.Select(xmlActor => xmlActor.ToProducer()).ToList();
         }
     }
 }

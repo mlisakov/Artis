@@ -13,7 +13,6 @@ namespace Artis.ArtisDataFiller.ViewModels
 {
     public class AddActorViewModel : DialogViewModel
     {
-        private WcfServiceCaller _wcfAdminService;
         private Actor _actor;
         private ObservableCollection<DataImage> _images;
         private List<long> _deletedImages;
@@ -122,7 +121,6 @@ namespace Artis.ArtisDataFiller.ViewModels
         public AddActorViewModel()
         {
             _actor = new Actor();
-            _wcfAdminService=new WcfServiceCaller();
             AddImageCommand = new ArtisCommand(CanExecute, ExecuteAddImagesCommand);
             RemoveImageCommand = new ArtisCommand(CanExecuteRemoveImageCommand, ExecuteRemoveImagesCommand);
         }
@@ -130,9 +128,6 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async Task InitImagesDataSource()
         {
-            //ObservableCollection<Data.Data> images = await _wcfAdminService.GetActorImages(Actor.ID);
-            //Images = await ImageHelper.ConvertImages(images);
-
             if (Actor.Data != null)
                 Images = await ImageHelper.ConvertImages(Actor.Data);
         }

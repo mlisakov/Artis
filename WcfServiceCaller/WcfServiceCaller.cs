@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
@@ -167,6 +168,9 @@ namespace Artis.Data
                 ActionDateXmlProvider actionDateXmlProvider = new ActionDateXmlProvider(new List<ActionDate>() { currentActionDate });
                 ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider( actors );
                 ProducersXmlProvider producerXmlProvider = new ProducersXmlProvider(producers);
+                var t = producerXmlProvider.ToXml().InnerXml;
+                 _logger.Debug(t);
+                Debug.WriteLine(t);
                 return
                     await
                         serviceAdminTool.SaveActionDateAsync(

@@ -9,7 +9,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
-using Artis.Data.XmlObjects;
 using Microsoft.Win32;
 using NLog;
 
@@ -743,6 +742,13 @@ namespace Artis.ArtisDataFiller.ViewModels
             OnPropertyChanged("ProducersItemsSource");
         }
 
+        private async void ExecuteRemoveActorCommand(object obj)
+        {
+            //await RemoveActor();
+            ActorsItemsSource.Remove(SelectedActor);
+            OnPropertyChanged("ActorsItemsSource");
+        }
+
         private void ExecuteEditProducerCommand(object obj)
         {
             if (ProducersItemsSource == null)
@@ -761,22 +767,6 @@ namespace Artis.ArtisDataFiller.ViewModels
                 //todo сохранить изменения в описании продюсера
 //                ProducersItemsSource.Add(viewModel.Producer);
 //                OnPropertyChanged("ProducersItemsSource");
-            }
-        }
-
-        private void ExecuteAddProducerCommand(object obj)
-        {
-            if (ProducersItemsSource==null)
-                ProducersItemsSource=new ObservableCollection<Producer>();
-            var viewModel = new AddProducerViewModel() {Title = "Добавление нового продюсера"};
-
-            var window = new AddActorDialogWindow {ViewModel = viewModel};
-
-            var dialogResult = window.ShowDialog();
-            if (dialogResult.HasValue && dialogResult.Value)
-            {
-                ProducersItemsSource.Add(viewModel.Producer);
-                OnPropertyChanged("ProducersItemsSource");
             }
         }
 
@@ -803,11 +793,36 @@ namespace Artis.ArtisDataFiller.ViewModels
             }
         }
 
-        private async void ExecuteRemoveActorCommand(object obj)
+        private void ExecuteAddProducerCommand(object obj)
         {
-            //await RemoveActor();
-            ActorsItemsSource.Remove(SelectedActor);
-            OnPropertyChanged("ActorsItemsSource");
+            if (ProducersItemsSource==null)
+                ProducersItemsSource=new ObservableCollection<Producer>();
+            var viewModel = new AddProducerViewModel() {Title = "Добавление нового продюсера"};
+
+            var window = new AddActorDialogWindow {ViewModel = viewModel};
+
+            var dialogResult = window.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                ProducersItemsSource.Add(viewModel.Producer);
+                OnPropertyChanged("ProducersItemsSource");
+            }
+        }
+
+        private void ExecuteAddNewActorCommand(object obj)
+        {
+            if (ActorsItemsSource == null)
+                ActorsItemsSource = new ObservableCollection<Actor>();
+            var viewModel = new AddActorViewModel() { Title = "Добавление нового актера" };
+
+            var window = new AddActorDialogWindow { ViewModel = viewModel };
+
+            var dialogResult = window.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                ActorsItemsSource.Add(viewModel.Actor);
+                OnPropertyChanged("ActorsItemsSource");
+            }
         }
 
         private void ExecuteAddActorFromListCommand(object obj)
@@ -854,22 +869,6 @@ namespace Artis.ArtisDataFiller.ViewModels
             }
         }
 
-
-        private void ExecuteAddNewActorCommand(object obj)
-        {
-            if (ActorsItemsSource == null)
-                ActorsItemsSource = new ObservableCollection<Actor>();
-            var viewModel = new AddActorViewModel() {Title = "Добавление нового актера"};
-
-            var window = new AddActorDialogWindow {ViewModel = viewModel};
-
-            var dialogResult = window.ShowDialog();
-            if (dialogResult.HasValue && dialogResult.Value)
-            {
-                ActorsItemsSource.Add(viewModel.Actor);
-                OnPropertyChanged("ActorsItemsSource");
-            }
-        }
 
         private void ExecuteRemoveActionCommand(object obj)
         {
