@@ -458,6 +458,15 @@ namespace Artis.Data
             return new List<Data>();
         }
 
+        public static async Task<List<Data>> GetSmallImages(long id)
+        {
+            using (ISession session = Domain.Session)
+            {
+                Action action = session.Query<Action>().First(i => i.ID == id);
+                return action.DataSmall.ToList();
+            }
+        }
+
         public static async Task<List<Actor>> GetActorsForAction(long idAction)
         {
             using (ISession session = Domain.Session)

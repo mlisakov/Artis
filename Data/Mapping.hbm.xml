@@ -33,6 +33,11 @@
       <many-to-many class="Data" column="idData" />
     </set>
 
+    <set name="DataSmall" table="ActionDataSmall" lazy="false">
+      <key column="idAction" />
+      <many-to-many class="Data" column="idData" />
+    </set>
+
     <set name="Actor" table="ActionActor" lazy="false">
       <key column="idAction" />
       <many-to-many class="Actor" column="idActor" />

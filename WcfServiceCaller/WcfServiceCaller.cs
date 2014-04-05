@@ -160,6 +160,7 @@ namespace Artis.Data
         public async Task<bool> SaveActionDate(ActionDate currentActionDate, 
             List<Data> addedImages, 
             List<long> deletedImages,
+            List<Data> addedSmallImages,
             List<Actor> actors,
             List<Producer> producers)
         {
@@ -174,9 +175,12 @@ namespace Artis.Data
                 return
                     await
                         serviceAdminTool.SaveActionDateAsync(
-                        actionDateXmlProvider.ToXml().InnerXml,
-                        addedImages.Select(i => i.Base64StringData).ToList(),
-                        deletedImages, actorsXmlProvider.ToXml().InnerXml, producerXmlProvider.ToXml().InnerXml);
+                            actionDateXmlProvider.ToXml().InnerXml,
+                            addedImages.Select(i => i.Base64StringData).ToList(),
+                            deletedImages,
+                            addedSmallImages.Select(i => i.Base64StringData).ToList(),
+                            actorsXmlProvider.ToXml().InnerXml,
+                            producerXmlProvider.ToXml().InnerXml);
             }
             catch (Exception ex)
             {
@@ -330,6 +334,21 @@ namespace Artis.Data
             try
             {
                 string result = await serviceAdminTool.GetActionImagesAsync(idAction);
+                DataXmlProvider provider = new DataXmlProvider();
+                return new ObservableCollection<Data>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить изображения!", ex);
+                throw new Exception("Не удалось получить изображения!");
+            }
+        }
+
+        public async Task<ObservableCollection<Data>> GetActionSmallImages(long idAction)
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetActionSmallImagesAsync(idAction);
                 DataXmlProvider provider = new DataXmlProvider();
                 return new ObservableCollection<Data>(provider.FromXml(result));
             }

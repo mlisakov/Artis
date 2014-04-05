@@ -168,17 +168,20 @@ namespace Artis.ArtisDataFiller.ViewModels
                 Stream[] selectedFiles = openDialog.OpenFiles();
                 foreach (Stream file in selectedFiles)
                 {
-                    MemoryStream stream = new MemoryStream();
-                    file.CopyTo(stream);
-                    file.Close();
-                    byte[] imageArray = stream.ToArray();
-                    string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
+                    //MemoryStream stream = new MemoryStream();
+                    //file.CopyTo(stream);
+                    //file.Close();
+                    //byte[] imageArray = stream.ToArray();
+                    //string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
 
-                    stream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage bitMapImage = new BitmapImage();
-                    bitMapImage.BeginInit();
-                    bitMapImage.StreamSource = stream;
-                    bitMapImage.EndInit();
+                    //stream.Seek(0, SeekOrigin.Begin);
+                    //BitmapImage bitMapImage = new BitmapImage();
+                    //bitMapImage.BeginInit();
+                    //bitMapImage.StreamSource = stream;
+                    //bitMapImage.EndInit();
+                    BitmapImage bitMapImage = ImageHelper.ResizeImage(file, ImageConsts.WidthConst);
+                    string base64String = ImageHelper.ResizeAndConvertImageToBase64String(file);
+                    file.Close();
                     if (!string.IsNullOrEmpty(base64String))
                     {
                         Data.Data image = new Data.Data() { Base64StringData = base64String};

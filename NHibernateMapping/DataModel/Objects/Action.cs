@@ -22,6 +22,7 @@ namespace Artis.Data
         private ICollection<Area> _area;
         private ICollection<ActionDate> _date;
         private ICollection<Data> _data;
+        private ICollection<Data> _dataSmall;
         private ICollection<Actor> _actors;
         private ICollection<Producer> _producers;
 
@@ -132,6 +133,16 @@ namespace Artis.Data
         {
             get { return _data; }
             set { _data = value; }
+        }
+
+        /// <summary>
+        /// Список урезанных изображений мероприятия
+        /// </summary>
+        [XmlIgnoreAttribute]
+        public virtual ICollection<Data> DataSmall
+        {
+            get { return _dataSmall; }
+            set { _dataSmall = value; }
         }
 
         /// <summary>

@@ -30,8 +30,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         private Producer _selectedProducer;
 
         private ObservableCollection<DataImage> _images;
+        private ObservableCollection<DataImage> _smallImages;
         private List<long> _deletedImages;
+        private List<long> _deletedSmallImages;
         private List<DataImage> _addedImages;
+        private List<DataImage> _addedSmallImages;
 
         private ObservableCollection<Area> _filterAreasItemsSource;        
         private ObservableCollection<Genre> _genresItemsSource;
@@ -168,6 +171,19 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// Список картинок для редактируемой/создаваемой площадки
         /// </summary>
         public ObservableCollection<DataImage> Images
+        {
+            get { return _images; }
+            set
+            {
+                _images = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Список маленьких картинок для редактируемой/создаваемой площадки
+        /// </summary>
+        public ObservableCollection<DataImage> SmallImages
         {
             get { return _images; }
             set
@@ -581,8 +597,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteSaveNewImageCommand(object obj)
         {
-            var originalImage = NewImage as BitmapImage;            
-            if(originalImage == null)
+            var originalImage = NewImage as BitmapImage;
+            if (originalImage == null)
                 return;
 
             BitmapSource result;
@@ -594,13 +610,13 @@ namespace Artis.ArtisDataFiller.ViewModels
 
                 if (IsLeft)
                     dx = 0;
-                else dx = IsCenter ? (ImageConsts.WidthConst - 580) / 2 : ImageConsts.WidthConst - 580;
+                else dx = IsCenter ? (ImageConsts.WidthConst - 580)/2 : ImageConsts.WidthConst - 580;
 
                 if (IsTop)
                     dy = 0;
                 else
                 {
-                    double height = (ImageConsts.WidthConst / _lastPercentOfImage);
+                    double height = (ImageConsts.WidthConst/_lastPercentOfImage);
                     dy = IsBotton ? Convert.ToInt32(height - 150) : Convert.ToInt32((height - 150)/2);
                 }
 
@@ -609,7 +625,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             else
             {
                 //todo сохраняем NewImage сначала
-                
+                SaveImage(originalImage);
 
                 //обрезаем для вертикального варианта
                 BitmapImage bi = new BitmapImage();
@@ -625,8 +641,8 @@ namespace Artis.ArtisDataFiller.ViewModels
                 result = bi;
             }
 
-            //todo сохраняем обрезанную картинку
 
+            MemoryStream mStream = new MemoryStream();
             BitmapEncoder encoder;
             if (originalImage.UriSource.AbsoluteUri.EndsWith(".png"))
                 encoder = new PngBitmapEncoder();
@@ -634,19 +650,68 @@ namespace Artis.ArtisDataFiller.ViewModels
                 encoder = new JpegBitmapEncoder();
 
             encoder.Frames.Add(BitmapFrame.Create(result));
+            encoder.Save(mStream);
 
-            SaveFileDialog openDialog = new SaveFileDialog
-            {
-                Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
-                Title = "Пожалуйста, выберите файл для сохранения.",
-            };
-            if (openDialog.ShowDialog().Value)
-                using (var fs = openDialog.OpenFile())
-                {
-                    encoder.Save(fs);
-                }
+            mStream.Seek(0, SeekOrigin.Begin);
+            BitmapImage image = new BitmapImage();
+            image.BeginInit();
+            image.StreamSource = mStream;
+            image.EndInit();
+
+            //todo сохраняем обрезанную картинку
+            SaveSmallImage(image);
+
+            //SaveFileDialog openDialog = new SaveFileDialog
+            //{
+            //    Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+            //    Title = "Пожалуйста, выберите файл для сохранения.",
+            //};
+            //if (openDialog.ShowDialog().Value)
+            //    using (var fs = openDialog.OpenFile())
+            //    {
+            //        encoder.Save(fs);
+            //    }
 
             NewImage = null;
+        }
+
+        private void SaveImage(BitmapImage originalImage)
+        {
+            BitmapImage bitMapImage = ImageHelper.ResizeImage(originalImage.StreamSource, ImageConsts.WidthConst);
+            string base64String = ImageHelper.ResizeAndConvertImageToBase64String(originalImage.StreamSource);
+
+            if (!string.IsNullOrEmpty(base64String))
+            {
+                DataImage image = new DataImage() {Base64String = base64String, Image = bitMapImage};
+                if (_addedImages == null)
+                    _addedImages = new List<DataImage>();
+                _addedImages.Add(image);
+
+                if (Images == null)
+                    Images = new ObservableCollection<DataImage>();
+                Images.Add(image);
+                OnPropertyChanged("Images");
+            }
+        }
+
+        private void SaveSmallImage(BitmapImage originalImage)
+        {
+            string base64String = ImageHelper.ConvertImageToBase64String(originalImage.StreamSource);
+
+            if (!string.IsNullOrEmpty(base64String))
+            {
+                DataImage image = new DataImage() { Base64String = base64String, Image = originalImage };
+                if (_addedSmallImages == null)
+                    _addedSmallImages = new List<DataImage>();
+                _addedSmallImages.Add(image);
+
+
+                    if (SmallImages == null)
+                        SmallImages = new ObservableCollection<DataImage>();
+                    SmallImages.Add(image);
+                    OnPropertyChanged("SmallImages");
+                
+            }
         }
 
         private void ExecuteOpenImageCommand(object obj)
@@ -663,14 +728,14 @@ namespace Artis.ArtisDataFiller.ViewModels
             {
                 using (Stream stream = openDialog.OpenFile())
                 {
-                    //BitmapImage bitMapImage = new BitmapImage();
+                    BitmapImage bitMapImage = new BitmapImage();
 
-                    //bitMapImage.BeginInit();
-                    //bitMapImage.StreamSource = stream;
-                    //bitMapImage.EndInit();
+                    bitMapImage.BeginInit();
+                    bitMapImage.StreamSource = stream;
+                    bitMapImage.EndInit();
 
                     ////определяем пропорции
-                    //_lastPercentOfImage = (double)bitMapImage.PixelWidth / bitMapImage.PixelHeight;
+                    _lastPercentOfImage = (double)bitMapImage.PixelWidth / bitMapImage.PixelHeight;
 
                     //double height = WidthConst / _lastPercentOfImage;
 
@@ -685,7 +750,7 @@ namespace Artis.ArtisDataFiller.ViewModels
                     //bi.UriSource = new Uri(openDialog.FileName);
                     //bi.EndInit();
 
-                    NewImage = ImageHelper.ResizeImage(stream, ImageConsts.WidthConst);
+                    NewImage = ImageHelper.ResizeImage(stream, ImageConsts.WidthConst, openDialog.FileName);
                 }
             }
         }
@@ -883,6 +948,10 @@ namespace Artis.ArtisDataFiller.ViewModels
 
             ObservableCollection<Data.Data> images = await _wcfAdminService.GetActionImages(CurrentActionDate.Action.ID);
             Images = await ImageHelper.ConvertImages(images);
+
+
+            ObservableCollection<Data.Data> smallImages = await _wcfAdminService.GetActionSmallImages(CurrentActionDate.Action.ID);
+            SmallImages = await ImageHelper.ConvertImages(smallImages);
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
@@ -894,6 +963,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
             CurrentActionDate=new ActionDate(){Date = DateTime.Today,Action=new Data.Action()};
             Images=new ObservableCollection<DataImage>();
+            SmallImages=new ObservableCollection<DataImage>();
             ActorsItemsSource = new ObservableCollection<Actor>();
             ProducersItemsSource = new ObservableCollection<Producer>();
         }
@@ -904,9 +974,11 @@ namespace Artis.ArtisDataFiller.ViewModels
             IsNewOne = true;
 
             ObservableCollection<Data.Data> images = await _wcfAdminService.GetActionImages(CurrentActionDate.Action.ID);
+            ObservableCollection<Data.Data> smallImages = await _wcfAdminService.GetActionSmallImages(CurrentActionDate.Action.ID);
             ActorsItemsSource = await _wcfAdminService.GetActionActors(CurrentActionDate.Action.ID);
             ProducersItemsSource = await _wcfAdminService.GetActionProducers(CurrentActionDate.Action.ID);
             Images = await ImageHelper.ConvertImages(images);
+            SmallImages = await ImageHelper.ConvertImages(smallImages);
             _addedImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
@@ -951,7 +1023,7 @@ namespace Artis.ArtisDataFiller.ViewModels
                 await
                     _wcfAdminService.SaveActionDate(CurrentActionDate,
                         _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList(),
-                        _deletedImages,ActorsItemsSource.ToList(),ProducersItemsSource.ToList());
+                        _deletedImages, _addedSmallImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList(),ActorsItemsSource.ToList(),ProducersItemsSource.ToList());
             return result;
 
         }

@@ -67,7 +67,7 @@ namespace Artis.Service
         /// <param name="producers">Сериализованный список режисеров</param>
         /// <returns></returns>
         [OperationContract]
-        Task<bool> SaveActionDateAsync(string actionDate, List<string> addedImages, List<long> deletedImages, string actors,string producers);
+        Task<bool> SaveActionDateAsync(string actionDate, List<string> addedImages, List<long> deletedImages,List<string> smallAddedImages, string actors,string producers);
 
         /// <summary>
         /// Добавление новой даты проведения мероприятия
@@ -147,6 +147,14 @@ namespace Artis.Service
         /// <returns>Сериализованный список изображения</returns>
         [OperationContract]
         Task<string> GetActionImagesAsync(long idAction);
+
+        /// <summary>
+        /// Получение маленьких изображений для мероприятия
+        /// </summary>
+        /// <param name="idAction">Идентификатор мероприятия</param>
+        /// <returns>Сериализованный список изображения</returns>
+        [OperationContract]
+        Task<string> GetActionSmallImagesAsync(long idAction);
 
         /// <summary>
         /// Получение актеров для мероприятия

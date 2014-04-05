@@ -27,7 +27,7 @@ namespace Artis.Data
             _dataRepository=new DataRepository();
         }
 
-        public async Task<bool> Save(ActionDate action, List<Data> addedImages, List<long> deletedImages, List<Actor> actors, List<Producer> producers)
+        public async Task<bool> Save(ActionDate action, List<Data> addedImages, List<long> deletedImages, List<Data> smallAddedImages, List<Actor> actors, List<Producer> producers)
         {
             try
             {
@@ -49,6 +49,15 @@ namespace Artis.Data
                         if (originalAction.Data == null)
                             originalAction.Data = new Collection<Data>();
                         originalAction.Data.Add(data);
+                    }
+                if (smallAddedImages != null)
+                    foreach (Data data in smallAddedImages)
+                    {
+                        DataRepository _dataRepository = new DataRepository();
+                        _dataRepository.Add(data);
+                        if (originalAction.DataSmall == null)
+                            originalAction.DataSmall = new Collection<Data>();
+                        originalAction.DataSmall.Add(data);
                     }
                 CompareAction(originalAction, action.Action,actors,producers);
                 CompareActionDate(originalActionDate, action);
