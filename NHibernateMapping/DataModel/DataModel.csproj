@@ -65,7 +65,6 @@
     <Compile Include="Objects\Short\MiddleAction.cs" />
     <Compile Include="Objects\Short\MiddleArea.cs" />
     <Compile Include="Objects\Short\ShortAction.cs" />
-    <Compile Include="Objects\Short\ShortActionDate.cs" />
     <Compile Include="Objects\Short\ShortArea.cs" />
     <Compile Include="Objects\State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
