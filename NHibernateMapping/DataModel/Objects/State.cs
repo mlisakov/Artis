@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Artis.Data
+﻿namespace Artis.Data
 {
     public class State
     {

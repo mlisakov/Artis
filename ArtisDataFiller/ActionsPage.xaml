@@ -9,7 +9,6 @@
 	  >
 	
 	<Grid.Resources>
-        <artisDataFiller:Base64StringToBitmapImageConverter x:Key="Base64StringToBitmapImageConverter" />
         <Style x:Key="SelectedItemButton" TargetType="{x:Type Button}">
 			<Setter Property="IsEnabled" Value="True"/>			
 			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>

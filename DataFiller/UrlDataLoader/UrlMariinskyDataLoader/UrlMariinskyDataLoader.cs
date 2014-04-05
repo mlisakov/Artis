@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
 using Artis.Consts;
+using Artis.Data;
 using HtmlAgilityPack;
 using NLog;
 

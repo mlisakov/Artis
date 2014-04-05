@@ -49,9 +49,9 @@
       <Project>{8d331482-2207-4c27-92ba-f5676bf2a80a}</Project>
       <Name>Consts</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Data\DBConnector.csproj">
-      <Project>{4bc0ab1e-0b81-4fbe-83e0-8ffafa4a5ef5}</Project>
-      <Name>DBConnector</Name>
+    <ProjectReference Include="..\NHibernateMapping\DataModel\DataModel.csproj">
+      <Project>{7b3a39f3-b234-4303-9345-c5324c9add89}</Project>
+      <Name>DataModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\WebServiceContract\WebServiceContract.csproj">
       <Project>{f5f3bd88-e1d3-4c28-88df-224627423e2c}</Project>

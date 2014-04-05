@@ -116,10 +116,6 @@
       <Project>{5a1f9b8c-5952-4a7e-a689-189a70ac336b}</Project>
       <Name>ArtisDataFiller</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\NHibernateMapping\NHibernateMapping.csproj">
-      <Project>{3351dbc8-ac9a-43fb-85c7-ce67e259c672}</Project>
-      <Name>NHibernateMapping</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

@@ -2,7 +2,7 @@
 
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
                    namespace="Artis.Data"
-                   assembly="Artis.Data.DBConnector">
+                   assembly="Artis.Data.DataModel">
   <class name="Action" table="Action">
     <id name="ID" column="id">
       <generator class="identity" />

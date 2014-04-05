@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
+using Artis.Utils;
 using Microsoft.Win32;
 using NLog;
 
@@ -45,7 +46,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         //Соотношение ширины к высоте для последней добавленной картинки
         private double _lastPercentOfImage;
         //ширина оригинала - картинки на гуи
-        const int WidthConst = 834;
+        //const int WidthConst = 834;
 
         private bool _isOnLeft;
         private bool _isCenter;
@@ -593,13 +594,13 @@ namespace Artis.ArtisDataFiller.ViewModels
 
                 if (IsLeft)
                     dx = 0;
-                else dx = IsCenter ? (WidthConst - 580)/2 : WidthConst - 580;
+                else dx = IsCenter ? (ImageConsts.WidthConst - 580) / 2 : ImageConsts.WidthConst - 580;
 
                 if (IsTop)
                     dy = 0;
                 else
                 {
-                    double height = (WidthConst/_lastPercentOfImage);
+                    double height = (ImageConsts.WidthConst / _lastPercentOfImage);
                     dy = IsBotton ? Convert.ToInt32(height - 150) : Convert.ToInt32((height - 150)/2);
                 }
 
@@ -662,29 +663,29 @@ namespace Artis.ArtisDataFiller.ViewModels
             {
                 using (Stream stream = openDialog.OpenFile())
                 {
-                    BitmapImage bitMapImage = new BitmapImage();
+                    //BitmapImage bitMapImage = new BitmapImage();
 
-                    bitMapImage.BeginInit();
-                    bitMapImage.StreamSource = stream;
-                    bitMapImage.EndInit();
+                    //bitMapImage.BeginInit();
+                    //bitMapImage.StreamSource = stream;
+                    //bitMapImage.EndInit();
 
-                    //определяем пропорции
-                    _lastPercentOfImage = (double)bitMapImage.PixelWidth / bitMapImage.PixelHeight;
+                    ////определяем пропорции
+                    //_lastPercentOfImage = (double)bitMapImage.PixelWidth / bitMapImage.PixelHeight;
 
-                    double height = WidthConst / _lastPercentOfImage;
+                    //double height = WidthConst / _lastPercentOfImage;
 
-                    //устанавливаем пропорции, исходя из ширины 834 (ширина картинки на гуи)
-                    BitmapImage bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnDemand;
-                    bi.CreateOptions = BitmapCreateOptions.DelayCreation;
-                    bi.DecodePixelHeight = Convert.ToInt32(height);
-                    bi.DecodePixelWidth = 834;                    
+                    ////устанавливаем пропорции, исходя из ширины 834 (ширина картинки на гуи)
+                    //BitmapImage bi = new BitmapImage();
+                    //bi.BeginInit();
+                    //bi.CacheOption = BitmapCacheOption.OnDemand;
+                    //bi.CreateOptions = BitmapCreateOptions.DelayCreation;
+                    //bi.DecodePixelHeight = Convert.ToInt32(height);
+                    //bi.DecodePixelWidth = 834;                    
 
-                    bi.UriSource = new Uri(openDialog.FileName);
-                    bi.EndInit();
+                    //bi.UriSource = new Uri(openDialog.FileName);
+                    //bi.EndInit();
 
-                    NewImage = bi;
+                    NewImage = ImageHelper.ResizeImage(stream, ImageConsts.WidthConst);
                 }
             }
         }

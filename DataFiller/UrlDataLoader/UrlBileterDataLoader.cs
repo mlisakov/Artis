@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Artis.Consts;
+using Artis.Data;
 using HtmlAgilityPack;
 using NLog;
 using HtmlDocument = HtmlAgilityPack.HtmlDocument;

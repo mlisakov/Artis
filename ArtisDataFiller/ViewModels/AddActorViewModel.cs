@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
+using Artis.Utils;
 using Microsoft.Win32;
 
 namespace Artis.ArtisDataFiller.ViewModels

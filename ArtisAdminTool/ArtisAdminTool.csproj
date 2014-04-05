@@ -89,9 +89,9 @@
       <Project>{4BC0AB1E-0B81-4FBE-83E0-8FFAFA4A5EF5}</Project>
       <Name>DBConnector</Name>
     </ProjectReference>
-    <ProjectReference Include="..\NHibernateMapping\NHibernateMapping.csproj">
-      <Project>{3351dbc8-ac9a-43fb-85c7-ce67e259c672}</Project>
-      <Name>NHibernateMapping</Name>
+    <ProjectReference Include="..\NHibernateMapping\DataModel\DataModel.csproj">
+      <Project>{7b3a39f3-b234-4303-9345-c5324c9add89}</Project>
+      <Name>DataModel</Name>
     </ProjectReference>
     <ProjectReference Include="..\WebServiceContract\WebServiceContract.csproj">
       <Project>{F5F3BD88-E1D3-4C28-88DF-224627423E2C}</Project>
