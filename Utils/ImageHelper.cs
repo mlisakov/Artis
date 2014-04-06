@@ -73,7 +73,8 @@ namespace Artis.Utils
                 //http://msdn.microsoft.com/ru-ru/library/aa970271(v=vs.110).aspx
                 // Note: In order to preserve aspect ratio, set DecodePixelWidth
                 // or DecodePixelHeight but not both.
-                bitMapImage.DecodePixelWidth = widthImage;
+                if (bitMapImage.DecodePixelWidth > widthImage)
+                    bitMapImage.DecodePixelWidth = widthImage;
                 bitMapImage.CacheOption = BitmapCacheOption.OnDemand;
                 //bitMapImage.CreateOptions = BitmapCreateOptions.DelayCreation;
                 if (!string.IsNullOrEmpty(fileName))
@@ -111,21 +112,35 @@ namespace Artis.Utils
         {
             using (var image = Image.FromStream(input))
             {
-                //определяем пропорции
-                int scale =image.Width / image.Height;
-
-                int height = width / scale;
-
-                using (var bmp = new Bitmap(width, height))
+                if (image.Width > width)
                 {
-                    using (var gr = Graphics.FromImage(bmp))
+                    //определяем пропорции
+                    int scale;
+                    if (image.Width > image.Height)
+                        scale = image.Width/image.Height;
+                    else
+                        scale = image.Height/image.Width;
+
+                    int height = width/scale;
+
+
+                    using (var bmp = new Bitmap(width, height))
                     {
-                        gr.CompositingQuality = CompositingQuality.HighSpeed;
-                        gr.SmoothingMode = SmoothingMode.HighSpeed;
-                        gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
-                        gr.DrawImage(image, new Point(0, 0));
-                        bmp.Save(output, ImageFormat.Png);
+                        using (var gr = Graphics.FromImage(bmp))
+                        {
+                            gr.CompositingQuality = CompositingQuality.HighSpeed;
+                            gr.SmoothingMode = SmoothingMode.HighSpeed;
+                            gr.InterpolationMode = InterpolationMode.HighQualityBicubic;
+                            gr.DrawImage(image, new Point(0, 0));
+                            bmp.Save(output, ImageFormat.Png);
+                        }
                     }
+                }
+                else
+                {
+                    input.Seek(0, SeekOrigin.Begin);
+                    input.CopyTo(output);
+                    output.Seek(0, SeekOrigin.Begin);
                 }
             }
         }

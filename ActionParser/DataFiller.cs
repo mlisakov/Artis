@@ -36,7 +36,7 @@ namespace Artis.ActionParser
         {
             _wcfAdminService=new WcfServiceCaller();
             _actionLoadersCompletedCount = 0;
-            _urlDataLoaders=new List<IUrlDataLoader>(){new UrlMikhailovskyDataLoader()};//new UrlBileterDataLoader(),new UrlMariinskyDataLoader(),
+            _urlDataLoaders=new List<IUrlDataLoader>(){new UrlBileterDataLoader(),new UrlMariinskyDataLoader(),new UrlMikhailovskyDataLoader()};
             //_urlDataLoaders = new List<IUrlDataLoader>() { new UrlMariinskyDataLoader(),new UrlMikhailovskyDataLoader() };
             //_dataParser=new DataParser();
             HandleEvents();

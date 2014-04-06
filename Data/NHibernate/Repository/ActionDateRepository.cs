@@ -98,7 +98,7 @@ namespace Artis.Data
             if (originalAction.EnglishDescription==null || !originalAction.EnglishDescription.Equals(action.EnglishDescription))
                 originalAction.EnglishDescription = action.EnglishDescription;
 
-            if (originalAction.Genre.ID!=action.Genre.ID)
+            if (originalAction.Genre==null || originalAction.Genre.ID != action.Genre.ID)
                 originalAction.Genre = action.Genre;
 
             UpdateActors(originalAction, actors);

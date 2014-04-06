@@ -680,12 +680,13 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void SaveImage(BitmapImage originalImage)
         {
-            BitmapImage bitMapImage = ImageHelper.ResizeImage(originalImage.StreamSource, ImageConsts.WidthConst);
-            string base64String = ImageHelper.ResizeAndConvertImageToBase64String(originalImage.StreamSource);
+            //BitmapImage bitMapImage = ImageHelper.ResizeImage(originalImage.StreamSource, ImageConsts.WidthConst);
+            //string base64String = ImageHelper.ResizeAndConvertImageToBase64String(originalImage.StreamSource);
+            string base64String = ImageHelper.ConvertImageToBase64String(originalImage.StreamSource);
 
             if (!string.IsNullOrEmpty(base64String))
             {
-                DataImage image = new DataImage() {Base64String = base64String, Image = bitMapImage};
+                DataImage image = new DataImage() { Base64String = base64String, Image = originalImage };
                 if (_addedImages == null)
                     _addedImages = new List<DataImage>();
                 _addedImages.Add(image);
