@@ -17,7 +17,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         private Genre _selectedUsedGenre;
         private Genre _selectedOtherGenre;
 
-        private GuiSectionRepository _guiSectionRepository;
+        //private GuiSectionRepository _guiSectionRepository;
 
         public ArtisCommand SaveCommand { get; private set; }
         public ArtisCommand LeftCommand { get; private set; }
@@ -106,7 +106,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         public GenresSettingsViewModel()
         {
-            _guiSectionRepository=new GuiSectionRepository();
+            //_guiSectionRepository=new GuiSectionRepository();
             _wcfAdminService=new WcfServiceCaller();
             InitCommands();
             InitDataSource();

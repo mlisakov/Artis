@@ -185,10 +185,10 @@ namespace Artis.ArtisDataFiller.ViewModels
         /// </summary>
         public ObservableCollection<DataImage> SmallImages
         {
-            get { return _images; }
+            get { return _smallImages; }
             set
             {
-                _images = value;
+                _smallImages = value;
                 OnPropertyChanged();
             }
         }
@@ -494,6 +494,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             _wcfAdminService=new WcfServiceCaller();
             _deletedImages = new List<long>();
             _addedImages = new List<DataImage>();
+            _addedSmallImages=new List<DataImage>();
         }
 
         /// <summary>
@@ -621,6 +622,25 @@ namespace Artis.ArtisDataFiller.ViewModels
                 }
 
                 result = new CroppedBitmap(originalImage, new Int32Rect(dx, dy, 580, 150));
+
+                MemoryStream mStream = new MemoryStream();
+                BitmapEncoder encoder;
+                if (originalImage.UriSource.AbsoluteUri.EndsWith(".png"))
+                    encoder = new PngBitmapEncoder();
+                else
+                    encoder = new JpegBitmapEncoder();
+
+                encoder.Frames.Add(BitmapFrame.Create(result));
+                encoder.Save(mStream);
+
+                mStream.Seek(0, SeekOrigin.Begin);
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
+                image.StreamSource = mStream;
+                image.EndInit();
+
+                //todo сохраняем обрезанную картинку
+                SaveSmallImage(image);
             }
             else
             {
@@ -628,38 +648,21 @@ namespace Artis.ArtisDataFiller.ViewModels
                 SaveImage(originalImage);
 
                 //обрезаем для вертикального варианта
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.CacheOption = BitmapCacheOption.OnDemand;
-                bi.CreateOptions = BitmapCreateOptions.DelayCreation;
-                bi.DecodePixelHeight = Convert.ToInt32(100/_lastPercentOfImage);
-                bi.DecodePixelWidth = 100;
+                //BitmapImage bi = new BitmapImage();
+                //bi.BeginInit();
+                //bi.CacheOption = BitmapCacheOption.OnDemand;
+                //bi.CreateOptions = BitmapCreateOptions.DelayCreation;
+                //bi.DecodePixelHeight = Convert.ToInt32(100/_lastPercentOfImage);
+                //bi.DecodePixelWidth = 100;
 
-                bi.UriSource = originalImage.UriSource;
-                bi.EndInit();
+                //bi.UriSource = originalImage.UriSource;
+                //bi.EndInit();
 
-                result = bi;
+                //result = bi;
             }
 
 
-            MemoryStream mStream = new MemoryStream();
-            BitmapEncoder encoder;
-            if (originalImage.UriSource.AbsoluteUri.EndsWith(".png"))
-                encoder = new PngBitmapEncoder();
-            else
-                encoder = new JpegBitmapEncoder();
-
-            encoder.Frames.Add(BitmapFrame.Create(result));
-            encoder.Save(mStream);
-
-            mStream.Seek(0, SeekOrigin.Begin);
-            BitmapImage image = new BitmapImage();
-            image.BeginInit();
-            image.StreamSource = mStream;
-            image.EndInit();
-
-            //todo сохраняем обрезанную картинку
-            SaveSmallImage(image);
+            
 
             //SaveFileDialog openDialog = new SaveFileDialog
             //{
@@ -953,6 +956,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             ObservableCollection<Data.Data> smallImages = await _wcfAdminService.GetActionSmallImages(CurrentActionDate.Action.ID);
             SmallImages = await ImageHelper.ConvertImages(smallImages);
             _addedImages = new List<DataImage>();
+            _addedSmallImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
 
@@ -980,6 +984,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             Images = await ImageHelper.ConvertImages(images);
             SmallImages = await ImageHelper.ConvertImages(smallImages);
             _addedImages = new List<DataImage>();
+            _addedSmallImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
 
@@ -1007,6 +1012,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             Images = null;
             _deletedImages = null;
             _addedImages = null;
+            _addedSmallImages = null;
         }
 
         /// <summary>
@@ -1072,43 +1078,43 @@ namespace Artis.ArtisDataFiller.ViewModels
             return result;
         }
 
-        private async Task<bool> RemoveActionDate()
-        {
-            //bool result = await ActionDateRepository.Remove(CurrentArea);
-            //if (result)
-            //{
-            //    Areas.Remove(CurrentArea);
-            //    OnPropertyChanged("Areas");
-            //}
-            //return result;
-            return true;
-        }
+        //private async Task<bool> RemoveActionDate()
+        //{
+        //    //bool result = await ActionDateRepository.Remove(CurrentArea);
+        //    //if (result)
+        //    //{
+        //    //    Areas.Remove(CurrentArea);
+        //    //    OnPropertyChanged("Areas");
+        //    //}
+        //    //return result;
+        //    return true;
+        //}
 
-        private async Task<bool> RemoveActor()
-        {
-            bool result =
-               await
-                   ActorRepository.Remove(SelectedActor,CurrentActionDate.Action);
-            if (result)
-            {
-                //ActionsItemsSource.Add(CurrentActionDate);
-                //OnPropertyChanged("ActionsItemsSource");
-            }
-            return result;
-        }
+        //private async Task<bool> RemoveActor()
+        //{
+        //    bool result =
+        //       await
+        //           ActorRepository.Remove(SelectedActor,CurrentActionDate.Action);
+        //    if (result)
+        //    {
+        //        //ActionsItemsSource.Add(CurrentActionDate);
+        //        //OnPropertyChanged("ActionsItemsSource");
+        //    }
+        //    return result;
+        //}
 
-        private async Task<bool> RemoveProducer()
-        {
-            bool result =
-               await
-                   ProducerRepository.Remove(SelectedProducer, CurrentActionDate.Action);
-            if (result)
-            {
-                //ActionsItemsSource.Add(CurrentActionDate);
-                //OnPropertyChanged("ActionsItemsSource");
-            }
-            return result;
-        }
+        //private async Task<bool> RemoveProducer()
+        //{
+        //    bool result =
+        //       await
+        //           ProducerRepository.Remove(SelectedProducer, CurrentActionDate.Action);
+        //    if (result)
+        //    {
+        //        //ActionsItemsSource.Add(CurrentActionDate);
+        //        //OnPropertyChanged("ActionsItemsSource");
+        //    }
+        //    return result;
+        //}
 
     }
 }

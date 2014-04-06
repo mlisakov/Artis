@@ -13,7 +13,7 @@
 
     <Property Id="SHORTCUT_PROGRAMMENU">1</Property>
     <Property Id="SHORTCUT_DESKTOP">1</Property>
-    <Property Id="WCFADDRESSSERVICEPROPERY" Secure="yes" >http://92.53.105.145:8000/</Property>
+    <Property Id="WCFADDRESSSERVICEPROPERY" Secure="yes" >http://92.53.105.145:8110/</Property>
 
     <Directory Id="TARGETDIR" Name="SourceDir">
       <Directory Id="ProgramFilesFolder">

@@ -429,7 +429,6 @@
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*" MinHeight="300"/>
-                <RowDefinition Height="Auto" MinHeight="300"/>
 			</Grid.RowDefinitions>
 			
             <controls:WatermarkedTextBox TextWrapping="Wrap"
@@ -593,26 +592,6 @@
 				 IsEnabled="{Binding IsNewOne}">
             </ListBox>
 
-            <TextBlock Grid.Row="13" 
-                       TextWrapping="Wrap" 
-                       Text="Обрезанные Картинки" 
-                       VerticalAlignment="Top" 
-                       Style="{DynamicResource SimpleTextStyle}"
-                       Grid.Column="1" 
-                       Margin="0,10,0,0"/>
-
-            <ListBox Grid.Row="13" 
-                     Grid.ColumnSpan="3" 
-                     Margin="0,30,0,20" 
-                     Grid.Column="1"
-                     ItemsSource="{Binding SmallImages}" 
-                     ItemTemplate="{DynamicResource ImageListBoxItemTemplate}" 
-                     ItemContainerStyle="{DynamicResource ImageListBoxItemContainerStyle}" 
-					 ItemsPanel="{DynamicResource ImageListBoxItemsPanelTemplate}"
-					 VirtualizingPanel.VirtualizationMode="Recycling"
-				 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-				 IsEnabled="{Binding IsNewOne}">
-            </ListBox>
 
             <Button Content="Добавить…" 
 					Grid.Column="4" 
@@ -792,17 +771,11 @@
 						</StackPanel>
 
 						<Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,0,0,20" BorderBrush="LightGray" BorderThickness="1">
-						<Grid  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,20">
-															
-							<Image x:Name="NewZoomImage" Source="{Binding NewImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 	
-							
-								 Width="834" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-							
-							<Rectangle x:Name="ChangedImageBorder" Stroke="Red" StrokeThickness="2" Width="580" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top" StrokeDashArray="1 1"
-						
-									 >
-								
-							</Rectangle>
+						<Grid  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,20">							
+							<Image x:Name="NewZoomImage" 
+                                   Source="{Binding NewImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 	
+                                   HorizontalAlignment="Left" VerticalAlignment="Top"/>
+							<Rectangle x:Name="ChangedImageBorder" Stroke="Red" StrokeThickness="2" Width="580" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top" StrokeDashArray="1 1"/>
 						</Grid>
 						</Border>
 					

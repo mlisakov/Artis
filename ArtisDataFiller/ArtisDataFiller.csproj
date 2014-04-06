@@ -16,7 +16,7 @@
     <TargetFrameworkProfile />
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <ExpressionBlendVersion>12.0.41212.0</ExpressionBlendVersion>
-    <PublishUrl>C:\Users\max\Desktop\Publish\ArtisAdmin\</PublishUrl>
+    <PublishUrl>C:\Users\max\Desktop\Publish\SofitClient\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
     <UpdateEnabled>false</UpdateEnabled>
@@ -26,7 +26,7 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>8</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -248,10 +248,6 @@
     <ProjectReference Include="..\DataFiller\DataLoader.csproj">
       <Project>{6C8311FE-56B7-4C4E-AC85-1F5A7B065391}</Project>
       <Name>DataLoader</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Data\DBConnector.csproj">
-      <Project>{4BC0AB1E-0B81-4FBE-83E0-8FFAFA4A5EF5}</Project>
-      <Name>DBConnector</Name>
     </ProjectReference>
     <ProjectReference Include="..\NHibernateMapping\DataModel\DataModel.csproj">
       <Project>{7B3A39F3-B234-4303-9345-C5324C9ADD89}</Project>
