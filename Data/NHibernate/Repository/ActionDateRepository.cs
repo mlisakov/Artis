@@ -55,8 +55,8 @@ namespace Artis.Data
                     {
                         DataRepository _dataRepository = new DataRepository();
                         _dataRepository.Add(data);
-                        if (originalAction.DataSmall == null)
-                            originalAction.DataSmall = new Collection<Data>();
+                        //if (originalAction.DataSmall == null)
+                        originalAction.DataSmall = new Collection<Data>();
                         originalAction.DataSmall.Add(data);
                     }
                 CompareAction(originalAction, action.Action,actors,producers);
@@ -100,6 +100,9 @@ namespace Artis.Data
 
             if (originalAction.Genre==null || originalAction.Genre.ID != action.Genre.ID)
                 originalAction.Genre = action.Genre;
+
+            if (!originalAction.IsVerticalSmallImage.Equals(action.IsVerticalSmallImage))
+                originalAction.IsVerticalSmallImage = action.IsVerticalSmallImage;
 
             UpdateActors(originalAction, actors);
 

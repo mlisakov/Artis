@@ -642,6 +642,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
                 //сохраняем обрезанную картинку
                 SaveSmallImage(image);
+                CurrentActionDate.Action.IsVerticalSmallImage = false;
             }
             else
             {
@@ -658,6 +659,7 @@ namespace Artis.ArtisDataFiller.ViewModels
                
                 //сохраняем обрезанную вертикально картинку
                 SaveSmallImage(bi);
+                CurrentActionDate.Action.IsVerticalSmallImage = true;
             }
 
             //SaveFileDialog openDialog = new SaveFileDialog

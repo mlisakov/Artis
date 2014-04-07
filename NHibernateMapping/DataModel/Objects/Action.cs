@@ -15,6 +15,7 @@ namespace Artis.Data
         private string _englishDescription;
         private int _rating;
         private string _duration;
+        private bool _isVerticalSmallImage;
 
         private Genre _genre;
         private State _state;
@@ -86,6 +87,15 @@ namespace Artis.Data
         {
             get { return _englishDescription; }
             set { _englishDescription = value; }
+        }
+
+        /// <summary>
+        /// Тип маленького изображения
+        /// </summary>
+        public virtual bool IsVerticalSmallImage
+        {
+            get { return _isVerticalSmallImage; }
+            set { _isVerticalSmallImage = value; }
         }
 
         /// <summary>
