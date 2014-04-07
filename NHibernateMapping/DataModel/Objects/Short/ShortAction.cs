@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Artis.Data
 {
@@ -10,6 +11,7 @@ namespace Artis.Data
         private string _time;
         private string _genreName;
         private string _priceRange;
+        private string _smallImage;
 
         private string _area;
 
@@ -27,6 +29,15 @@ namespace Artis.Data
         {
             get { return _name; }
             set { _name = value; }
+        }
+
+        /// <summary>
+        /// Маленькое изображение для мероприятия
+        /// </summary>
+        public string SmallImage
+        {
+            get { return _smallImage; }
+            set { _smallImage = value; }
         }
 
         /// <summary>
@@ -77,6 +88,8 @@ namespace Artis.Data
         public ShortAction(ActionDate actionDate)
         {
             Name = actionDate.Action.Name;
+            if (actionDate.Action.DataSmall != null && actionDate.Action.DataSmall.Any())
+                SmallImage = actionDate.Action.DataSmall.First().Base64StringData;
             DateStart = actionDate.Date;
             Time = actionDate.Time;
             ID = actionDate.ID;

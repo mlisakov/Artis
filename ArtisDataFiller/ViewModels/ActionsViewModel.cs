@@ -601,8 +601,9 @@ namespace Artis.ArtisDataFiller.ViewModels
             var originalImage = NewImage as BitmapImage;
             if (originalImage == null)
                 return;
+            //сохраняем оригинал сначала
+            SaveImage(originalImage);
 
-            BitmapSource result;
             if (IsHorizontalImage)
             {
                 //обрезаем для горизонтального варианта
@@ -621,7 +622,7 @@ namespace Artis.ArtisDataFiller.ViewModels
                     dy = IsBotton ? Convert.ToInt32(height - 150) : Convert.ToInt32((height - 150)/2);
                 }
 
-                result = new CroppedBitmap(originalImage, new Int32Rect(dx, dy, 580, 150));
+                BitmapSource result = new CroppedBitmap(originalImage, new Int32Rect(dx, dy, 580, 150));
 
                 MemoryStream mStream = new MemoryStream();
                 BitmapEncoder encoder;
@@ -639,16 +640,13 @@ namespace Artis.ArtisDataFiller.ViewModels
                 image.StreamSource = mStream;
                 image.EndInit();
 
-                //todo сохраняем обрезанную картинку
+                //сохраняем обрезанную картинку
                 SaveSmallImage(image);
             }
             else
             {
-                //todo сохраняем NewImage сначала
-                SaveImage(originalImage);
-
                 //обрезаем для вертикального варианта
-                //BitmapImage bi = new BitmapImage();
+                BitmapImage bi = ImageHelper.ResizeImage(originalImage.StreamSource, 100, string.Empty);
                 //bi.BeginInit();
                 //bi.CacheOption = BitmapCacheOption.OnDemand;
                 //bi.CreateOptions = BitmapCreateOptions.DelayCreation;
@@ -657,12 +655,10 @@ namespace Artis.ArtisDataFiller.ViewModels
 
                 //bi.UriSource = originalImage.UriSource;
                 //bi.EndInit();
-
-                //result = bi;
+               
+                //сохраняем обрезанную вертикально картинку
+                SaveSmallImage(bi);
             }
-
-
-            
 
             //SaveFileDialog openDialog = new SaveFileDialog
             //{

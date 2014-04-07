@@ -94,7 +94,7 @@ namespace Artis.Data
             {
                 var shortActions =
                    session.Query<ActionDate>()
-                        .Where(i => i.Date == startDate).Take(count)
+                        .Where(i => i.Date == startDate).OrderByDescending(i=>i.Action.Rating).Take(count)
                         .Select(i => new ShortAction(i));
 
                 return new JavaScriptSerializer().Serialize(shortActions);
