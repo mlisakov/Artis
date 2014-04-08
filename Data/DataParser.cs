@@ -370,11 +370,12 @@ namespace Artis.Data
 
                 action.Area.Add(area);
 
-                if (Image != null)
-                {
-                    List<Data> dataList = Image.Select(CreateData).Where(data => data != null).ToList();
-                    action.Data = dataList;
-                }
+                //Отключил запись изображений
+                //if (Image != null)
+                //{
+                //    List<Data> dataList = Image.Select(CreateData).Where(data => data != null).ToList();
+                //    action.Data = dataList;
+                //}
 
                 if (!string.IsNullOrEmpty(Description))
                     action.Description = Description;

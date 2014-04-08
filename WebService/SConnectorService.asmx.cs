@@ -97,6 +97,7 @@ namespace SofitConnectorService.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetTopAction:Ошибка!", ex);
+                _logger.Error(ex.Message+" "+ex.StackTrace);
             }
             return "Error";
         }

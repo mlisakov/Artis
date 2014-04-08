@@ -293,8 +293,8 @@ namespace Artis.ArtisDataFiller.ViewModels
                 foreach (Stream file in selectedFiles)
                 {
                    
-                    BitmapImage bitMapImage = ImageHelper.ResizeImage(file, ImageConsts.WidthConst);
-                    string base64String = ImageHelper.ResizeAndConvertImageToBase64String(file);
+                    BitmapImage bitMapImage = ImageHelper.ResizeImage(file, ImageConsts.WidthConst,openDialog.SafeFileName);
+                    string base64String = ImageHelper.ConvertImageToBase64String(bitMapImage);
 
                     file.Close();
 

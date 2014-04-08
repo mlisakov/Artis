@@ -598,7 +598,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteSaveNewImageCommand(object obj)
         {
-            var originalImage = NewImage as BitmapImage;
+            BitmapImage originalImage = NewImage as BitmapImage;
+
             if (originalImage == null)
                 return;
             //сохраняем оригинал сначала
@@ -626,7 +627,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
                 MemoryStream mStream = new MemoryStream();
                 BitmapEncoder encoder;
-                if (originalImage.UriSource.AbsoluteUri.EndsWith(".png"))
+                if (Path.GetExtension(originalImage.UriSource.AbsoluteUri).ToLower().Equals(".png"))
                     encoder = new PngBitmapEncoder();
                 else
                     encoder = new JpegBitmapEncoder();
@@ -635,9 +636,11 @@ namespace Artis.ArtisDataFiller.ViewModels
                 encoder.Save(mStream);
 
                 mStream.Seek(0, SeekOrigin.Begin);
+
                 BitmapImage image = new BitmapImage();
                 image.BeginInit();
-                image.StreamSource = mStream;
+                image.UriSource = originalImage.UriSource;
+                image.StreamSource = new MemoryStream(mStream.ToArray());
                 image.EndInit();
 
                 //сохраняем обрезанную картинку
@@ -647,15 +650,22 @@ namespace Artis.ArtisDataFiller.ViewModels
             else
             {
                 //обрезаем для вертикального варианта
-                BitmapImage bi = ImageHelper.ResizeImage(originalImage.StreamSource, 100, string.Empty);
-                //bi.BeginInit();
-                //bi.CacheOption = BitmapCacheOption.OnDemand;
-                //bi.CreateOptions = BitmapCreateOptions.DelayCreation;
-                //bi.DecodePixelHeight = Convert.ToInt32(100/_lastPercentOfImage);
-                //bi.DecodePixelWidth = 100;
+                BitmapImage bi = ImageHelper.ResizeImage(originalImage.StreamSource, 100, originalImage.UriSource.AbsoluteUri);
+                //BitmapEncoder encoder = new JpegBitmapEncoder();
 
-                //bi.UriSource = originalImage.UriSource;
-                //bi.EndInit();
+                //encoder.Frames.Add(BitmapFrame.Create(bi));
+
+
+                //SaveFileDialog openDialog = new SaveFileDialog
+                //{
+                //    Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+                //    Title = "Пожалуйста, выберите файл для сохранения.",
+                //};
+                //if (openDialog.ShowDialog().Value)
+                //    using (var fs = openDialog.OpenFile())
+                //    {
+                //        encoder.Save(fs);
+                //    }
                
                 //сохраняем обрезанную вертикально картинку
                 SaveSmallImage(bi);
@@ -678,13 +688,39 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void SaveImage(BitmapImage originalImage)
         {
-            //BitmapImage bitMapImage = ImageHelper.ResizeImage(originalImage.StreamSource, ImageConsts.WidthConst);
-            //string base64String = ImageHelper.ResizeAndConvertImageToBase64String(originalImage.StreamSource);
-            string base64String = ImageHelper.ConvertImageToBase64String(originalImage.StreamSource);
+            BitmapImage bi = ImageHelper.ResizeImage(originalImage.StreamSource, ImageConsts.WidthConst, originalImage.UriSource.AbsoluteUri);
+            //BitmapEncoder encoder = new JpegBitmapEncoder();
+
+            //encoder.Frames.Add(BitmapFrame.Create(bi));
+
+
+            //SaveFileDialog openDialog = new SaveFileDialog
+            //{
+            //    Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+            //    Title = "Пожалуйста, выберите файл для сохранения.",
+            //};
+            //if (openDialog.ShowDialog().Value)
+            //    using (var fs = openDialog.OpenFile())
+            //    {
+            //        encoder.Save(fs);
+            //    }
+
+            string base64String = ImageHelper.ConvertImageToBase64String(bi);
+            //MemoryStream str = new MemoryStream(Convert.FromBase64String(base64String));
+            //SaveFileDialog openDialog = new SaveFileDialog
+            //{
+            //    Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+            //    Title = "Пожалуйста, выберите файл для сохранения.",
+            //};
+            //if (openDialog.ShowDialog().Value)
+            //    using (var fs = openDialog.OpenFile())
+            //    {
+            //        str.CopyTo(fs);
+            //    }
 
             if (!string.IsNullOrEmpty(base64String))
             {
-                DataImage image = new DataImage() { Base64String = base64String, Image = originalImage };
+                DataImage image = new DataImage() { Base64String = base64String, Image = bi };
                 if (_addedImages == null)
                     _addedImages = new List<DataImage>();
                 _addedImages.Add(image);
@@ -698,7 +734,19 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void SaveSmallImage(BitmapImage originalImage)
         {
-            string base64String = ImageHelper.ConvertImageToBase64String(originalImage.StreamSource);
+            string base64String = ImageHelper.ConvertImageToBase64String(originalImage);
+
+            MemoryStream str = new MemoryStream(Convert.FromBase64String(base64String));
+            SaveFileDialog openDialog = new SaveFileDialog
+            {
+                Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+                Title = "Пожалуйста, выберите файл для сохранения.",
+            };
+            if (openDialog.ShowDialog().Value)
+                using (var fs = openDialog.OpenFile())
+                {
+                    str.CopyTo(fs);
+                }
 
             if (!string.IsNullOrEmpty(base64String))
             {

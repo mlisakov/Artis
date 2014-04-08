@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Include>
   <?define ProductName="Утилита администирования Артис" ?>
-  <?define ProductVersion="1.0.0.0" ?>
+  <?define ProductVersion="1.0.0.1" ?>
   <?define ProductCode="b7bc7c6f-9a4e-4973-be84-eca8e3427c97"?>
-  <?define UpgradeCode="06a81104-1e30-463d-87e1-e8a79b4c682a"?>
+  <?define UpgradeCode="7F6C987E-9DB6-46F3-9408-EA98158159D0"?>
   <?define Manufacturer="SAAC"?>
   <?define RootPath="C:\Work\ArtisDataFiller\ArtisDataFiller\bin\Debug"?>
 </Include>

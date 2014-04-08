@@ -34,13 +34,21 @@ namespace Artis.Data
                 Action originalAction = _actionRepository.GetById(action.Action.ID);
                 ActionDate originalActionDate = GetById(action.ID);
 
-                if (deletedImages != null)
-                    foreach (long idImage in deletedImages)
+                //if (deletedImages != null)
+                //    foreach (long idImage in deletedImages)
+                //    {
+                //        Data item = originalAction.Data.First(i => i.ID == idImage);
+                //        originalAction.Data.Remove(item);
+                //    }
+                if (originalAction.Data != null)
+                {
+                    ICollection<Data> data = originalAction.Data;
+                    foreach (Data image in data)
                     {
-                        Data item = originalAction.Data.First(i => i.ID == idImage);
-                        originalAction.Data.Remove(item);
+                        originalAction.Data.Remove(image);
+                        _dataRepository.Delete(image);
                     }
-
+                }
                 if (addedImages != null)
                     foreach (Data data in addedImages)
                     {
@@ -50,6 +58,17 @@ namespace Artis.Data
                             originalAction.Data = new Collection<Data>();
                         originalAction.Data.Add(data);
                     }
+
+                if (originalAction.DataSmall != null)
+                {
+                    ICollection<Data> data = originalAction.DataSmall;
+                    foreach (Data image in data)
+                    {
+                        originalAction.DataSmall.Remove(image);
+                        _dataRepository.Delete(image);
+                    }
+                }
+
                 if (smallAddedImages != null)
                     foreach (Data data in smallAddedImages)
                     {
