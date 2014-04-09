@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Artis.ActionParser;
 using Artis.Consts;
+using Artis.Data;
 
 namespace Artis.ArtisDataFiller.ViewModels
 {

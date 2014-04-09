@@ -79,7 +79,7 @@ namespace Artis.Service
             return false;
         }
 
-        public async Task<bool> SaveActionDateAsync(string actionDate, List<string> addedImages, List<long> deletedImages, string actors, string producers)
+        public async Task<bool> SaveActionDateAsync(string actionDate, List<string> addedImages, List<long> deletedImages,List<string> smallAddedImages, string actors, string producers)
         {
             try
             {
@@ -89,7 +89,7 @@ namespace Artis.Service
                 ProducersXmlProvider producersXmlProvider = new ProducersXmlProvider();
                 return await _actionDateRepository.Save(originalactionDate,
                        addedImages.Select(i => new Data.Data() { Base64StringData = i }).ToList(),
-                       deletedImages, actorsXmlProvider.FromXml(actors), producersXmlProvider.FromXml(producers));
+                       deletedImages, smallAddedImages.Select(i => new Data.Data() { Base64StringData = i }).ToList(), actorsXmlProvider.FromXml(actors), producersXmlProvider.FromXml(producers));
             }
             catch (Exception ex)
             {
@@ -253,6 +253,21 @@ namespace Artis.Service
             return string.Empty;
         }
 
+        public async Task<string> GetActionSmallImagesAsync(long idAction)
+        {
+            try
+            {
+                List<Data.Data> areaImages = await DataRequestFactory.GetSmallImages(idAction);
+                DataXmlProvider xmlProvider = new DataXmlProvider(areaImages);
+                return xmlProvider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить маленькие изображения для мероприятия с идентификатором:" + idAction, ex);
+            }
+            return string.Empty;
+        }
+
         public async Task<string> GetActorImagesAsync(long idActor)
         {
             try
@@ -279,6 +294,38 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("Не удалось загрузить изображения для продюсера с идентификатором:" + idProducer, ex);
+            }
+            return string.Empty;
+        }
+
+        public async Task<string> GetProducers(string filter)
+        {
+            try
+            {
+                ObservableCollection<Producer> originalProducers = await DataRequestFactory.GetProducers(filter);
+
+                ProducersXmlProvider producersXmlProvider = new ProducersXmlProvider(originalProducers);
+                return producersXmlProvider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить продюсеров по имени:" + filter, ex);
+            }
+            return string.Empty;
+        }
+
+        public async Task<string> GetActors(string filter)
+        {
+            try
+            {
+                ObservableCollection<Actor> originalProducers = await DataRequestFactory.GetActors(filter);
+
+                ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider(originalProducers);
+                return actorsXmlProvider.ToXml().InnerXml;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось загрузить актеров по имени:" + filter, ex);
             }
             return string.Empty;
         }
@@ -417,5 +464,9 @@ namespace Artis.Service
             }
             return string.Empty;
         }
+
+        #region IArtisAdminTool Members
+
+        #endregion
     }
 }

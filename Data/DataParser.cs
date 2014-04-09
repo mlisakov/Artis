@@ -17,7 +17,7 @@ namespace Artis.Data
         /// <summary>
         /// Имя файла логирования
         /// </summary>
-        private const string _logFilePath = "NHibernateError.log";
+        //private const string _logFilePath = "NHibernateError.log";
 
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
@@ -370,11 +370,12 @@ namespace Artis.Data
 
                 action.Area.Add(area);
 
-                if (Image != null)
-                {
-                    List<Data> dataList = Image.Select(CreateData).Where(data => data != null).ToList();
-                    action.Data = dataList;
-                }
+                //Отключил запись изображений
+                //if (Image != null)
+                //{
+                //    List<Data> dataList = Image.Select(CreateData).Where(data => data != null).ToList();
+                //    action.Data = dataList;
+                //}
 
                 if (!string.IsNullOrEmpty(Description))
                     action.Description = Description;
@@ -408,7 +409,6 @@ namespace Artis.Data
             }
             else
             {
-
                 if (!action.ActionDate.Any(i => i.Date == DateTime.Parse(Date) && i.Time.Equals(Time) && i.Area.Name.Equals(AreaName)))
                 {
                     ActionDate actionDate = CreateActionDate(action,area, DateTime.Parse(Date), Time, PriceRange);
@@ -416,6 +416,7 @@ namespace Artis.Data
                     return action;
                 }
 
+                _logger.Error("Мероприятие "+Name+" на дату "+Date+";"+Time+" в "+AreaName+" уже записано!");
             }
             return null;
         }

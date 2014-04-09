@@ -27,20 +27,28 @@ namespace Artis.Data
             _dataRepository=new DataRepository();
         }
 
-        public async Task<bool> Save(ActionDate action, List<Data> addedImages, List<long> deletedImages, List<Actor> actors, List<Producer> producers)
+        public async Task<bool> Save(ActionDate action, List<Data> addedImages, List<long> deletedImages, List<Data> smallAddedImages, List<Actor> actors, List<Producer> producers)
         {
             try
             {
                 Action originalAction = _actionRepository.GetById(action.Action.ID);
                 ActionDate originalActionDate = GetById(action.ID);
 
-                if (deletedImages != null)
-                    foreach (long idImage in deletedImages)
+                //if (deletedImages != null)
+                //    foreach (long idImage in deletedImages)
+                //    {
+                //        Data item = originalAction.Data.First(i => i.ID == idImage);
+                //        originalAction.Data.Remove(item);
+                //    }
+                if (originalAction.Data != null)
+                {
+                    ICollection<Data> data = originalAction.Data;
+                    foreach (Data image in data)
                     {
-                        Data item = originalAction.Data.First(i => i.ID == idImage);
-                        originalAction.Data.Remove(item);
+                        originalAction.Data.Remove(image);
+                        _dataRepository.Delete(image);
                     }
-
+                }
                 if (addedImages != null)
                     foreach (Data data in addedImages)
                     {
@@ -49,6 +57,26 @@ namespace Artis.Data
                         if (originalAction.Data == null)
                             originalAction.Data = new Collection<Data>();
                         originalAction.Data.Add(data);
+                    }
+
+                if (originalAction.DataSmall != null)
+                {
+                    ICollection<Data> data = originalAction.DataSmall;
+                    foreach (Data image in data)
+                    {
+                        originalAction.DataSmall.Remove(image);
+                        _dataRepository.Delete(image);
+                    }
+                }
+
+                if (smallAddedImages != null)
+                    foreach (Data data in smallAddedImages)
+                    {
+                        DataRepository _dataRepository = new DataRepository();
+                        _dataRepository.Add(data);
+                        //if (originalAction.DataSmall == null)
+                        originalAction.DataSmall = new Collection<Data>();
+                        originalAction.DataSmall.Add(data);
                     }
                 CompareAction(originalAction, action.Action,actors,producers);
                 CompareActionDate(originalActionDate, action);
@@ -89,9 +117,69 @@ namespace Artis.Data
             if (originalAction.EnglishDescription==null || !originalAction.EnglishDescription.Equals(action.EnglishDescription))
                 originalAction.EnglishDescription = action.EnglishDescription;
 
-            if (originalAction.Genre.ID!=action.Genre.ID)
+            if (originalAction.Genre==null || originalAction.Genre.ID != action.Genre.ID)
                 originalAction.Genre = action.Genre;
 
+            if (!originalAction.IsVerticalSmallImage.Equals(action.IsVerticalSmallImage))
+                originalAction.IsVerticalSmallImage = action.IsVerticalSmallImage;
+
+            UpdateActors(originalAction, actors);
+
+            UpdateProducers(originalAction, producers);
+        }
+
+        private void UpdateProducers(Action originalAction, List<Producer> producers)
+        {
+            List<Producer> currentProducers = originalAction.Producer.ToList();
+            List<Producer> deletedProducers = currentProducers.Except(producers, new ProducerComparer()).ToList();
+            List<Producer> addedProducers = producers.Except(currentProducers, new ProducerComparer()).ToList();
+            List<Producer> resProducers = currentProducers.Except(deletedProducers, new ProducerComparer()).ToList();
+            foreach (Producer producer in addedProducers)
+            {
+                //_producerRepository.Add(producer);
+                //originalAction.Producer.Add(producer);
+                foreach (Data image in producer.Data)
+                    _dataRepository.Add(image);
+                _producerRepository.Add(producer);
+                originalAction.Producer.Add(producer);
+            }
+
+            foreach (Producer producer in resProducers)
+            {
+                Producer changedActor = producers.First(i => i.ID == producer.ID);
+
+                if (producer.FIO != changedActor.FIO)
+                    producer.FIO = changedActor.FIO;
+                if (producer.EnglishFIO != changedActor.EnglishFIO)
+                    producer.EnglishFIO = changedActor.EnglishFIO;
+                if (producer.Description != changedActor.Description)
+                    producer.Description = changedActor.Description;
+                if (producer.EnglishDescription != changedActor.EnglishDescription)
+                    producer.EnglishDescription = changedActor.EnglishDescription;
+
+                //_actorRepository.Update(actor);
+                List<Data> currentImages = producer.Data.ToList();
+                List<Data> deletedImages = currentImages.Except(changedActor.Data.ToList(), new DataComparer()).ToList();
+                List<Data> addedImages = changedActor.Data.Where(i => i.ID <= 0).ToList();
+                foreach (Data image in deletedImages)
+                {
+                    producer.Data.Remove(image);
+                }
+                foreach (Data image in addedImages)
+                {
+                    Data data = new Data() { Base64StringData = image.Base64StringData };
+                    _dataRepository.Add(data);
+                    producer.Data.Add(data);
+                }
+                _producerRepository.Update(producer);
+            }
+
+            foreach (Producer producer in deletedProducers)
+                originalAction.Producer.Remove(producer);
+        }
+
+        private void UpdateActors(Action originalAction, List<Actor> actors)
+        {
             List<Actor> currentActors = originalAction.Actor.ToList();
             List<Actor> deletedActors = currentActors.Except(actors, new ActorComparer()).ToList();
             List<Actor> addedActors = actors.Except(currentActors, new ActorComparer()).ToList();
@@ -106,7 +194,7 @@ namespace Artis.Data
             }
 
             foreach (Actor actor in restActors)
-            {                 
+            {
                 Actor changedActor = actors.First(i => i.ID == actor.ID);
 
                 if (actor.FIO != changedActor.FIO)
@@ -117,7 +205,7 @@ namespace Artis.Data
                     actor.Description = changedActor.Description;
                 if (actor.EnglishDescription != changedActor.EnglishDescription)
                     actor.EnglishDescription = changedActor.EnglishDescription;
-                
+
                 //_actorRepository.Update(actor);
                 List<Data> currentImages = actor.Data.ToList();
                 List<Data> deletedImages = currentImages.Except(changedActor.Data.ToList(), new DataComparer()).ToList();
@@ -128,10 +216,9 @@ namespace Artis.Data
                 }
                 foreach (Data image in addedImages)
                 {
-                    Data data=new Data(){Base64StringData = image.Base64StringData};
+                    Data data = new Data() {Base64StringData = image.Base64StringData};
                     _dataRepository.Add(data);
                     actor.Data.Add(data);
-                    
                 }
                 _actorRepository.Update(actor);
             }
@@ -139,28 +226,6 @@ namespace Artis.Data
 
             foreach (Actor actor in deletedActors)
                 originalAction.Actor.Remove(actor);
-
-            List<Producer> currentProducers = originalAction.Producer.ToList();
-            List<Producer> deletedProducers = currentProducers.Except(producers, new ProducerComparer()).ToList();
-            List<Producer> addedProducers = producers.Except(currentProducers, new ProducerComparer()).ToList();
-            foreach (Producer producer in addedProducers)
-            {
-                _producerRepository.Add(producer);
-                originalAction.Producer.Add(producer);
-            }
-
-            foreach (Producer producer in deletedProducers)
-                originalAction.Producer.Remove(producer);
-
-            //_actionRepository.Update(originalAction);
-
-            //foreach (Actor actor in deletedActors)
-            //     _actorRepository.Delete(actor);
-
-            //foreach (Producer producer in deletedProducers)
-            //    _producerRepository.Delete(producer);
-
-
         }
 
         private void CompareActionDate(ActionDate originalActionDate, ActionDate actionDate)

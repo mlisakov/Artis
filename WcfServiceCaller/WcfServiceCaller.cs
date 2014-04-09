@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.ServiceModel;
 using System.Threading.Tasks;
@@ -159,6 +160,7 @@ namespace Artis.Data
         public async Task<bool> SaveActionDate(ActionDate currentActionDate, 
             List<Data> addedImages, 
             List<long> deletedImages,
+            List<Data> addedSmallImages,
             List<Actor> actors,
             List<Producer> producers)
         {
@@ -167,12 +169,18 @@ namespace Artis.Data
                 ActionDateXmlProvider actionDateXmlProvider = new ActionDateXmlProvider(new List<ActionDate>() { currentActionDate });
                 ActorsXmlProvider actorsXmlProvider = new ActorsXmlProvider( actors );
                 ProducersXmlProvider producerXmlProvider = new ProducersXmlProvider(producers);
+                var t = producerXmlProvider.ToXml().InnerXml;
+                 _logger.Debug(t);
+                Debug.WriteLine(t);
                 return
                     await
                         serviceAdminTool.SaveActionDateAsync(
-                        actionDateXmlProvider.ToXml().InnerXml,
-                        addedImages.Select(i => i.Base64StringData).ToList(),
-                        deletedImages, actorsXmlProvider.ToXml().InnerXml, producerXmlProvider.ToXml().InnerXml);
+                            actionDateXmlProvider.ToXml().InnerXml,
+                            addedImages.Select(i => i.Base64StringData).ToList(),
+                            deletedImages,
+                            addedSmallImages.Select(i => i.Base64StringData).ToList(),
+                            actorsXmlProvider.ToXml().InnerXml,
+                            producerXmlProvider.ToXml().InnerXml);
             }
             catch (Exception ex)
             {
@@ -336,6 +344,21 @@ namespace Artis.Data
             }
         }
 
+        public async Task<ObservableCollection<Data>> GetActionSmallImages(long idAction)
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetActionSmallImagesAsync(idAction);
+                DataXmlProvider provider = new DataXmlProvider();
+                return new ObservableCollection<Data>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить изображения!", ex);
+                throw new Exception("Не удалось получить изображения!");
+            }
+        }
+
         public async Task<ObservableCollection<Data>> GetActorImages(long idActor)
         {
             try
@@ -453,6 +476,36 @@ namespace Artis.Data
             {
                 _logger.ErrorException("Не удалось сохранить загруженное мероприятие!", ex);
                 throw new Exception("Не удалось сохранить загруженное мероприятие!");
+            }
+        }
+
+        public async Task<ObservableCollection<Producer>> GetProducersAsync(string filter="")
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetProducers(filter);
+                ProducersXmlProvider provider = new ProducersXmlProvider();
+                return new ObservableCollection<Producer>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить список продюсеров!", ex);
+                throw new Exception("Не удалось получить список продюсеров!");
+            }
+        }
+
+        public async Task<ObservableCollection<Actor>> GetActorsAsync(string filter = "")
+        {
+            try
+            {
+                string result = await serviceAdminTool.GetActors(filter);
+                ActorsXmlProvider provider = new ActorsXmlProvider();
+                return new ObservableCollection<Actor>(provider.FromXml(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("Не удалось получить список продюсеров!", ex);
+                throw new Exception("Не удалось получить список продюсеров!");
             }
         }
     }

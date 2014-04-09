@@ -1,4 +1,5 @@
 ﻿using Artis.Consts;
+using Artis.Data;
 
 namespace Artis.DataLoader
 {

@@ -2,7 +2,7 @@
 
 <hibernate-mapping xmlns="urn:nhibernate-mapping-2.2"
                    namespace="Artis.Data"
-                   assembly="Artis.Data.DBConnector">
+                   assembly="Artis.Data.DataModel">
   <class name="Action" table="Action">
     <id name="ID" column="id">
       <generator class="identity" />
@@ -12,7 +12,8 @@
     <property name="Description" length="10000" />
     <property name="EnglishDescription" length="10000" />
     <property name="Rating" />
-    <property name="Duration" />	
+    <property name="Duration" />
+    <property name="IsVerticalSmallImage" column="isVerticalSmallImage" />
 
     <!--<many-to-one name="Area" class="Area" column="idArea" lazy="false" />-->
     <many-to-one name="Genre" class="Genre" column="idGenre" lazy="false"/>
@@ -29,6 +30,11 @@
     </set>
     
     <set name="Data" table="ActionData" lazy="false">
+      <key column="idAction" />
+      <many-to-many class="Data" column="idData" />
+    </set>
+
+    <set name="DataSmall" table="ActionDataSmall" lazy="false">
       <key column="idAction" />
       <many-to-many class="Data" column="idData" />
     </set>

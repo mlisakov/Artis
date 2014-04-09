@@ -9,7 +9,6 @@
 	  >
 	
 	<Grid.Resources>
-        <artisDataFiller:Base64StringToBitmapImageConverter x:Key="Base64StringToBitmapImageConverter" />
         <Style x:Key="SelectedItemButton" TargetType="{x:Type Button}">
 			<Setter Property="IsEnabled" Value="True"/>			
 			<Setter Property="Template" Value="{DynamicResource SimpleButtonTemplate}"/>
@@ -120,7 +119,7 @@
 			</ObjectAnimationUsingKeyFrames>
 
 			<DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="NewZoomImage">
-				<EasingDoubleKeyFrame KeyTime="0" Value="100"/>
+                <EasingDoubleKeyFrame KeyTime="0" Value="834"/>
 			</DoubleAnimationUsingKeyFrames>
 			<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="ChangedImageBorder">
 				<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}"/>
@@ -593,6 +592,7 @@
 				 IsEnabled="{Binding IsNewOne}">
             </ListBox>
 
+
             <Button Content="Добавить…" 
 					Grid.Column="4" 
 					HorizontalAlignment="Left" 
@@ -771,17 +771,11 @@
 						</StackPanel>
 
 						<Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,0,0,20" BorderBrush="LightGray" BorderThickness="1">
-						<Grid  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,20">
-															
-							<Image x:Name="NewZoomImage" Source="{Binding NewImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 	
-							
-								 Width="834" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-							
-							<Rectangle x:Name="ChangedImageBorder" Stroke="Red" StrokeThickness="2" Width="580" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top" StrokeDashArray="1 1"
-						
-									 >
-								
-							</Rectangle>
+						<Grid  HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,20">							
+							<Image x:Name="NewZoomImage" 
+                                   Source="{Binding NewImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 	
+                                   HorizontalAlignment="Left" VerticalAlignment="Top"/>
+							<Rectangle x:Name="ChangedImageBorder" Stroke="Red" StrokeThickness="2" Width="580" Height="150" HorizontalAlignment="Left" VerticalAlignment="Top" StrokeDashArray="1 1"/>
 						</Grid>
 						</Border>
 					

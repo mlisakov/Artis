@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace Artis.Data
 {
-    public class Producer
+    public class Actor:IPeople
     {
         private long _id;
         private string _FIO;
@@ -59,7 +58,7 @@ namespace Artis.Data
         }
 
         /// <summary>
-        /// Список изображений продюсера
+        /// Список изображений актера
         /// </summary>
         [XmlIgnore]
         public virtual ICollection<Data> Data

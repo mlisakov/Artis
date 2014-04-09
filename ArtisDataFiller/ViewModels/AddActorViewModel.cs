@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
+using Artis.Utils;
 using Microsoft.Win32;
 
 namespace Artis.ArtisDataFiller.ViewModels
 {
     public class AddActorViewModel : DialogViewModel
     {
-        private WcfServiceCaller _wcfAdminService;
         private Actor _actor;
         private ObservableCollection<DataImage> _images;
         private List<long> _deletedImages;
@@ -122,7 +122,6 @@ namespace Artis.ArtisDataFiller.ViewModels
         public AddActorViewModel()
         {
             _actor = new Actor();
-            _wcfAdminService=new WcfServiceCaller();
             AddImageCommand = new ArtisCommand(CanExecute, ExecuteAddImagesCommand);
             RemoveImageCommand = new ArtisCommand(CanExecuteRemoveImageCommand, ExecuteRemoveImagesCommand);
         }
@@ -130,8 +129,8 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private async Task InitImagesDataSource()
         {
-            ObservableCollection<Data.Data> images = await _wcfAdminService.GetActorImages(Actor.ID);
-            Images = await ImageHelper.ConvertImages(images);
+            if (Actor.Data != null)
+                Images = await ImageHelper.ConvertImages(Actor.Data);
         }
 
         public override bool CanExecuteOkCommand(object parameter)
@@ -169,17 +168,20 @@ namespace Artis.ArtisDataFiller.ViewModels
                 Stream[] selectedFiles = openDialog.OpenFiles();
                 foreach (Stream file in selectedFiles)
                 {
-                    MemoryStream stream = new MemoryStream();
-                    file.CopyTo(stream);
-                    file.Close();
-                    byte[] imageArray = stream.ToArray();
-                    string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
+                    //MemoryStream stream = new MemoryStream();
+                    //file.CopyTo(stream);
+                    //file.Close();
+                    //byte[] imageArray = stream.ToArray();
+                    //string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
 
-                    stream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage bitMapImage = new BitmapImage();
-                    bitMapImage.BeginInit();
-                    bitMapImage.StreamSource = stream;
-                    bitMapImage.EndInit();
+                    //stream.Seek(0, SeekOrigin.Begin);
+                    //BitmapImage bitMapImage = new BitmapImage();
+                    //bitMapImage.BeginInit();
+                    //bitMapImage.StreamSource = stream;
+                    //bitMapImage.EndInit();
+                    BitmapImage bitMapImage = ImageHelper.ResizeImage(file, ImageConsts.WidthConst,openDialog.SafeFileName);
+                    string base64String = ImageHelper.ConvertImageToBase64String(bitMapImage);
+                    file.Close();
                     if (!string.IsNullOrEmpty(base64String))
                     {
                         Data.Data image = new Data.Data() { Base64StringData = base64String};

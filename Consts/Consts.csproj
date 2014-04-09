@@ -38,10 +38,9 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActionWeb.cs" />
     <Compile Include="ArtisCommand.cs" />
-    <Compile Include="Convert.cs" />
     <Compile Include="Enums\UrlActionLoadingSource.cs" />
+    <Compile Include="ImageConsts.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceAddress.cs" />
   </ItemGroup>

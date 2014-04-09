@@ -9,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
-using Artis.Data.XmlObjects;
+using Artis.Utils;
 using Microsoft.Win32;
 using NLog;
 
@@ -30,8 +30,11 @@ namespace Artis.ArtisDataFiller.ViewModels
         private Producer _selectedProducer;
 
         private ObservableCollection<DataImage> _images;
+        private ObservableCollection<DataImage> _smallImages;
         private List<long> _deletedImages;
+        private List<long> _deletedSmallImages;
         private List<DataImage> _addedImages;
+        private List<DataImage> _addedSmallImages;
 
         private ObservableCollection<Area> _filterAreasItemsSource;        
         private ObservableCollection<Genre> _genresItemsSource;
@@ -46,7 +49,7 @@ namespace Artis.ArtisDataFiller.ViewModels
         //Соотношение ширины к высоте для последней добавленной картинки
         private double _lastPercentOfImage;
         //ширина оригинала - картинки на гуи
-        const int WidthConst = 834;
+        //const int WidthConst = 834;
 
         private bool _isOnLeft;
         private bool _isCenter;
@@ -173,6 +176,19 @@ namespace Artis.ArtisDataFiller.ViewModels
             set
             {
                 _images = value;
+                OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Список маленьких картинок для редактируемой/создаваемой площадки
+        /// </summary>
+        public ObservableCollection<DataImage> SmallImages
+        {
+            get { return _smallImages; }
+            set
+            {
+                _smallImages = value;
                 OnPropertyChanged();
             }
         }
@@ -478,6 +494,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             _wcfAdminService=new WcfServiceCaller();
             _deletedImages = new List<long>();
             _addedImages = new List<DataImage>();
+            _addedSmallImages=new List<DataImage>();
         }
 
         /// <summary>
@@ -581,11 +598,13 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void ExecuteSaveNewImageCommand(object obj)
         {
-            var originalImage = NewImage as BitmapImage;            
-            if(originalImage == null)
-                return;
+            BitmapImage originalImage = NewImage as BitmapImage;
 
-            BitmapSource result;
+            if (originalImage == null)
+                return;
+            //сохраняем оригинал сначала
+            SaveImage(originalImage);
+
             if (IsHorizontalImage)
             {
                 //обрезаем для горизонтального варианта
@@ -594,47 +613,130 @@ namespace Artis.ArtisDataFiller.ViewModels
 
                 if (IsLeft)
                     dx = 0;
-                else dx = IsCenter ? (WidthConst - 580)/2 : WidthConst - 580;
+                else dx = IsCenter ? (ImageConsts.WidthConst - 580)/2 : ImageConsts.WidthConst - 580;
 
                 if (IsTop)
                     dy = 0;
                 else
                 {
-                    double height = (WidthConst/_lastPercentOfImage);
+                    double height = (ImageConsts.WidthConst/_lastPercentOfImage);
                     dy = IsBotton ? Convert.ToInt32(height - 150) : Convert.ToInt32((height - 150)/2);
                 }
 
-                result = new CroppedBitmap(originalImage, new Int32Rect(dx, dy, 580, 150));
+                BitmapSource result = new CroppedBitmap(originalImage, new Int32Rect(dx, dy, 580, 150));
+
+                MemoryStream mStream = new MemoryStream();
+                BitmapEncoder encoder;
+                if (Path.GetExtension(originalImage.UriSource.AbsoluteUri).ToLower().Equals(".png"))
+                    encoder = new PngBitmapEncoder();
+                else
+                    encoder = new JpegBitmapEncoder();
+
+                encoder.Frames.Add(BitmapFrame.Create(result));
+                encoder.Save(mStream);
+
+                mStream.Seek(0, SeekOrigin.Begin);
+
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
+                image.UriSource = originalImage.UriSource;
+                image.StreamSource = new MemoryStream(mStream.ToArray());
+                image.EndInit();
+
+                //сохраняем обрезанную картинку
+                SaveSmallImage(image);
+                CurrentActionDate.Action.IsVerticalSmallImage = false;
             }
             else
             {
-                //todo сохраняем NewImage сначала
-                
-
                 //обрезаем для вертикального варианта
-                BitmapImage bi = new BitmapImage();
-                bi.BeginInit();
-                bi.CacheOption = BitmapCacheOption.OnDemand;
-                bi.CreateOptions = BitmapCreateOptions.DelayCreation;
-                bi.DecodePixelHeight = Convert.ToInt32(100/_lastPercentOfImage);
-                bi.DecodePixelWidth = 100;
+                BitmapImage bi = ImageHelper.ResizeImage(originalImage.StreamSource, 100, originalImage.UriSource.AbsoluteUri);
+                //BitmapEncoder encoder = new JpegBitmapEncoder();
 
-                bi.UriSource = originalImage.UriSource;
-                bi.EndInit();
+                //encoder.Frames.Add(BitmapFrame.Create(bi));
 
-                result = bi;
+
+                //SaveFileDialog openDialog = new SaveFileDialog
+                //{
+                //    Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+                //    Title = "Пожалуйста, выберите файл для сохранения.",
+                //};
+                //if (openDialog.ShowDialog().Value)
+                //    using (var fs = openDialog.OpenFile())
+                //    {
+                //        encoder.Save(fs);
+                //    }
+               
+                //сохраняем обрезанную вертикально картинку
+                SaveSmallImage(bi);
+                CurrentActionDate.Action.IsVerticalSmallImage = true;
             }
 
-            //todo сохраняем обрезанную картинку
+            //SaveFileDialog openDialog = new SaveFileDialog
+            //{
+            //    Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+            //    Title = "Пожалуйста, выберите файл для сохранения.",
+            //};
+            //if (openDialog.ShowDialog().Value)
+            //    using (var fs = openDialog.OpenFile())
+            //    {
+            //        encoder.Save(fs);
+            //    }
 
-            BitmapEncoder encoder;
-            if (originalImage.UriSource.AbsoluteUri.EndsWith(".png"))
-                encoder = new PngBitmapEncoder();
-            else
-                encoder = new JpegBitmapEncoder();
+            NewImage = null;
+        }
 
-            encoder.Frames.Add(BitmapFrame.Create(result));
+        private void SaveImage(BitmapImage originalImage)
+        {
+            BitmapImage bi = ImageHelper.ResizeImage(originalImage.StreamSource, ImageConsts.WidthConst, originalImage.UriSource.AbsoluteUri);
+            //BitmapEncoder encoder = new JpegBitmapEncoder();
 
+            //encoder.Frames.Add(BitmapFrame.Create(bi));
+
+
+            //SaveFileDialog openDialog = new SaveFileDialog
+            //{
+            //    Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+            //    Title = "Пожалуйста, выберите файл для сохранения.",
+            //};
+            //if (openDialog.ShowDialog().Value)
+            //    using (var fs = openDialog.OpenFile())
+            //    {
+            //        encoder.Save(fs);
+            //    }
+
+            string base64String = ImageHelper.ConvertImageToBase64String(bi);
+            //MemoryStream str = new MemoryStream(Convert.FromBase64String(base64String));
+            //SaveFileDialog openDialog = new SaveFileDialog
+            //{
+            //    Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+            //    Title = "Пожалуйста, выберите файл для сохранения.",
+            //};
+            //if (openDialog.ShowDialog().Value)
+            //    using (var fs = openDialog.OpenFile())
+            //    {
+            //        str.CopyTo(fs);
+            //    }
+
+            if (!string.IsNullOrEmpty(base64String))
+            {
+                DataImage image = new DataImage() { Base64String = base64String, Image = bi };
+                if (_addedImages == null)
+                    _addedImages = new List<DataImage>();
+                _addedImages.Add(image);
+
+                if (Images == null)
+                    Images = new ObservableCollection<DataImage>();
+                Images.Add(image);
+                OnPropertyChanged("Images");
+            }
+        }
+
+        private void SaveSmallImage(BitmapImage originalImage)
+        {
+            string base64String = ImageHelper.ConvertImageToBase64String(originalImage);
+
+            MemoryStream str = new MemoryStream(Convert.FromBase64String(base64String));
             SaveFileDialog openDialog = new SaveFileDialog
             {
                 Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
@@ -643,10 +745,23 @@ namespace Artis.ArtisDataFiller.ViewModels
             if (openDialog.ShowDialog().Value)
                 using (var fs = openDialog.OpenFile())
                 {
-                    encoder.Save(fs);
+                    str.CopyTo(fs);
                 }
 
-            NewImage = null;
+            if (!string.IsNullOrEmpty(base64String))
+            {
+                DataImage image = new DataImage() { Base64String = base64String, Image = originalImage };
+                if (_addedSmallImages == null)
+                    _addedSmallImages = new List<DataImage>();
+                _addedSmallImages.Add(image);
+
+
+                    if (SmallImages == null)
+                        SmallImages = new ObservableCollection<DataImage>();
+                    SmallImages.Add(image);
+                    OnPropertyChanged("SmallImages");
+                
+            }
         }
 
         private void ExecuteOpenImageCommand(object obj)
@@ -669,23 +784,23 @@ namespace Artis.ArtisDataFiller.ViewModels
                     bitMapImage.StreamSource = stream;
                     bitMapImage.EndInit();
 
-                    //определяем пропорции
+                    ////определяем пропорции
                     _lastPercentOfImage = (double)bitMapImage.PixelWidth / bitMapImage.PixelHeight;
 
-                    double height = WidthConst / _lastPercentOfImage;
+                    //double height = WidthConst / _lastPercentOfImage;
 
-                    //устанавливаем пропорции, исходя из ширины 834 (ширина картинки на гуи)
-                    BitmapImage bi = new BitmapImage();
-                    bi.BeginInit();
-                    bi.CacheOption = BitmapCacheOption.OnDemand;
-                    bi.CreateOptions = BitmapCreateOptions.DelayCreation;
-                    bi.DecodePixelHeight = Convert.ToInt32(height);
-                    bi.DecodePixelWidth = 834;                    
+                    ////устанавливаем пропорции, исходя из ширины 834 (ширина картинки на гуи)
+                    //BitmapImage bi = new BitmapImage();
+                    //bi.BeginInit();
+                    //bi.CacheOption = BitmapCacheOption.OnDemand;
+                    //bi.CreateOptions = BitmapCreateOptions.DelayCreation;
+                    //bi.DecodePixelHeight = Convert.ToInt32(height);
+                    //bi.DecodePixelWidth = 834;                    
 
-                    bi.UriSource = new Uri(openDialog.FileName);
-                    bi.EndInit();
+                    //bi.UriSource = new Uri(openDialog.FileName);
+                    //bi.EndInit();
 
-                    NewImage = bi;
+                    NewImage = ImageHelper.ResizeImage(stream, ImageConsts.WidthConst, openDialog.FileName);
                 }
             }
         }
@@ -743,6 +858,13 @@ namespace Artis.ArtisDataFiller.ViewModels
             OnPropertyChanged("ProducersItemsSource");
         }
 
+        private async void ExecuteRemoveActorCommand(object obj)
+        {
+            //await RemoveActor();
+            ActorsItemsSource.Remove(SelectedActor);
+            OnPropertyChanged("ActorsItemsSource");
+        }
+
         private void ExecuteEditProducerCommand(object obj)
         {
             if (ProducersItemsSource == null)
@@ -761,22 +883,6 @@ namespace Artis.ArtisDataFiller.ViewModels
                 //todo сохранить изменения в описании продюсера
 //                ProducersItemsSource.Add(viewModel.Producer);
 //                OnPropertyChanged("ProducersItemsSource");
-            }
-        }
-
-        private void ExecuteAddProducerCommand(object obj)
-        {
-            if (ProducersItemsSource==null)
-                ProducersItemsSource=new ObservableCollection<Producer>();
-            var viewModel = new AddProducerViewModel() {Title = "Добавление нового продюсера"};
-
-            var window = new AddActorDialogWindow {ViewModel = viewModel};
-
-            var dialogResult = window.ShowDialog();
-            if (dialogResult.HasValue && dialogResult.Value)
-            {
-                ProducersItemsSource.Add(viewModel.Producer);
-                OnPropertyChanged("ProducersItemsSource");
             }
         }
 
@@ -803,11 +909,36 @@ namespace Artis.ArtisDataFiller.ViewModels
             }
         }
 
-        private async void ExecuteRemoveActorCommand(object obj)
+        private void ExecuteAddProducerCommand(object obj)
         {
-            //await RemoveActor();
-            ActorsItemsSource.Remove(SelectedActor);
-            OnPropertyChanged("ActorsItemsSource");
+            if (ProducersItemsSource==null)
+                ProducersItemsSource=new ObservableCollection<Producer>();
+            var viewModel = new AddProducerViewModel() {Title = "Добавление нового продюсера"};
+
+            var window = new AddActorDialogWindow {ViewModel = viewModel};
+
+            var dialogResult = window.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                ProducersItemsSource.Add(viewModel.Producer);
+                OnPropertyChanged("ProducersItemsSource");
+            }
+        }
+
+        private void ExecuteAddNewActorCommand(object obj)
+        {
+            if (ActorsItemsSource == null)
+                ActorsItemsSource = new ObservableCollection<Actor>();
+            var viewModel = new AddActorViewModel() { Title = "Добавление нового актера" };
+
+            var window = new AddActorDialogWindow { ViewModel = viewModel };
+
+            var dialogResult = window.ShowDialog();
+            if (dialogResult.HasValue && dialogResult.Value)
+            {
+                ActorsItemsSource.Add(viewModel.Actor);
+                OnPropertyChanged("ActorsItemsSource");
+            }
         }
 
         private void ExecuteAddActorFromListCommand(object obj)
@@ -839,11 +970,13 @@ namespace Artis.ArtisDataFiller.ViewModels
                     if (producers)
                     {
                         //todo добавляем продюсера 
+                        ProducersItemsSource.Add((Producer)viewModel.SelectedPeople);
                         OnPropertyChanged("ProducersItemsSource");
                     }
                     else
                     {
                         //todo добавляем актера
+                        ActorsItemsSource.Add((Actor)viewModel.SelectedPeople);
                         OnPropertyChanged("ActorsItemsSource");
                     }
 
@@ -852,22 +985,6 @@ namespace Artis.ArtisDataFiller.ViewModels
             }
         }
 
-
-        private void ExecuteAddNewActorCommand(object obj)
-        {
-            if (ActorsItemsSource == null)
-                ActorsItemsSource = new ObservableCollection<Actor>();
-            var viewModel = new AddActorViewModel() {Title = "Добавление нового актера"};
-
-            var window = new AddActorDialogWindow {ViewModel = viewModel};
-
-            var dialogResult = window.ShowDialog();
-            if (dialogResult.HasValue && dialogResult.Value)
-            {
-                ActorsItemsSource.Add(viewModel.Actor);
-                OnPropertyChanged("ActorsItemsSource");
-            }
-        }
 
         private void ExecuteRemoveActionCommand(object obj)
         {
@@ -881,7 +998,12 @@ namespace Artis.ArtisDataFiller.ViewModels
 
             ObservableCollection<Data.Data> images = await _wcfAdminService.GetActionImages(CurrentActionDate.Action.ID);
             Images = await ImageHelper.ConvertImages(images);
+
+
+            ObservableCollection<Data.Data> smallImages = await _wcfAdminService.GetActionSmallImages(CurrentActionDate.Action.ID);
+            SmallImages = await ImageHelper.ConvertImages(smallImages);
             _addedImages = new List<DataImage>();
+            _addedSmallImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
 
@@ -892,6 +1014,7 @@ namespace Artis.ArtisDataFiller.ViewModels
 
             CurrentActionDate=new ActionDate(){Date = DateTime.Today,Action=new Data.Action()};
             Images=new ObservableCollection<DataImage>();
+            SmallImages=new ObservableCollection<DataImage>();
             ActorsItemsSource = new ObservableCollection<Actor>();
             ProducersItemsSource = new ObservableCollection<Producer>();
         }
@@ -902,10 +1025,13 @@ namespace Artis.ArtisDataFiller.ViewModels
             IsNewOne = true;
 
             ObservableCollection<Data.Data> images = await _wcfAdminService.GetActionImages(CurrentActionDate.Action.ID);
+            ObservableCollection<Data.Data> smallImages = await _wcfAdminService.GetActionSmallImages(CurrentActionDate.Action.ID);
             ActorsItemsSource = await _wcfAdminService.GetActionActors(CurrentActionDate.Action.ID);
             ProducersItemsSource = await _wcfAdminService.GetActionProducers(CurrentActionDate.Action.ID);
             Images = await ImageHelper.ConvertImages(images);
+            SmallImages = await ImageHelper.ConvertImages(smallImages);
             _addedImages = new List<DataImage>();
+            _addedSmallImages = new List<DataImage>();
             _deletedImages = new List<long>();
         }
 
@@ -933,6 +1059,7 @@ namespace Artis.ArtisDataFiller.ViewModels
             Images = null;
             _deletedImages = null;
             _addedImages = null;
+            _addedSmallImages = null;
         }
 
         /// <summary>
@@ -949,7 +1076,7 @@ namespace Artis.ArtisDataFiller.ViewModels
                 await
                     _wcfAdminService.SaveActionDate(CurrentActionDate,
                         _addedImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList(),
-                        _deletedImages,ActorsItemsSource.ToList(),ProducersItemsSource.ToList());
+                        _deletedImages, _addedSmallImages.Select(i => new Data.Data() {Base64StringData = i.Base64String}).ToList(),ActorsItemsSource.ToList(),ProducersItemsSource.ToList());
             return result;
 
         }
@@ -998,43 +1125,43 @@ namespace Artis.ArtisDataFiller.ViewModels
             return result;
         }
 
-        private async Task<bool> RemoveActionDate()
-        {
-            //bool result = await ActionDateRepository.Remove(CurrentArea);
-            //if (result)
-            //{
-            //    Areas.Remove(CurrentArea);
-            //    OnPropertyChanged("Areas");
-            //}
-            //return result;
-            return true;
-        }
+        //private async Task<bool> RemoveActionDate()
+        //{
+        //    //bool result = await ActionDateRepository.Remove(CurrentArea);
+        //    //if (result)
+        //    //{
+        //    //    Areas.Remove(CurrentArea);
+        //    //    OnPropertyChanged("Areas");
+        //    //}
+        //    //return result;
+        //    return true;
+        //}
 
-        private async Task<bool> RemoveActor()
-        {
-            bool result =
-               await
-                   ActorRepository.Remove(SelectedActor,CurrentActionDate.Action);
-            if (result)
-            {
-                //ActionsItemsSource.Add(CurrentActionDate);
-                //OnPropertyChanged("ActionsItemsSource");
-            }
-            return result;
-        }
+        //private async Task<bool> RemoveActor()
+        //{
+        //    bool result =
+        //       await
+        //           ActorRepository.Remove(SelectedActor,CurrentActionDate.Action);
+        //    if (result)
+        //    {
+        //        //ActionsItemsSource.Add(CurrentActionDate);
+        //        //OnPropertyChanged("ActionsItemsSource");
+        //    }
+        //    return result;
+        //}
 
-        private async Task<bool> RemoveProducer()
-        {
-            bool result =
-               await
-                   ProducerRepository.Remove(SelectedProducer, CurrentActionDate.Action);
-            if (result)
-            {
-                //ActionsItemsSource.Add(CurrentActionDate);
-                //OnPropertyChanged("ActionsItemsSource");
-            }
-            return result;
-        }
+        //private async Task<bool> RemoveProducer()
+        //{
+        //    bool result =
+        //       await
+        //           ProducerRepository.Remove(SelectedProducer, CurrentActionDate.Action);
+        //    if (result)
+        //    {
+        //        //ActionsItemsSource.Add(CurrentActionDate);
+        //        //OnPropertyChanged("ActionsItemsSource");
+        //    }
+        //    return result;
+        //}
 
     }
 }

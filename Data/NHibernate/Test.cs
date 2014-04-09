@@ -13,15 +13,15 @@ namespace Artis.Data
         private ISessionFactory _sessionFactory;
         private Configuration _configuration;
 
-        [TestFixtureSetUp]
-        public void TestFixtureSetUp()
-        {
-            _configuration = new Configuration();
-            _configuration.Configure(AppDomain.CurrentDomain.BaseDirectory + "/NHibernate/Mapping/hibernate.cfg.xml");
-            //_configuration.AddAssembly(typeof(MainMapping).Assembly);
-            //Тяжелый процесс, должен вызываться один раз
-            _sessionFactory = _configuration.BuildSessionFactory();
-        }
+        //[TestFixtureSetUp]
+        //public void TestFixtureSetUp()
+        //{
+        //    _configuration = new Configuration();
+        //    _configuration.Configure(AppDomain.CurrentDomain.BaseDirectory + "/NHibernate/Mapping/hibernate.cfg.xml");
+        //    //_configuration.AddAssembly(typeof(MainMapping).Assembly);
+        //    //Тяжелый процесс, должен вызываться один раз
+        //    _sessionFactory = _configuration.BuildSessionFactory();
+        //}
 
         [Test]
         public void CanGetActions()

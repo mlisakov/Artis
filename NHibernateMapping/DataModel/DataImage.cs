@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media.Imaging;
 
-namespace Artis.ArtisDataFiller
+namespace Artis.Data
 {
     public class DataImage
     {

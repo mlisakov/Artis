@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace Artis.Data
@@ -16,6 +15,7 @@ namespace Artis.Data
         private string _englishDescription;
         private int _rating;
         private string _duration;
+        private bool _isVerticalSmallImage;
 
         private Genre _genre;
         private State _state;
@@ -23,6 +23,7 @@ namespace Artis.Data
         private ICollection<Area> _area;
         private ICollection<ActionDate> _date;
         private ICollection<Data> _data;
+        private ICollection<Data> _dataSmall;
         private ICollection<Actor> _actors;
         private ICollection<Producer> _producers;
 
@@ -89,6 +90,15 @@ namespace Artis.Data
         }
 
         /// <summary>
+        /// Тип маленького изображения
+        /// </summary>
+        public virtual bool IsVerticalSmallImage
+        {
+            get { return _isVerticalSmallImage; }
+            set { _isVerticalSmallImage = value; }
+        }
+
+        /// <summary>
         /// Жанр
         /// </summary>
         public virtual Genre Genre
@@ -133,6 +143,16 @@ namespace Artis.Data
         {
             get { return _data; }
             set { _data = value; }
+        }
+
+        /// <summary>
+        /// Список урезанных изображений мероприятия
+        /// </summary>
+        [XmlIgnoreAttribute]
+        public virtual ICollection<Data> DataSmall
+        {
+            get { return _dataSmall; }
+            set { _dataSmall = value; }
         }
 
         /// <summary>

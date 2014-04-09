@@ -79,7 +79,7 @@ namespace Artis.Data
                         //Set the config up using our dictionary of properties
                         _configuration.SetProperties(properties);
                         //Add a mapping Assembly
-                        _configuration.AddAssembly("Artis.Data.NHibernateMapping");
+                        _configuration.AddAssembly("Artis.Data.DBConnector");
                         sessionFactory = _configuration.BuildSessionFactory();
                     }
                 }

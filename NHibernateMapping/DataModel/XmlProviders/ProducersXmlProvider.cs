@@ -4,35 +4,35 @@ using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
-using Artis.Data.XmlObjects;
 using NLog;
 
 namespace Artis.Data
 {
-    public class ActorsXmlProvider
+    public class ProducersXmlProvider
     {
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
-        [XmlArray("Actors"), XmlArrayItem(typeof(XmlActor), ElementName = "Actor")]
-        public List<XmlActor> Actors { get; set; }
+        [XmlArray("Producers"), XmlArrayItem(typeof(XmlProducer), ElementName = "Producer")]
+        public List<XmlProducer> Producers { get; set; }
 
-        public ActorsXmlProvider()
+        public ProducersXmlProvider()
         {
-            Actors = new List<XmlActor>();
+            Producers = new List<XmlProducer>();
         }
 
 
-        public ActorsXmlProvider(IEnumerable<Actor> actors):this()
+        public ProducersXmlProvider(IEnumerable<Producer> producers):this()
         {
-            foreach (Actor actor in actors)
-                Actors.Add(new XmlActor(actor));
+            foreach (Producer producer in producers)
+                Producers.Add(new XmlProducer(producer));
+           // Producers = new List<XmlProducer>(producers);
         }
 
         public XmlDocument ToXml()
         {
             try
             {
-                XmlSerializer xmlserializer = new XmlSerializer(typeof(ActorsXmlProvider));
+                XmlSerializer xmlserializer = new XmlSerializer(typeof(ProducersXmlProvider));
                 StringWriter stringWriter = new StringWriter();
                 XmlWriter writer = XmlWriter.Create(stringWriter);
 
@@ -51,15 +51,15 @@ namespace Artis.Data
             }
         }
 
-        public List<Actor> FromXml(string doc)
+        public List<Producer> FromXml(string doc)
         {
-            XmlSerializer xmlserializer = new XmlSerializer(typeof(ActorsXmlProvider));
+            XmlSerializer xmlserializer = new XmlSerializer(typeof(ProducersXmlProvider));
             StringReader stringReader = new StringReader(doc);
             XmlReader reader = XmlReader.Create(stringReader);
 
-            ActorsXmlProvider result = (ActorsXmlProvider)xmlserializer.Deserialize(reader);
+            ProducersXmlProvider result = (ProducersXmlProvider)xmlserializer.Deserialize(reader);
             reader.Close();
-            return result.Actors.Select(xmlActor => xmlActor.ToActor()).ToList();
+            return result.Producers.Select(xmlActor => xmlActor.ToProducer()).ToList();
         }
     }
 }

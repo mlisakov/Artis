@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Artis.Consts
+namespace Artis.Data
 {
     public class ActionWeb
     {

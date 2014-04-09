@@ -3,7 +3,7 @@ using System.Xml.Serialization;
 
 namespace Artis.Data
 {
-    public class Actor
+    public class Producer:IPeople
     {
         private long _id;
         private string _FIO;
@@ -58,7 +58,7 @@ namespace Artis.Data
         }
 
         /// <summary>
-        /// Список изображений актера
+        /// Список изображений продюсера
         /// </summary>
         [XmlIgnore]
         public virtual ICollection<Data> Data

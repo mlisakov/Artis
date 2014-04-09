@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
-using Artis.Consts;
 using NLog;
 
 namespace Artis.Data

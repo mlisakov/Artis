@@ -1,35 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Serialization;
 using NLog;
 
 namespace Artis.Data
 {
-    public class ProducersXmlProvider
+    public class ActorsXmlProvider
     {
         private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
 
-        [XmlArray("Producers"), XmlArrayItem(typeof(Producer), ElementName = "Producer")]
-        public List<Producer> Producers { get; set; }
+        [XmlArray("Actors"), XmlArrayItem(typeof(XmlActor), ElementName = "Actor")]
+        public List<XmlActor> Actors { get; set; }
 
-        public ProducersXmlProvider()
+        public ActorsXmlProvider()
         {
-            Producers = new List<Producer>();
+            Actors = new List<XmlActor>();
         }
 
 
-        public ProducersXmlProvider(IEnumerable<Producer> producers)
+        public ActorsXmlProvider(IEnumerable<Actor> actors):this()
         {
-            Producers = new List<Producer>(producers);
+            foreach (Actor actor in actors)
+                Actors.Add(new XmlActor(actor));
         }
 
         public XmlDocument ToXml()
         {
             try
             {
-                XmlSerializer xmlserializer = new XmlSerializer(typeof(ProducersXmlProvider));
+                XmlSerializer xmlserializer = new XmlSerializer(typeof(ActorsXmlProvider));
                 StringWriter stringWriter = new StringWriter();
                 XmlWriter writer = XmlWriter.Create(stringWriter);
 
@@ -43,20 +45,20 @@ namespace Artis.Data
             }
             catch (Exception ex)
             {
-                _logger.ErrorException("Не удалось сериализовать мероприятия",ex);
-                throw new Exception("Не удалось сериализовать мероприятия");
+                _logger.ErrorException("Не удалось сериализовать актеров",ex);
+                throw new Exception("Не удалось сериализовать актеров");
             }
         }
 
-        public List<Producer> FromXml(string doc)
+        public List<Actor> FromXml(string doc)
         {
-            XmlSerializer xmlserializer = new XmlSerializer(typeof(ProducersXmlProvider));
+            XmlSerializer xmlserializer = new XmlSerializer(typeof(ActorsXmlProvider));
             StringReader stringReader = new StringReader(doc);
             XmlReader reader = XmlReader.Create(stringReader);
 
-            ProducersXmlProvider result = (ProducersXmlProvider)xmlserializer.Deserialize(reader);
+            ActorsXmlProvider result = (ActorsXmlProvider)xmlserializer.Deserialize(reader);
             reader.Close();
-            return result.Producers;
+            return result.Actors.Select(xmlActor => xmlActor.ToActor()).ToList();
         }
     }
 }

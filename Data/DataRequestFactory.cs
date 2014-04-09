@@ -94,10 +94,10 @@ namespace Artis.Data
             {
                 var shortActions =
                    session.Query<ActionDate>()
-                        .Where(i => i.Date == startDate).Take(count)
+                        .Where(i => i.Date == startDate).OrderByDescending(i=>i.Action.Rating).Take(count)
                         .Select(i => new ShortAction(i));
-
-                return new JavaScriptSerializer().Serialize(shortActions);
+                JavaScriptSerializer js = new JavaScriptSerializer {MaxJsonLength = Int32.MaxValue};
+                return js.Serialize(shortActions);
             }
         }
         /// <summary>
@@ -458,6 +458,15 @@ namespace Artis.Data
             return new List<Data>();
         }
 
+        public static async Task<List<Data>> GetSmallImages(long id)
+        {
+            using (ISession session = Domain.Session)
+            {
+                Action action = session.Query<Action>().First(i => i.ID == id);
+                return action.DataSmall.ToList();
+            }
+        }
+
         public static async Task<List<Actor>> GetActorsForAction(long idAction)
         {
             using (ISession session = Domain.Session)
@@ -476,9 +485,30 @@ namespace Artis.Data
             }
         }
 
-        public static Task<Task<bool>> UpdateGuiSectionGenres(long idSection, List<Genre> fromXml)
+        public static async Task<ObservableCollection<Producer>> GetProducers(string FIO)
         {
-            throw new NotImplementedException();
+            using (ISession session = await Domain.GetSession())
+            {
+                if (string.IsNullOrEmpty(FIO))
+                    return new ObservableCollection<Producer>(session.Query<Producer>().Select(i => i).OrderBy(i => i.FIO));
+
+                ICriteria criteria = session.CreateCriteria(typeof(Producer));
+                criteria.Add(Restrictions.Like("FIO", "%" + FIO + "%").IgnoreCase());
+                return new ObservableCollection<Producer>(criteria.List<Producer>().OrderBy(i => i.FIO));
+            }
+        }
+
+        public static async Task<ObservableCollection<Actor>> GetActors(string FIO)
+        {
+            using (ISession session = await Domain.GetSession())
+            {
+                if (string.IsNullOrEmpty(FIO))
+                    return new ObservableCollection<Actor>(session.Query<Actor>().Select(i => i).OrderBy(i => i.FIO));
+
+                ICriteria criteria = session.CreateCriteria(typeof(Actor));
+                criteria.Add(Restrictions.Like("FIO", "%" + FIO + "%").IgnoreCase());
+                return new ObservableCollection<Actor>(criteria.List<Actor>().OrderBy(i => i.FIO));
+            }
         }
     }
 }

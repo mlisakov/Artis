@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using Artis.Consts;
 using Artis.Data;
+using Artis.Utils;
 using Microsoft.Win32;
 using NLog;
 
@@ -291,17 +292,12 @@ namespace Artis.ArtisDataFiller.ViewModels
                 Stream[] selectedFiles=openDialog.OpenFiles();
                 foreach (Stream file in selectedFiles)
                 {
-                    MemoryStream stream=new MemoryStream();
-                    file.CopyTo(stream);
-                    file.Close();
-                    byte[] imageArray = stream.ToArray();
-                    string base64String = Convert.ToBase64String(imageArray, 0, imageArray.Length);
+                   
+                    BitmapImage bitMapImage = ImageHelper.ResizeImage(file, ImageConsts.WidthConst,openDialog.SafeFileName);
+                    string base64String = ImageHelper.ConvertImageToBase64String(bitMapImage);
 
-                    stream.Seek(0, SeekOrigin.Begin);
-                    BitmapImage bitMapImage = new BitmapImage();
-                    bitMapImage.BeginInit();
-                    bitMapImage.StreamSource = stream;
-                    bitMapImage.EndInit();
+                    file.Close();
+
                     if (!string.IsNullOrEmpty(base64String))
                     {
                         DataImage image = new DataImage() { Base64String = base64String, Image = bitMapImage };
