@@ -636,15 +636,16 @@ namespace Artis.ArtisDataFiller.ViewModels
                 encoder.Save(mStream);
 
                 mStream.Seek(0, SeekOrigin.Begin);
+                string base64String = Convert.ToBase64String(mStream.ToArray());
 
-                BitmapImage image = new BitmapImage();
-                image.BeginInit();
-                image.UriSource = originalImage.UriSource;
-                image.StreamSource = new MemoryStream(mStream.ToArray());
-                image.EndInit();
+                //BitmapImage image = new BitmapImage();
+                //image.BeginInit();
+                //image.UriSource = originalImage.UriSource;
+                //image.StreamSource = new MemoryStream(mStream.ToArray());
+                //image.EndInit();
 
                 //сохраняем обрезанную картинку
-                SaveSmallImage(image);
+                SaveSmallImage(base64String);
                 CurrentActionDate.Action.IsVerticalSmallImage = false;
             }
             else
@@ -761,6 +762,36 @@ namespace Artis.ArtisDataFiller.ViewModels
                     SmallImages.Add(image);
                     OnPropertyChanged("SmallImages");
                 
+            }
+        }
+
+        private void SaveSmallImage(string base64String)
+        {
+            MemoryStream str = new MemoryStream(Convert.FromBase64String(base64String));
+            SaveFileDialog openDialog = new SaveFileDialog
+            {
+                Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+                Title = "Пожалуйста, выберите файл для сохранения.",
+            };
+            if (openDialog.ShowDialog().Value)
+                using (var fs = openDialog.OpenFile())
+                {
+                    str.CopyTo(fs);
+                }
+
+            if (!string.IsNullOrEmpty(base64String))
+            {
+                DataImage image = new DataImage() { Base64String = base64String };
+                if (_addedSmallImages == null)
+                    _addedSmallImages = new List<DataImage>();
+                _addedSmallImages.Add(image);
+
+
+                if (SmallImages == null)
+                    SmallImages = new ObservableCollection<DataImage>();
+                SmallImages.Add(image);
+                OnPropertyChanged("SmallImages");
+
             }
         }
 
