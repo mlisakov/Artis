@@ -39,5 +39,9 @@
 				   TextWrapping="Wrap" 
 				   Width="700" 
 				   Margin="20,0,0,0"/>
+		<Button Content="Send email to Max" HorizontalAlignment="Right"
+				VerticalAlignment="Bottom" Grid.Row="2" Click="ButtonBase_OnClick">
+			
+		</Button>
 	</Grid>
 </Grid>
