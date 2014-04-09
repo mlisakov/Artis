@@ -40,15 +40,21 @@ namespace Artis.Data
                 //        Data item = originalAction.Data.First(i => i.ID == idImage);
                 //        originalAction.Data.Remove(item);
                 //    }
+                ICollection<Data> actionImages=null;
                 if (originalAction.Data != null)
                 {
-                    ICollection<Data> data = originalAction.Data;
-                    foreach (Data image in data)
-                    {
+                    actionImages = new Collection<Data>(originalAction.Data.ToList());
+                    foreach (Data image in actionImages)
                         originalAction.Data.Remove(image);
-                        _dataRepository.Delete(image);
-                    }
                 }
+                ICollection<Data> actionSmallImages=null;
+                if (originalAction.DataSmall != null)
+                {
+                    actionSmallImages = new Collection<Data>(originalAction.DataSmall.ToList());
+                    foreach (Data image in actionSmallImages)
+                        originalAction.DataSmall.Remove(image);
+                }
+
                 if (addedImages != null)
                     foreach (Data data in addedImages)
                     {
@@ -58,16 +64,6 @@ namespace Artis.Data
                             originalAction.Data = new Collection<Data>();
                         originalAction.Data.Add(data);
                     }
-
-                if (originalAction.DataSmall != null)
-                {
-                    ICollection<Data> data = originalAction.DataSmall;
-                    foreach (Data image in data)
-                    {
-                        originalAction.DataSmall.Remove(image);
-                        _dataRepository.Delete(image);
-                    }
-                }
 
                 if (smallAddedImages != null)
                     foreach (Data data in smallAddedImages)
@@ -83,6 +79,14 @@ namespace Artis.Data
 
                 Update(originalActionDate);
                 _actionRepository.Update(originalAction);
+
+                if(actionImages!=null)
+                    foreach (Data image in actionImages)
+                        _dataRepository.Delete(image);
+
+                if (actionSmallImages != null)
+                    foreach (Data image in actionSmallImages)
+                        _dataRepository.Delete(image);
             }
             catch (Exception ex)
             {

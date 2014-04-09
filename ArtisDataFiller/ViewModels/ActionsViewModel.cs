@@ -638,12 +638,6 @@ namespace Artis.ArtisDataFiller.ViewModels
                 mStream.Seek(0, SeekOrigin.Begin);
                 string base64String = Convert.ToBase64String(mStream.ToArray());
 
-                //BitmapImage image = new BitmapImage();
-                //image.BeginInit();
-                //image.UriSource = originalImage.UriSource;
-                //image.StreamSource = new MemoryStream(mStream.ToArray());
-                //image.EndInit();
-
                 //сохраняем обрезанную картинку
                 SaveSmallImage(base64String);
                 CurrentActionDate.Action.IsVerticalSmallImage = false;
@@ -653,10 +647,7 @@ namespace Artis.ArtisDataFiller.ViewModels
                 //обрезаем для вертикального варианта
                 BitmapImage bi = ImageHelper.ResizeImage(originalImage.StreamSource, 100, originalImage.UriSource.AbsoluteUri);
                 //BitmapEncoder encoder = new JpegBitmapEncoder();
-
                 //encoder.Frames.Add(BitmapFrame.Create(bi));
-
-
                 //SaveFileDialog openDialog = new SaveFileDialog
                 //{
                 //    Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
@@ -728,6 +719,9 @@ namespace Artis.ArtisDataFiller.ViewModels
 
                 if (Images == null)
                     Images = new ObservableCollection<DataImage>();
+                else
+                    Images.Clear();
+
                 Images.Add(image);
                 OnPropertyChanged("Images");
             }
@@ -767,17 +761,17 @@ namespace Artis.ArtisDataFiller.ViewModels
 
         private void SaveSmallImage(string base64String)
         {
-            MemoryStream str = new MemoryStream(Convert.FromBase64String(base64String));
-            SaveFileDialog openDialog = new SaveFileDialog
-            {
-                Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
-                Title = "Пожалуйста, выберите файл для сохранения.",
-            };
-            if (openDialog.ShowDialog().Value)
-                using (var fs = openDialog.OpenFile())
-                {
-                    str.CopyTo(fs);
-                }
+            //MemoryStream str = new MemoryStream(Convert.FromBase64String(base64String));
+            //SaveFileDialog openDialog = new SaveFileDialog
+            //{
+            //    Filter = "jpg(*.jpg)|*.jpg|jpeg(*.jpeg)|*.jpeg|png(*.png)|*.png",
+            //    Title = "Пожалуйста, выберите файл для сохранения.",
+            //};
+            //if (openDialog.ShowDialog().Value)
+            //    using (var fs = openDialog.OpenFile())
+            //    {
+            //        str.CopyTo(fs);
+            //    }
 
             if (!string.IsNullOrEmpty(base64String))
             {
