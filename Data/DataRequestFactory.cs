@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using NHibernate;
@@ -37,10 +35,10 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
-                List<ShortAction> middleActions =
+                List<SmallAction> middleActions =
                     session.Query<ActionDate>()
                         .Where(i => i.Date >= startDate && i.Date <= finishDate)
-                        .Select(i => new ShortAction(i)).ToList();
+                        .Select(i => new SmallAction(i)).ToList();
 
                 return new JavaScriptSerializer().Serialize(middleActions);
 
@@ -88,18 +86,30 @@ namespace Artis.Data
         }
 
 
-        public static string GetTopAction(DateTime startDate, DateTime finishDate,int count)
+        public static string GetTop(DateTime startDate, DateTime finishDate,int count,string GUITabName)
         {
             using (ISession session = Domain.Session)
             {
+                GuiSection guiSection = session.Query<GuiSection>().First(i => i.Name.Equals(GUITabName));
+
+                ICriteria criteria = session.CreateCriteria<ActionDate>("actionDate");
+                criteria.Add(Restrictions.Eq("actionDate.Date", startDate));
+                criteria.CreateAlias("actionDate.Action","Action");
+                criteria.CreateAlias("Action.Genre", "Genre");
+                criteria.Add(Restrictions.In("Genre.ID", guiSection.Genre.Select(i => i.ID).ToList()));
                 var shortActions =
-                   session.Query<ActionDate>()
-                        .Where(i => i.Date == startDate).OrderByDescending(i=>i.Action.Rating).Take(count)
+                    criteria.List<ActionDate>()
+                        .OrderByDescending(i => i.Action.Rating)
+                        .Take(count)
                         .Select(i => new ShortAction(i));
+                   //session.Query<ActionDate>()
+                   //     .Where(i => i.Date == startDate).OrderByDescending(i=>i.Action.Rating).Take(count)
+                   //     .Select(i => new ShortAction(i));
                 JavaScriptSerializer js = new JavaScriptSerializer {MaxJsonLength = Int32.MaxValue};
                 return js.Serialize(shortActions);
             }
         }
+
         /// <summary>
         /// Получение информации о мероприятии
         /// </summary>
@@ -199,13 +209,36 @@ namespace Artis.Data
                     criteria.Add(Restrictions.Where<ActionDate>(i => i.Date >= dateStart && i.Date <= dateFinish));
 
                 IList<ActionDate> allActions = criteria.List<ActionDate>();
-                List<ShortAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new ShortAction(i)).ToList();
+                List<SmallAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new SmallAction(i)).ToList();
 
                 int count = allActions.Count() / PageSize;
                 if ((allActions.Count() % PageSize) != 0)
                     count++;
 
-                KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
+                KeyValuePair<long, IEnumerable<SmallAction>> itemsKVP = new KeyValuePair<long, IEnumerable<SmallAction>>(count, act);
+
+                return new JavaScriptSerializer().Serialize(itemsKVP);
+            }
+        }
+
+        public static string GetActions(long idActionDate,DateTime dateStart, int PageSize, int Page)
+        {
+            using (ISession session = Domain.Session)
+            {
+                ActionDate actionDate = session.Query<ActionDate>().First(i => i.ID == idActionDate);
+                long actionID = actionDate.Action.ID;
+                IList<ActionDate> actions =
+                    session.Query<ActionDate>()
+                        .Where(i => i.Action.ID == actionID && i.Date >= dateStart)
+                        .Select(j => j)
+                        .ToList();
+                List<SmallAction> act = actions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new SmallAction(i)).ToList();
+
+                int count = act.Count() / PageSize;
+                if ((act.Count() % PageSize) != 0)
+                    count++;
+
+                KeyValuePair<long, IEnumerable<SmallAction>> itemsKVP = new KeyValuePair<long, IEnumerable<SmallAction>>(count, act);
 
                 return new JavaScriptSerializer().Serialize(itemsKVP);
             }
@@ -242,15 +275,15 @@ namespace Artis.Data
                 }
 
                 IList<ActionDate> allActions = criteria.List<ActionDate>();
-                List<ShortAction> act =
+                List<SmallAction> act =
                     allActions.Skip((Page - 1)*PageSize)
                         .Take(PageSize)
-                        .Select(i => new ShortAction(i))
+                        .Select(i => new SmallAction(i))
                         .ToList();
                 int count = allActions.Count() / PageSize;
                 if ((allActions.Count() % PageSize) != 0)
                     count++;
-                KeyValuePair<long, IEnumerable<ShortAction>> itemsKVP = new KeyValuePair<long, IEnumerable<ShortAction>>(count, act);
+                KeyValuePair<long, IEnumerable<SmallAction>> itemsKVP = new KeyValuePair<long, IEnumerable<SmallAction>>(count, act);
                 return new JavaScriptSerializer().Serialize(itemsKVP);
 
             }

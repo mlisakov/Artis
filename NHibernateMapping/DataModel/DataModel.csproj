@@ -64,7 +64,9 @@
     <Compile Include="Objects\Producer.cs" />
     <Compile Include="Objects\Short\MiddleAction.cs" />
     <Compile Include="Objects\Short\MiddleArea.cs" />
+    <Compile Include="Objects\Short\People.cs" />
     <Compile Include="Objects\Short\ShortAction.cs" />
+    <Compile Include="Objects\Short\SmallAction.cs" />
     <Compile Include="Objects\Short\ShortArea.cs" />
     <Compile Include="Objects\State.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

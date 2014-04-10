@@ -1,26 +1,25 @@
 ﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace Artis.Data
 {
-    public class MiddleAction:ShortAction
+    public class MiddleAction:SmallAction
     {
         private string _description;
         private string _areaAddress;
         private long _idArea;
         
-        private ICollection<Actor> _actors;
-        private ICollection<Producer> _producers;
+        private List<People> _actors;
+        private List<People> _producers;
 
-        /// <summary>
-        /// Адрес площадки
-        /// </summary>
-        public string AreaAddress
-        {
-            get { return _areaAddress; }
-            set { _areaAddress = value; }
-        }
+        ///// <summary>
+        ///// Адрес площадки
+        ///// </summary>
+        //public string AreaAddress
+        //{
+        //    get { return _areaAddress; }
+        //    set { _areaAddress = value; }
+        //}
 
         /// <summary>
         /// Идентификатор площадки
@@ -43,7 +42,7 @@ namespace Artis.Data
         /// <summary>
         /// Список актеров мероприятия
         /// </summary>
-        public virtual ICollection<Actor> Actor
+        public virtual List<People> Actor
         {
             get { return _actors; }
             set { _actors = value; }
@@ -52,7 +51,7 @@ namespace Artis.Data
         /// <summary>
         /// Список актеров мероприятия
         /// </summary>
-        public virtual ICollection<Producer> Producer
+        public virtual List<People> Producer
         {
             get { return _producers; }
             set { _producers = value; }
@@ -64,8 +63,8 @@ namespace Artis.Data
             IDArea = actionDate.Area.ID;
 
             Description = actionDate.Action.Description;
-            Actor = new Collection<Actor>(actionDate.Action.Actor.ToList());
-            Producer = new Collection<Producer>(actionDate.Action.Producer.ToList());
+            Actor =actionDate.Action.Actor.Select(i=>new People(i)).ToList();
+            Producer = actionDate.Action.Producer.Select(i => new People(i)).ToList();
         }
 
     }

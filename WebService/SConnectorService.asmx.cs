@@ -5,14 +5,14 @@ using System.Web.Services;
 using Artis.Data;
 using NLog;
 
-namespace SofitConnectorService.Service
+namespace Artis.Service
 {
     [WebService(Namespace = "http://obsspb.ru/")]
     [WebServiceBinding(ConformsTo = WsiProfiles.BasicProfile1_1)]
     [System.ComponentModel.ToolboxItem(false)]
     public class SConnectorService : WebService
     {
-        private static NLog.Logger _logger = LogManager.GetCurrentClassLogger();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         /// <summary>
         /// Получение мероприятий
@@ -90,7 +90,7 @@ namespace SofitConnectorService.Service
                     return "Error";
                 }
 
-                string actions = DataRequestFactory.GetTopAction(parsedStartDate, parsedEndDate, topCount);
+                string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Театры");
 
                 return actions;
             }
@@ -103,9 +103,144 @@ namespace SofitConnectorService.Service
         }
 
         /// <summary>
+        /// Получение экскурсий
+        /// </summary>
+        /// <param name="startDate">Начальная дата фильтра для даты проведения мероприятия</param>
+        /// <param name="finishDate">Конечная дата фильтра для даты проведения мероприятия</param>
+        /// <param name="topCount">Кол-во экскурсий</param>
+        /// <returns></returns>
+        [WebMethod]
+        public string GetTopTour(string startDate, string finishDate, int topCount)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(finishDate))
+                {
+                    _logger.Error("WebService.GetTopTour:Пустая дата! Дата начала-" + startDate + ";Дата окончания-" + finishDate);
+                    return "Error";
+                }
+
+                DateTime parsedStartDate;
+                DateTime parsedEndDate;
+
+                if (!DateTime.TryParse(startDate, out parsedStartDate))
+                {
+                    _logger.Error("WebService.GetTopTour:Ошибка распознования строки " + startDate);
+                    return "Error";
+                }
+
+                if (!DateTime.TryParse(finishDate, out parsedEndDate))
+                {
+                    _logger.Error("WebService.GetTopTour:Ошибка распознования строки " + finishDate);
+                    return "Error";
+                }
+
+                string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Экскурсии");
+
+                return actions;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("WebService.GetTopTour:Ошибка!", ex);
+                _logger.Error(ex.Message + " " + ex.StackTrace);
+            }
+            return "Error";
+        }
+
+        /// <summary>
+        /// Получение концертов
+        /// </summary>
+        /// <param name="startDate">Начальная дата фильтра для даты проведения мероприятия</param>
+        /// <param name="finishDate">Конечная дата фильтра для даты проведения мероприятия</param>
+        /// <param name="topCount">Кол-во концертов</param>
+        /// <returns></returns>
+        [WebMethod]
+        public string GetTopConcert(string startDate, string finishDate, int topCount)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(finishDate))
+                {
+                    _logger.Error("WebService.GetTopConcert:Пустая дата! Дата начала-" + startDate + ";Дата окончания-" + finishDate);
+                    return "Error";
+                }
+
+                DateTime parsedStartDate;
+                DateTime parsedEndDate;
+
+                if (!DateTime.TryParse(startDate, out parsedStartDate))
+                {
+                    _logger.Error("WebService.GetTopConcert:Ошибка распознования строки " + startDate);
+                    return "Error";
+                }
+
+                if (!DateTime.TryParse(finishDate, out parsedEndDate))
+                {
+                    _logger.Error("WebService.GetTopConcert:Ошибка распознования строки " + finishDate);
+                    return "Error";
+                }
+
+                string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Концерты");
+
+                return actions;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("WebService.GetTopConcert:Ошибка!", ex);
+                _logger.Error(ex.Message + " " + ex.StackTrace);
+            }
+            return "Error";
+        }
+
+        /// <summary>
+        /// Получение цирковых представлений
+        /// </summary>
+        /// <param name="startDate">Начальная дата фильтра для даты проведения мероприятия</param>
+        /// <param name="finishDate">Конечная дата фильтра для даты проведения мероприятия</param>
+        /// <param name="topCount">Кол-во концертов</param>
+        /// <returns></returns>
+        [WebMethod]
+        public string GetTopСircus(string startDate, string finishDate, int topCount)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(finishDate))
+                {
+                    _logger.Error("WebService.GetTopСircus:Пустая дата! Дата начала-" + startDate + ";Дата окончания-" + finishDate);
+                    return "Error";
+                }
+
+                DateTime parsedStartDate;
+                DateTime parsedEndDate;
+
+                if (!DateTime.TryParse(startDate, out parsedStartDate))
+                {
+                    _logger.Error("WebService.GetTopСircus:Ошибка распознования строки " + startDate);
+                    return "Error";
+                }
+
+                if (!DateTime.TryParse(finishDate, out parsedEndDate))
+                {
+                    _logger.Error("WebService.GetTopСircus:Ошибка распознования строки " + finishDate);
+                    return "Error";
+                }
+
+                string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Цирк");
+
+                return actions;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("WebService.GetTopConcert:Ошибка!", ex);
+                _logger.Error(ex.Message + " " + ex.StackTrace);
+            }
+            return "Error";
+        }
+
+        /// <summary>
         /// Получение информации по мероприятию
         /// </summary>
-        /// <param name="Id">Идентификатор мероприятия</param>
+        /// <param name="Id">Идентификатор даты проведения мероприятия</param>
         /// <returns></returns>
         [WebMethod]
         public string GetActionInfo(long Id)
@@ -262,6 +397,42 @@ namespace SofitConnectorService.Service
                     pageSize = 1;
 
                 string action = DataRequestFactory.GetActions(ActionName, idGenre, idArea, dateStart,dateFinish, pageSize, page);
+
+                return action;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("WebService.GetActions:Ошибка!", ex);
+            }
+            return "Error";
+        }
+
+        /// <summary>
+        /// Получение списка возможных дат проведения мероприятий и соответственных площадок
+        /// </summary>
+        /// <param name="idActionDate">Идентификатор даты проведения мероприятие</param>
+        /// <param name="startDate">Минимальная дата начала</param>
+        /// <param name="PageSize">Размер страниц</param>
+        /// <param name="Page">Номер страницы</param>
+        /// <returns></returns>
+        [WebMethod]
+        public string GetActionAreas(long idActionDate, string startDate, int PageSize, int Page)
+        {
+            try
+            {
+                int page = Page;
+                int pageSize = PageSize;
+                DateTime date = DateTime.MinValue;
+                if (!string.IsNullOrEmpty(startDate) && !DateTime.TryParse(startDate, out date))
+                    return "Error.Parse Date";
+
+                if (page == 0)
+                    page = 1;
+
+                if (pageSize == 0)
+                    pageSize = 1;
+
+                string action = DataRequestFactory.GetActions(idActionDate, date, pageSize, page);
 
                 return action;
             }
