@@ -86,25 +86,13 @@ namespace Artis.Data
         }
 
 
-        public static string GetTop(DateTime startDate, DateTime finishDate,int count,string GUITabName)
+        public static string GetTopAction(DateTime startDate, DateTime finishDate,int count)
         {
             using (ISession session = Domain.Session)
             {
-                GuiSection guiSection = session.Query<GuiSection>().First(i => i.Name.Equals(GUITabName));
-
-                ICriteria criteria = session.CreateCriteria<ActionDate>("actionDate");
-                criteria.Add(Restrictions.Eq("actionDate.Date", startDate));
-                criteria.CreateAlias("actionDate.Action","Action");
-                criteria.CreateAlias("Action.Genre", "Genre");
-                criteria.Add(Restrictions.In("Genre.ID", guiSection.Genre.Select(i => i.ID).ToList()));
-                var shortActions =
-                    criteria.List<ActionDate>()
-                        .OrderByDescending(i => i.Action.Rating)
-                        .Take(count)
-                        .Select(i => new ShortAction(i));
-                   //session.Query<ActionDate>()
-                   //     .Where(i => i.Date == startDate).OrderByDescending(i=>i.Action.Rating).Take(count)
-                   //     .Select(i => new ShortAction(i));
+                var shortActions = session.Query<ActionDate>()
+                    .Where(i => i.Date == startDate).OrderByDescending(i => i.Action.Rating).Take(count)
+                    .Select(i => new ShortAction(i));
                 JavaScriptSerializer js = new JavaScriptSerializer {MaxJsonLength = Int32.MaxValue};
                 return js.Serialize(shortActions);
             }
@@ -185,21 +173,33 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
+                //Получение описания таба на GUI(Театры)
+                GuiSection guiSection = session.Query<GuiSection>().First(i => i.Name.Equals("Театры"));
 
+                //ICriteria criteria = session.CreateCriteria<ActionDate>("actionDate");
+                //criteria.Add(Restrictions.Eq("actionDate.Date", startDate));
+                
                 ICriteria criteria = session.CreateCriteria<ActionDate>("actionDate");
-                ICriteria customCriteria = null;
+                criteria.CreateAlias("actionDate.Action", "Action");
+                criteria.CreateAlias("Action.Genre", "Genre"); 
+                //Фильтрация по жанрам для таба Театры на GUI
+                criteria.Add(Restrictions.In("Genre.ID", guiSection.Genre.Select(i => i.ID).ToList()));
+
+                //ICriteria customCriteria1 = null;
                 if (!string.IsNullOrEmpty(ActionName))
-                    customCriteria =
-                        criteria.CreateCriteria("actionDate.Action", JoinType.LeftOuterJoin)
-                            .Add(Restrictions.Like("Name", "%" + ActionName + "%").IgnoreCase());
+                    criteria.Add(Restrictions.Like("Action.Name", "%" + ActionName + "%").IgnoreCase());
+                    //customCriteria =
+                    //    criteria.CreateCriteria("actionDate.Action", JoinType.LeftOuterJoin)
+                    //        .Add(Restrictions.Like("Name", "%" + ActionName + "%").IgnoreCase());
 
                 if (idGenre != 0)
                 {
-                    if (customCriteria != null)
-                        customCriteria.Add(Restrictions.Where<Action>(i => i.Genre.ID == idGenre));
-                    else
-                        criteria.CreateCriteria("actionDate.Action", JoinType.LeftOuterJoin)
-                            .Add(Restrictions.Where<Action>(i => i.Genre.ID == idGenre));
+                    criteria.Add(Restrictions.Eq("Genre.ID", idGenre));
+                    //if (customCriteria != null)
+                    //    customCriteria.Add(Restrictions.Where<Action>(i => i.Genre.ID == idGenre));
+                    //else
+                    //    criteria.CreateCriteria("actionDate.Action", JoinType.LeftOuterJoin)
+                    //        .Add(Restrictions.Where<Action>(i => i.Genre.ID == idGenre));
                 }
 
                 if (idArea != 0)
@@ -209,7 +209,7 @@ namespace Artis.Data
                     criteria.Add(Restrictions.Where<ActionDate>(i => i.Date >= dateStart && i.Date <= dateFinish));
 
                 IList<ActionDate> allActions = criteria.List<ActionDate>();
-                List<SmallAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new SmallAction(i)).ToList();
+                List<SmallAction> act = allActions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new SmallAction(i)).OrderBy(i => i.DateStart).ToList();
 
                 int count = allActions.Count() / PageSize;
                 if ((allActions.Count() % PageSize) != 0)
@@ -232,7 +232,7 @@ namespace Artis.Data
                         .Where(i => i.Action.ID == actionID && i.Date >= dateStart)
                         .Select(j => j)
                         .ToList();
-                List<SmallAction> act = actions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new SmallAction(i)).ToList();
+                List<SmallAction> act = actions.Skip((Page - 1) * PageSize).Take(PageSize).Select(i => new SmallAction(i)).OrderBy(i=>i.DateStart).ToList();
 
                 int count = act.Count() / PageSize;
                 if ((act.Count() % PageSize) != 0)
@@ -248,31 +248,37 @@ namespace Artis.Data
         {
             using (ISession session = Domain.Session)
             {
-
                 ICriteria criteria = session.CreateCriteria<ActionDate>("actionDate");
+                //Получение описания таба на GUI(Экскурсии)
+                GuiSection guiSection = session.Query<GuiSection>().First(i => i.Name.Equals("Экскурсии"));
+                criteria.CreateAlias("actionDate.Action", "Action");
+                criteria.CreateAlias("Action.Genre", "Genre");
+                //Фильтрация по жанрам для таба Театры на GUI
+                criteria.Add(Restrictions.In("Genre.ID", guiSection.Genre.Select(i => i.ID).ToList()));
 
                 if (idArea != 0)
                     criteria.Add(Restrictions.Where<ActionDate>(i => i.Area.ID == idArea));
 
-                ICriteria customCriteria = null;
+                //ICriteria customCriteria = null;
                 if (!string.IsNullOrEmpty(ActionName))
                 {
-                    customCriteria =
-                        criteria.CreateCriteria("actionDate.Action", "Action", JoinType.LeftOuterJoin)
-                            .Add(Restrictions.Like("Name", "%" + ActionName + "%").IgnoreCase());
+                    //customCriteria =
+                    //    criteria.CreateCriteria("actionDate.Action", "Action", JoinType.LeftOuterJoin)
+                    //        .Add(Restrictions.Like("Name", "%" + ActionName + "%").IgnoreCase());
+                    criteria.Add(Restrictions.Like("Action.Name", "%" + ActionName + "%").IgnoreCase());
                 }
 
-                if (customCriteria != null)
-                {
-                    customCriteria.CreateCriteria("Action.Genre", JoinType.LeftOuterJoin)
-                        .Add(Restrictions.Like("Name", "%" + "Экскурсия" + "%").IgnoreCase());
-                }
-                else
-                {
-                    criteria.CreateAlias("actionDate.Action", "Action");
-                    criteria.CreateCriteria("Action.Genre", JoinType.LeftOuterJoin)
-                        .Add(Restrictions.Like("Name", "%" + "Экскурсия" + "%").IgnoreCase());
-                }
+                //if (customCriteria != null)
+                //{
+                //    customCriteria.CreateCriteria("Action.Genre", JoinType.LeftOuterJoin)
+                //        .Add(Restrictions.Like("Name", "%" + "Экскурсия" + "%").IgnoreCase());
+                //}
+                //else
+                //{
+                //    criteria.CreateAlias("actionDate.Action", "Action");
+                //    criteria.CreateCriteria("Action.Genre", JoinType.LeftOuterJoin)
+                //        .Add(Restrictions.Like("Name", "%" + "Экскурсия" + "%").IgnoreCase());
+                //}
 
                 IList<ActionDate> allActions = criteria.List<ActionDate>();
                 List<SmallAction> act =
@@ -541,6 +547,25 @@ namespace Artis.Data
                 ICriteria criteria = session.CreateCriteria(typeof(Actor));
                 criteria.Add(Restrictions.Like("FIO", "%" + FIO + "%").IgnoreCase());
                 return new ObservableCollection<Actor>(criteria.List<Actor>().OrderBy(i => i.FIO));
+            }
+        }
+
+        /// <summary>
+        /// Получение информации о человеке
+        /// </summary>
+        /// <param name="ID">Идентификатор человека</param>
+        /// <returns>Десериализованная в json информация о человеке</returns>
+        public static string GetPeople(long ID,bool isActor)
+        {
+            using (ISession session = Domain.Session)
+            {
+                if (isActor)
+                {
+                    Actor actor = session.Query<Actor>().First(i => i.ID == ID);
+                    return new JavaScriptSerializer().Serialize(actor);
+                }
+                Producer producer = session.Query<Producer>().First(i => i.ID == ID);
+                return new JavaScriptSerializer().Serialize(producer);
             }
         }
     }

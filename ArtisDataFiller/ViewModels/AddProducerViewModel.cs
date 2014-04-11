@@ -178,7 +178,7 @@ namespace Artis.ArtisDataFiller.ViewModels
                     //bitMapImage.BeginInit();
                     //bitMapImage.StreamSource = stream;
                     //bitMapImage.EndInit();
-                    BitmapImage bitMapImage = ImageHelper.ResizeImage(file, ImageConsts.WidthConst,openDialog.SafeFileName);
+                    BitmapImage bitMapImage = ImageHelper.ResizeImage(file, ImageConsts.WidthConst,openDialog.FileName);
                     string base64String = ImageHelper.ConvertImageToBase64String(bitMapImage);
                     file.Close();
 

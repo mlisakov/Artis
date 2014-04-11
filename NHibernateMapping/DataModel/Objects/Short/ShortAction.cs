@@ -29,12 +29,8 @@ namespace Artis.Data
             : base(actionDate)
         {
             if (actionDate.Action.DataSmall != null && actionDate.Action.DataSmall.Any())
-            {
                 SmallImage = actionDate.Action.DataSmall.First().Base64StringData;
-                IsVerticalSmallImage = actionDate.Action.IsVerticalSmallImage;
-            }
+            IsVerticalSmallImage = actionDate.Action.IsVerticalSmallImage;
         }
-
-
     }
 }

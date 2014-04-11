@@ -77,8 +77,7 @@ namespace Artis.Utils
                     bitMapImage.DecodePixelWidth = widthImage;
                 bitMapImage.CacheOption = BitmapCacheOption.OnDemand;
                 //bitMapImage.CreateOptions = BitmapCreateOptions.DelayCreation;
-                if (!string.IsNullOrEmpty(fileName))
-                    bitMapImage.UriSource = new Uri(fileName);
+                bitMapImage.UriSource = new Uri(fileName);
                 bitMapImage.EndInit();
                 return bitMapImage;
             }

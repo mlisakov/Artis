@@ -14,7 +14,7 @@
     <property name="Rating" />
     <property name="Duration" />
     <property name="IsVerticalSmallImage" column="isVerticalSmallImage" />
-
+    
     <!--<many-to-one name="Area" class="Area" column="idArea" lazy="false" />-->
     <many-to-one name="Genre" class="Genre" column="idGenre" lazy="false"/>
     <!--<many-to-one name="State" class="State" column="idState" lazy="false"/>-->

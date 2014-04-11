@@ -41,14 +41,14 @@ namespace Artis.Data
                 //        originalAction.Data.Remove(item);
                 //    }
                 ICollection<Data> actionImages=null;
-                if (originalAction.Data != null)
+                if (addedImages.Any() && originalAction.Data != null)
                 {
                     actionImages = new Collection<Data>(originalAction.Data.ToList());
                     foreach (Data image in actionImages)
                         originalAction.Data.Remove(image);
                 }
                 ICollection<Data> actionSmallImages=null;
-                if (originalAction.DataSmall != null)
+                if (smallAddedImages.Any() && originalAction.DataSmall != null)
                 {
                     actionSmallImages = new Collection<Data>(originalAction.DataSmall.ToList());
                     foreach (Data image in actionSmallImages)

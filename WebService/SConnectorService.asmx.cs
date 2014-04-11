@@ -90,7 +90,7 @@ namespace Artis.Service
                     return "Error";
                 }
 
-                string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Театры");
+                string actions = DataRequestFactory.GetTopAction(parsedStartDate, parsedEndDate, topCount);
 
                 return actions;
             }
@@ -109,43 +109,43 @@ namespace Artis.Service
         /// <param name="finishDate">Конечная дата фильтра для даты проведения мероприятия</param>
         /// <param name="topCount">Кол-во экскурсий</param>
         /// <returns></returns>
-        [WebMethod]
-        public string GetTopTour(string startDate, string finishDate, int topCount)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(finishDate))
-                {
-                    _logger.Error("WebService.GetTopTour:Пустая дата! Дата начала-" + startDate + ";Дата окончания-" + finishDate);
-                    return "Error";
-                }
+        //[WebMethod]
+        //public string GetTopTour(string startDate, string finishDate, int topCount)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(finishDate))
+        //        {
+        //            _logger.Error("WebService.GetTopTour:Пустая дата! Дата начала-" + startDate + ";Дата окончания-" + finishDate);
+        //            return "Error";
+        //        }
 
-                DateTime parsedStartDate;
-                DateTime parsedEndDate;
+        //        DateTime parsedStartDate;
+        //        DateTime parsedEndDate;
 
-                if (!DateTime.TryParse(startDate, out parsedStartDate))
-                {
-                    _logger.Error("WebService.GetTopTour:Ошибка распознования строки " + startDate);
-                    return "Error";
-                }
+        //        if (!DateTime.TryParse(startDate, out parsedStartDate))
+        //        {
+        //            _logger.Error("WebService.GetTopTour:Ошибка распознования строки " + startDate);
+        //            return "Error";
+        //        }
 
-                if (!DateTime.TryParse(finishDate, out parsedEndDate))
-                {
-                    _logger.Error("WebService.GetTopTour:Ошибка распознования строки " + finishDate);
-                    return "Error";
-                }
+        //        if (!DateTime.TryParse(finishDate, out parsedEndDate))
+        //        {
+        //            _logger.Error("WebService.GetTopTour:Ошибка распознования строки " + finishDate);
+        //            return "Error";
+        //        }
 
-                string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Экскурсии");
+        //        string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Экскурсии");
 
-                return actions;
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("WebService.GetTopTour:Ошибка!", ex);
-                _logger.Error(ex.Message + " " + ex.StackTrace);
-            }
-            return "Error";
-        }
+        //        return actions;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.ErrorException("WebService.GetTopTour:Ошибка!", ex);
+        //        _logger.Error(ex.Message + " " + ex.StackTrace);
+        //    }
+        //    return "Error";
+        //}
 
         /// <summary>
         /// Получение концертов
@@ -154,43 +154,43 @@ namespace Artis.Service
         /// <param name="finishDate">Конечная дата фильтра для даты проведения мероприятия</param>
         /// <param name="topCount">Кол-во концертов</param>
         /// <returns></returns>
-        [WebMethod]
-        public string GetTopConcert(string startDate, string finishDate, int topCount)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(finishDate))
-                {
-                    _logger.Error("WebService.GetTopConcert:Пустая дата! Дата начала-" + startDate + ";Дата окончания-" + finishDate);
-                    return "Error";
-                }
+        //[WebMethod]
+        //public string GetTopConcert(string startDate, string finishDate, int topCount)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(finishDate))
+        //        {
+        //            _logger.Error("WebService.GetTopConcert:Пустая дата! Дата начала-" + startDate + ";Дата окончания-" + finishDate);
+        //            return "Error";
+        //        }
 
-                DateTime parsedStartDate;
-                DateTime parsedEndDate;
+        //        DateTime parsedStartDate;
+        //        DateTime parsedEndDate;
 
-                if (!DateTime.TryParse(startDate, out parsedStartDate))
-                {
-                    _logger.Error("WebService.GetTopConcert:Ошибка распознования строки " + startDate);
-                    return "Error";
-                }
+        //        if (!DateTime.TryParse(startDate, out parsedStartDate))
+        //        {
+        //            _logger.Error("WebService.GetTopConcert:Ошибка распознования строки " + startDate);
+        //            return "Error";
+        //        }
 
-                if (!DateTime.TryParse(finishDate, out parsedEndDate))
-                {
-                    _logger.Error("WebService.GetTopConcert:Ошибка распознования строки " + finishDate);
-                    return "Error";
-                }
+        //        if (!DateTime.TryParse(finishDate, out parsedEndDate))
+        //        {
+        //            _logger.Error("WebService.GetTopConcert:Ошибка распознования строки " + finishDate);
+        //            return "Error";
+        //        }
 
-                string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Концерты");
+        //        string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Концерты");
 
-                return actions;
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("WebService.GetTopConcert:Ошибка!", ex);
-                _logger.Error(ex.Message + " " + ex.StackTrace);
-            }
-            return "Error";
-        }
+        //        return actions;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.ErrorException("WebService.GetTopConcert:Ошибка!", ex);
+        //        _logger.Error(ex.Message + " " + ex.StackTrace);
+        //    }
+        //    return "Error";
+        //}
 
         /// <summary>
         /// Получение цирковых представлений
@@ -199,43 +199,43 @@ namespace Artis.Service
         /// <param name="finishDate">Конечная дата фильтра для даты проведения мероприятия</param>
         /// <param name="topCount">Кол-во концертов</param>
         /// <returns></returns>
-        [WebMethod]
-        public string GetTopСircus(string startDate, string finishDate, int topCount)
-        {
-            try
-            {
-                if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(finishDate))
-                {
-                    _logger.Error("WebService.GetTopСircus:Пустая дата! Дата начала-" + startDate + ";Дата окончания-" + finishDate);
-                    return "Error";
-                }
+        //[WebMethod]
+        //public string GetTopСircus(string startDate, string finishDate, int topCount)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrEmpty(startDate) || string.IsNullOrEmpty(finishDate))
+        //        {
+        //            _logger.Error("WebService.GetTopСircus:Пустая дата! Дата начала-" + startDate + ";Дата окончания-" + finishDate);
+        //            return "Error";
+        //        }
 
-                DateTime parsedStartDate;
-                DateTime parsedEndDate;
+        //        DateTime parsedStartDate;
+        //        DateTime parsedEndDate;
 
-                if (!DateTime.TryParse(startDate, out parsedStartDate))
-                {
-                    _logger.Error("WebService.GetTopСircus:Ошибка распознования строки " + startDate);
-                    return "Error";
-                }
+        //        if (!DateTime.TryParse(startDate, out parsedStartDate))
+        //        {
+        //            _logger.Error("WebService.GetTopСircus:Ошибка распознования строки " + startDate);
+        //            return "Error";
+        //        }
 
-                if (!DateTime.TryParse(finishDate, out parsedEndDate))
-                {
-                    _logger.Error("WebService.GetTopСircus:Ошибка распознования строки " + finishDate);
-                    return "Error";
-                }
+        //        if (!DateTime.TryParse(finishDate, out parsedEndDate))
+        //        {
+        //            _logger.Error("WebService.GetTopСircus:Ошибка распознования строки " + finishDate);
+        //            return "Error";
+        //        }
 
-                string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Цирк");
+        //        string actions = DataRequestFactory.GetTop(parsedStartDate, parsedEndDate, topCount, "Цирк");
 
-                return actions;
-            }
-            catch (Exception ex)
-            {
-                _logger.ErrorException("WebService.GetTopConcert:Ошибка!", ex);
-                _logger.Error(ex.Message + " " + ex.StackTrace);
-            }
-            return "Error";
-        }
+        //        return actions;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.ErrorException("WebService.GetTopConcert:Ошибка!", ex);
+        //        _logger.Error(ex.Message + " " + ex.StackTrace);
+        //    }
+        //    return "Error";
+        //}
 
         /// <summary>
         /// Получение информации по мероприятию
@@ -575,5 +575,32 @@ namespace Artis.Service
              return "Error";
          }
 
+        /// <summary>
+        /// Получение человека для мероприятия 
+        /// </summary>
+        /// <param name="id">Идентификатор человека</param>
+        /// <param name="isActor">Признак, является ли человек актером</param>
+        /// <returns></returns>
+        [WebMethod]
+        public string GetPeople(long id, bool isActor)
+        {
+            try
+            {
+                if (id <= 0)
+                {
+                    _logger.Error("WebService.GetPeople:Идентификатор мероприятия должен быть больше нуля!");
+                    return "Error";
+                }
+                string people = DataRequestFactory.GetPeople(id, isActor);
+                return people;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("WebService.GetPeople:Ошибка!", ex);
+                _logger.Error("WebService.GetPeople:Ошибка!", ex.Message);
+                _logger.Error("WebService.GetPeople:Ошибка!", ex.StackTrace);
+            }
+            return "Error";
+        }
     }
 }
