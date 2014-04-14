@@ -5,6 +5,7 @@ namespace Artis.Data
     public class SmallAction
     {
         private long _id;
+        private long _areaId;
         private string _name;
         private DateTime _dateStart;
         private string _time;
@@ -77,6 +78,15 @@ namespace Artis.Data
         }
 
         /// <summary>
+        /// Идентификатор площадки
+        /// </summary>
+        public long AreaID
+        {
+            get { return _areaId; }
+            set { _areaId = value; }
+        }
+
+        /// <summary>
         /// Адрес площадки
         /// </summary>
         public string AreaAddress
@@ -104,6 +114,7 @@ namespace Artis.Data
                 GenreName = actionDate.Action.Genre.Name;
             PriceRange = actionDate.PriceRange;
             Area = actionDate.Area.Name;
+            AreaID=actionDate.Area.ID;
             AreaAddress = actionDate.Area.Addres;
             AreaMetro = actionDate.Area.Metro.Name;
         }

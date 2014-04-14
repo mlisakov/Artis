@@ -53,6 +53,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetAction:Ошибка получения мероприятий", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -97,7 +99,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetTopAction:Ошибка!", ex);
-                _logger.Error(ex.Message+" "+ex.StackTrace);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -260,6 +263,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetActionInfo:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -287,6 +292,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetActionImage:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -314,6 +321,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetArea:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -341,6 +350,46 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetArea:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
+            }
+            return "Error";
+        }
+
+        /// <summary>
+        /// Получение мероприятий для площадки
+        /// </summary>
+        /// <param name="idArea">Идентификатор площадки</param>
+        /// <param name="startDate">Минимальная дата проведения мероприятия</param>
+        /// <param name="pageSize">Размер страницы</param>
+        /// <param name="page">Номер страницы</param>
+        /// <returns>Сериализованный список меорприятий</returns>
+        [WebMethod]
+        public string GetAreaActions(long idArea, string startDate, int pageSize, int page)
+        {
+            try
+            {
+                if (idArea <= 0)
+                {
+                    _logger.Error("WebService.GetAreaActions:Идентификатор площадки должен быть больше нуля!");
+                    return "Error";
+                }
+                DateTime parsedStartDate;
+
+                if (!DateTime.TryParse(startDate, out parsedStartDate))
+                {
+                    _logger.Error("WebService.GetAreaActions:Ошибка распознования строки " + startDate);
+                    return "Error";
+                }
+                string action = DataRequestFactory.GetAreaActions(idArea, parsedStartDate, pageSize, page);
+
+                return action;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("WebService.GetAreaActions:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -360,6 +409,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetAllArea:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -403,6 +454,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetActions:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -439,9 +492,51 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetActions:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
+
+        /// <summary>
+        /// Получение мероприятий, в которых участвует человек
+        /// </summary>
+        /// <param name="idPeople">Идентификатор человека</param>
+        /// <param name="isActor">Является ли человек актером</param>
+        /// <param name="startDate">Начальная дата для фильтрации мероприятий</param>
+        /// <param name="pageSize">Размер страницы</param>
+        /// <param name="pageNumber">Номер страницы</param>
+        /// <returns>Список мероприятий</returns>
+        [WebMethod]
+        public string GetPeopleActions(long idPeople, bool isActor, string startDate, int pageSize, int pageNumber)
+        {
+            try
+            {
+                int page = pageNumber;
+                int pageSizeLocal = pageSize;
+                DateTime date = DateTime.MinValue;
+                if (!string.IsNullOrEmpty(startDate) && !DateTime.TryParse(startDate, out date))
+                    return "Error.Parse Date";
+
+                if (page == 0)
+                    page = 1;
+
+                if (pageSizeLocal == 0)
+                    pageSizeLocal = 1;
+
+                string action = DataRequestFactory.GetPeopleActions(idPeople, isActor, date, pageSizeLocal, page);
+
+                return action;
+            }
+            catch (Exception ex)
+            {
+                _logger.ErrorException("WebService.GetPeopleActions:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
+            }
+            return "Error";
+        }
+
         /// <summary>
         /// Получение площадок
         /// </summary>
@@ -471,6 +566,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetAreas:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -490,6 +587,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetAllGenre:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -509,6 +608,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetAllMetro:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -541,6 +642,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetTours:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -556,6 +659,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetTheatricalsAreas:Ошибка!", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }
@@ -571,6 +676,8 @@ namespace Artis.Service
              catch (Exception ex)
              {
                  _logger.ErrorException("WebService.GetTourAreas:Ошибка!", ex);
+                 _logger.Error(ex.Message);
+                 _logger.Error(ex.StackTrace);
              }
              return "Error";
          }
@@ -597,8 +704,8 @@ namespace Artis.Service
             catch (Exception ex)
             {
                 _logger.ErrorException("WebService.GetPeople:Ошибка!", ex);
-                _logger.Error("WebService.GetPeople:Ошибка!", ex.Message);
-                _logger.Error("WebService.GetPeople:Ошибка!", ex.StackTrace);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
             }
             return "Error";
         }

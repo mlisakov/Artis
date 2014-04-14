@@ -65,15 +65,16 @@ namespace Artis.Data
                         _configuration = new Configuration();
 
                         //Create a dictionary to hold the properties
-                        Dictionary<string,string> properties =new Dictionary<string, string>();
+                        Dictionary<string, string> properties = new Dictionary<string, string>();
 
                         //Populate with some default properties
-                        properties.Add(NHibernate.Cfg.Environment.ConnectionProvider, "NHibernate.Connection.DriverConnectionProvider");
+                        properties.Add(NHibernate.Cfg.Environment.ConnectionProvider,
+                            "NHibernate.Connection.DriverConnectionProvider");
                         properties.Add(NHibernate.Cfg.Environment.ConnectionDriver, "NHibernate.Driver.SqlClientDriver");
                         properties.Add(NHibernate.Cfg.Environment.Dialect, "NHibernate.Dialect.MsSql2008Dialect");
 
                         //properties.Add(NHibernate.Cfg.Environment.ConnectionString, "Server=KRAKOTSPC;Initial Catalog=ARTIS;User ID=Artis;Password=pass@optima1;");
-                        properties.Add(NHibernate.Cfg.Environment.ConnectionString, "Server=92.53.105.145;Initial Catalog=ARTIS;User ID=QueryBase;Password=pass@optima1;");
+                        properties.Add(NHibernate.Cfg.Environment.ConnectionString,"Server=92.53.105.145;Initial Catalog=ARTIS;User ID=QueryBase;Password=pass@optima1;");
                         //properties.Add(NHibernate.Cfg.Environment.ConnectionString, "Server=EPRUPETW0475;Initial Catalog=ARTIS;Integrated Security = true;");
 
                         //Set the config up using our dictionary of properties
@@ -86,9 +87,10 @@ namespace Artis.Data
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message,"Error", MessageBoxButtons.OK);
-                _logger.ErrorException("Ошибка инициализации NHibernate",ex);
-                throw new DBAccessFailedException("Ошибка доступа к Базе данных \"Артис\"."+ex.Message);
+                _logger.ErrorException("Ошибка инициализации NHibernate", ex);
+                _logger.Error(ex.Message);
+                _logger.Error(ex.StackTrace);
+                throw new DBAccessFailedException("Ошибка доступа к Базе данных \"Артис\"." + ex.Message);
             }
         }
     }

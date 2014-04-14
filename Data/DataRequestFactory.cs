@@ -152,7 +152,7 @@ namespace Artis.Data
             using (ISession session = Domain.Session)
             {
                 Area area = session.Query<Area>().First(i => i.ID == ID);
-                return new JavaScriptSerializer().Serialize(area.Data);
+                return new JavaScriptSerializer().Serialize(area.Data.First());
             }
         }
 
@@ -566,6 +566,65 @@ namespace Artis.Data
                 }
                 Producer producer = session.Query<Producer>().First(i => i.ID == ID);
                 return new JavaScriptSerializer().Serialize(producer);
+            }
+        }
+
+        /// <summary>
+        /// Получение мероприятий, в которых участвует человек
+        /// </summary>
+        /// <param name="idPeople"></param>
+        /// <param name="isActor"></param>
+        /// <param name="date"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="page"></param>
+        /// <returns></returns>
+        public static string GetPeopleActions(long idPeople, bool isActor, DateTime date, int pageSize, int page)
+        {
+            using (ISession session = Domain.Session)
+            {
+                List<ActionDate> peopleActions = isActor
+                    ? session.Query<ActionDate>()
+                        .Where(i => i.Action.Actor.Any(j => j.ID == idPeople) && i.Date >= date)
+                        .ToList()
+                    : session.Query<ActionDate>()
+                        .Where(i => i.Action.Producer.Any(j => j.ID == idPeople) && i.Date >= date)
+                        .ToList();
+
+                List<SmallAction> act = peopleActions.Skip((page - 1) * pageSize).Take(pageSize).Select(i => new SmallAction(i)).OrderBy(i => i.DateStart).ToList();
+
+                int count = act.Count() / pageSize;
+                if ((act.Count() % pageSize) != 0)
+                    count++;
+
+                KeyValuePair<long, IEnumerable<SmallAction>> itemsKVP = new KeyValuePair<long, IEnumerable<SmallAction>>(count, act);
+
+                return new JavaScriptSerializer().Serialize(itemsKVP);
+            }
+        }
+        /// <summary>
+        /// Получение мероприятий для площадки
+        /// </summary>
+        /// <param name="idArea">Идентификатор площадки</param>
+        /// <param name="startDate">Минимальная дата проведения мероприятия</param>
+        /// <param name="pageSize">Размер страницы</param>
+        /// <param name="page">Номер страницы</param>
+        /// <returns>Сериализованный список мероприятий для площадки</returns>
+        public static string GetAreaActions(long idArea, DateTime startDate, int pageSize, int page)
+        {
+            using (ISession session = Domain.Session)
+            {
+                List<ActionDate> peopleActions = session.Query<ActionDate>().Where(i => i.Area.ID == idArea && i.Date>=startDate).ToList();
+
+
+                List<SmallAction> act = peopleActions.Skip((page - 1) * pageSize).Take(pageSize).Select(i => new SmallAction(i)).OrderBy(i => i.DateStart).ToList();
+
+                int count = act.Count() / pageSize;
+                if ((act.Count() % pageSize) != 0)
+                    count++;
+
+                KeyValuePair<long, IEnumerable<SmallAction>> itemsKVP = new KeyValuePair<long, IEnumerable<SmallAction>>(count, act);
+
+                return new JavaScriptSerializer().Serialize(itemsKVP);
             }
         }
     }
